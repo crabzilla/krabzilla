@@ -1,4 +1,4 @@
-package crabzilla.model;
+package crabzilla.vertx.util;
 
 import org.derive4j.Data;
 

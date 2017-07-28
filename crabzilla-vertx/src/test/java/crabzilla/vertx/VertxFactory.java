@@ -1,10 +1,10 @@
 package crabzilla.vertx;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import crabzilla.model.Command;
-import crabzilla.model.EntityId;
-import crabzilla.model.Event;
-import crabzilla.model.UnitOfWork;
+import crabzilla.Command;
+import crabzilla.EntityId;
+import crabzilla.DomainEvent;
+import crabzilla.EntityUnitOfWork;
 import crabzilla.vertx.codecs.JacksonGenericCodec;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -29,11 +29,11 @@ public class VertxFactory {
     vertx.eventBus().registerDefaultCodec(Command.class,
             new JacksonGenericCodec<>(mapper, Command.class));
 
-    vertx.eventBus().registerDefaultCodec(Event.class,
-            new JacksonGenericCodec<>(mapper, Event.class));
+    vertx.eventBus().registerDefaultCodec(DomainEvent.class,
+            new JacksonGenericCodec<>(mapper, DomainEvent.class));
 
-    vertx.eventBus().registerDefaultCodec(UnitOfWork.class,
-            new JacksonGenericCodec<>(mapper, UnitOfWork.class));
+    vertx.eventBus().registerDefaultCodec(EntityUnitOfWork.class,
+            new JacksonGenericCodec<>(mapper, EntityUnitOfWork.class));
 
     return vertx;
   }

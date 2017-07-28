@@ -3,19 +3,14 @@ package crabzilla.vertx.repositories;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import crabzilla.example1.aggregates.customer.Customer;
-import crabzilla.example1.aggregates.customer.CustomerId;
-import crabzilla.example1.aggregates.customer.commands.ActivateCustomerCmd;
-import crabzilla.example1.aggregates.customer.commands.CreateCustomerCmd;
-import crabzilla.example1.aggregates.customer.events.CustomerActivated;
-import crabzilla.example1.aggregates.customer.events.CustomerCreated;
-import crabzilla.model.Either;
-import crabzilla.model.SnapshotData;
-import crabzilla.model.UnitOfWork;
-import crabzilla.model.Version;
+import crabzilla.EntityUnitOfWork;
+import crabzilla.Version;
+import crabzilla.example1.aggregates.customer.*;
+import crabzilla.vertx.SnapshotData;
 import crabzilla.vertx.util.DbConcurrencyException;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -39,7 +34,6 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.fail;
@@ -54,16 +48,16 @@ public class VertxUnitOfWorkRepositoryIT {
   static JDBCClient jdbcClient;
   static DBI dbi;
 
-  VertxUnitOfWorkRepository repo;
+  EntityUnitOfWorkRepository repo;
 
   final CustomerId customerId = new CustomerId("customer#1");
   final CreateCustomerCmd createCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
   final CustomerCreated created = new CustomerCreated(createCmd.getTargetId(), "customer");
-  final UnitOfWork expectedUow1 = UnitOfWork.unitOfWork(createCmd, new Version(1), singletonList(created));
+  final EntityUnitOfWork expectedUow1 = new EntityUnitOfWork(createCmd, singletonList(created), new Version(1));
 
   final ActivateCustomerCmd activateCmd = new ActivateCustomerCmd(UUID.randomUUID(), customerId, "I want it");
   final CustomerActivated activated = new CustomerActivated(createCmd.getTargetId().getStringValue(), Instant.now());
-  final UnitOfWork expectedUow2 = UnitOfWork.unitOfWork(activateCmd, new Version(2), singletonList(activated));
+  final EntityUnitOfWork expectedUow2 = new EntityUnitOfWork(activateCmd, singletonList(activated), new Version(2));
 
   @BeforeClass
   static public void setupClass(TestContext context) throws IOException, URISyntaxException {
@@ -74,7 +68,8 @@ public class VertxUnitOfWorkRepositoryIT {
     mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
     mapper.registerModule(new ParameterNamesModule())
             .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule());
+            .registerModule(new JavaTimeModule())
+            .registerModule(new KotlinModule());
 
     HikariConfig config = new HikariConfig();
     config.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -108,7 +103,7 @@ public class VertxUnitOfWorkRepositoryIT {
   @Before
   public void setup(TestContext context) throws IOException, URISyntaxException {
 
-    this.repo = new VertxUnitOfWorkRepository(Customer.class, jdbcClient);
+    this.repo = new EntityUnitOfWorkRepository(Customer.class, jdbcClient);
 
   }
 
@@ -117,28 +112,24 @@ public class VertxUnitOfWorkRepositoryIT {
 
     Async async = tc.async();
 
-    Future<Either<Throwable, Long>> appendFuture = Future.future();
+    Future<Long> appendFuture = Future.future();
 
     repo.append(expectedUow1, appendFuture);
 
     appendFuture.setHandler(appendAsyncResult -> {
+
       if (appendAsyncResult.failed()) {
         fail("error repo.append", appendAsyncResult.cause());
         return;
       }
 
-      Either<Throwable,Long> appendResult = appendAsyncResult.result();
-      appendResult.match(throwable -> {
-        fail("error", throwable);
-        return null;
-      }, (Function<Long, Void>) uowSequence -> {
-        assertThat(uowSequence).isGreaterThan(0);
-        return null;
-      });
+      Long uowSequence = appendAsyncResult.result();
 
-      Future<Optional<UnitOfWork>> uowFuture = Future.future();
+      assertThat(uowSequence).isGreaterThan(0);
 
-      repo.get(expectedUow1.getUnitOfWorkId(), uowFuture);
+      Future<Optional<EntityUnitOfWork>> uowFuture = Future.future();
+
+      repo.get(expectedUow1.getId(), uowFuture);
 
       uowFuture.setHandler(uowAsyncResult -> {
         if (uowAsyncResult.failed()) {
@@ -146,7 +137,7 @@ public class VertxUnitOfWorkRepositoryIT {
           return;
         }
 
-        Optional<UnitOfWork> uow = uowAsyncResult.result();
+        Optional<EntityUnitOfWork> uow = uowAsyncResult.result();
         log.debug("uow {}", uow);
 
         if (uow.isPresent()) {
@@ -157,7 +148,7 @@ public class VertxUnitOfWorkRepositoryIT {
 
         Future<SnapshotData> snapshotDataFuture = Future.future();
 
-        repo.selectAfterVersion(expectedUow1.targetId().getStringValue(), Version.VERSION_ZERO, snapshotDataFuture);
+        repo.selectAfterVersion(expectedUow1.targetId().getStringValue(), new Version(0), snapshotDataFuture);
 
         snapshotDataFuture.setHandler(snapshotDataAsyncResult -> {
           if (snapshotDataAsyncResult.failed()) {
@@ -182,7 +173,7 @@ public class VertxUnitOfWorkRepositoryIT {
 
     Async async = tc.async();
 
-    Future<Either<Throwable, Long>> appendFuture = Future.future();
+    Future<Long> appendFuture = Future.future();
 
     repo.append(expectedUow2, appendFuture);
 
@@ -192,18 +183,13 @@ public class VertxUnitOfWorkRepositoryIT {
         return;
       }
 
-      Either<Throwable, Long> appendResult = appendAsyncResult.result();
-      appendResult.match(throwable -> {
-        fail("error", throwable);
-        return null;
-      }, (Function<Long, Void>) uowSequence -> {
-        assertThat(uowSequence).isGreaterThan(0);
-        return null;
-      });
+      Long uowSequence = appendAsyncResult.result();
 
-      Future<Optional<UnitOfWork>> uowFuture = Future.future();
+      assertThat(uowSequence).isGreaterThan(0);
 
-      repo.get(expectedUow2.getUnitOfWorkId(), uowFuture);
+      Future<Optional<EntityUnitOfWork>> uowFuture = Future.future();
+
+      repo.get(expectedUow2.getId(), uowFuture);
 
       uowFuture.setHandler(uowAsyncResult -> {
         if (uowAsyncResult.failed()) {
@@ -211,7 +197,7 @@ public class VertxUnitOfWorkRepositoryIT {
           return;
         }
 
-        Optional<UnitOfWork> uow = uowAsyncResult.result();
+        Optional<EntityUnitOfWork> uow = uowAsyncResult.result();
         log.debug("uow {}", uow);
 
         if (uow.isPresent()) {
@@ -249,24 +235,13 @@ public class VertxUnitOfWorkRepositoryIT {
 
     Async async = tc.async();
 
-    Future<Either<Throwable, Long>> appendFuture = Future.future();
+    Future<Long> appendFuture = Future.future();
 
     repo.append(expectedUow2, appendFuture);
 
     appendFuture.setHandler(appendAsyncResult -> {
-      if (appendAsyncResult.failed()) {
-        fail("should get DbConcurrencyException");
-        return;
-      }
 
-      Either<Throwable, Long> appendResult = appendAsyncResult.result();
-      appendResult.match(throwable -> {
-        assertThat(throwable).isInstanceOf(DbConcurrencyException.class);
-        return null;
-      }, (Function<Long, Void>) uowSequence -> {
-        fail("should get DbConcurrencyException");
-        return null;
-      });
+      assertThat(appendAsyncResult.cause()).isInstanceOf(DbConcurrencyException.class);
 
       async.complete();
 

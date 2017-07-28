@@ -24,6 +24,14 @@
             <artifactId>crabzilla-core</artifactId>
         </dependency>
 
+        <!-- kotlin -->
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+
         <!-- provided -->
 
         <dependency>
@@ -99,8 +107,13 @@
         <!--Vertx -->
         <dependency>
             <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
+            <artifactId>vertx-lang-kotlin</artifactId>
+            <version>3.4.2</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>io.vertx</groupId>-->
+            <!--<artifactId>vertx-core</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>

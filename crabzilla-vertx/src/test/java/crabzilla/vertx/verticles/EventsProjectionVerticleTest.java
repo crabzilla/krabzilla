@@ -1,10 +1,10 @@
 package crabzilla.vertx.verticles;
 
+import crabzilla.EntityUnitOfWork;
+import crabzilla.Version;
+import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
+import crabzilla.example1.aggregates.customer.CustomerCreated;
 import crabzilla.example1.aggregates.customer.CustomerId;
-import crabzilla.example1.aggregates.customer.commands.CreateCustomerCmd;
-import crabzilla.example1.aggregates.customer.events.CustomerCreated;
-import crabzilla.model.UnitOfWork;
-import crabzilla.model.Version;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
 import crabzilla.vertx.VertxFactory;
@@ -74,13 +74,13 @@ public class EventsProjectionVerticleTest {
     val customerId = new CustomerId("customer#1");
     val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
-    val expectedUow = UnitOfWork.unitOfWork(createCustomerCmd, new Version(1), singletonList(expectedEvent));
+    val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
     val uowSequence = 1L;
-    val options = new DeliveryOptions().setCodecName(UnitOfWork.class.getSimpleName())
+    val options = new DeliveryOptions().setCodecName(EntityUnitOfWork.class.getSimpleName())
                                        .addHeader("uowSequence", uowSequence + "");
 
     val projectionData =
-            new ProjectionData(expectedUow.getUnitOfWorkId(), uowSequence,
+            new ProjectionData(expectedUow.getId(), uowSequence,
                     expectedUow.targetId().getStringValue(), expectedUow.getEvents());
 
     vertx.eventBus().send(eventsHandlerId("example1"), expectedUow, options, asyncResult -> {

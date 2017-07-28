@@ -1,7 +1,7 @@
 package crabzilla.vertx.repositories;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import crabzilla.model.Event;
+import crabzilla.DomainEvent;
 import crabzilla.vertx.ProjectionData;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
@@ -21,7 +21,7 @@ public class VertxProjectionRepository implements BiFunction<Long, Integer, List
 
   private final JDBCClient client;
 
-  private final TypeReference<List<Event>> eventsListTpe =  new TypeReference<List<Event>>() {};
+  private final TypeReference<List<DomainEvent>> eventsListTpe =  new TypeReference<List<DomainEvent>>() {};
 
   public VertxProjectionRepository(@NonNull JDBCClient client) {
     this.client = client;
@@ -30,7 +30,7 @@ public class VertxProjectionRepository implements BiFunction<Long, Integer, List
   @Override
   public List<ProjectionData> apply(Long sinceUowSequence, Integer maxResultSize) {
 
-    log.info("will load a maximum of {} units unitOfWork work since sequence {}", maxResultSize, sinceUowSequence);
+    log.info("will load a maximum of {} units create work since sequence {}", maxResultSize, sinceUowSequence);
 
     val SELECT_SINCE_UOW_SEQ = "select uow_id, uow_seq_number, ar_id, uow_events " +
             "from units_of_work where uow_seq_number > ? order by uow_seq_number limit %d";
@@ -72,7 +72,7 @@ public class VertxProjectionRepository implements BiFunction<Long, Integer, List
 
   }
 
-  private List<Event> readEvents(String eventsAsJson) {
+  private List<DomainEvent> readEvents(String eventsAsJson) {
     try {
       return Json.mapper.readerFor(eventsListTpe).readValue(eventsAsJson);
     } catch (IOException e) {

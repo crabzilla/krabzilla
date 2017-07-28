@@ -1,8 +1,9 @@
 package crabzilla.vertx.verticles;
 
-import crabzilla.model.UnitOfWork;
+import crabzilla.EntityUnitOfWork;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
+import crabzilla.vertx.util.StringHelper;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.Message;
@@ -12,8 +13,6 @@ import lombok.val;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import java.util.UUID;
 
 import static crabzilla.vertx.util.StringHelper.eventsHandlerId;
 import static java.util.Collections.singletonList;
@@ -42,9 +41,9 @@ public class EventsProjectionVerticle extends AbstractVerticle {
   }
 
 
-  Handler<Message<UnitOfWork>> msgHandler() {
+  Handler<Message<EntityUnitOfWork>> msgHandler() {
 
-    return (Message<UnitOfWork> msg) -> {
+    return (Message<EntityUnitOfWork> msg) -> {
 
       vertx.executeBlocking((Future<String> future) -> {
 
@@ -53,7 +52,7 @@ public class EventsProjectionVerticle extends AbstractVerticle {
         val uow = msg.body();
         val uowSequence = new Long(msg.headers().get("uowSequence"));
         val projectionData =
-                new ProjectionData(uow.getUnitOfWorkId(), uowSequence,
+                new ProjectionData(uow.getId(), uowSequence,
                         uow.targetId().getStringValue(), uow.getEvents());
 
         circuitBreaker.fallback(throwable -> {
@@ -83,7 +82,7 @@ public class EventsProjectionVerticle extends AbstractVerticle {
 
   }
 
-  Handler<AsyncResult<String>> resultHandler(final Message<UnitOfWork> msg) {
+  Handler<AsyncResult<String>> resultHandler(final Message<EntityUnitOfWork> msg) {
 
     return (AsyncResult<String> resultHandler) -> {
 

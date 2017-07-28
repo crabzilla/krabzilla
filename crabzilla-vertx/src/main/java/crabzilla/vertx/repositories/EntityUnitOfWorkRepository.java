@@ -3,14 +3,8 @@ package crabzilla.vertx.repositories;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import crabzilla.model.AggregateRoot;
-import crabzilla.model.Command;
-import crabzilla.model.Either;
-import crabzilla.model.Eithers;
-import crabzilla.model.Event;
-import crabzilla.model.SnapshotData;
-import crabzilla.model.UnitOfWork;
-import crabzilla.model.Version;
+import crabzilla.*;
+import crabzilla.vertx.SnapshotData;
 import crabzilla.vertx.util.DbConcurrencyException;
 import io.vertx.core.Future;
 import io.vertx.core.json.Json;
@@ -34,7 +28,7 @@ import java.util.stream.Collectors;
 import static crabzilla.vertx.repositories.VertxSqlHelper.*;
 
 @Slf4j
-public class VertxUnitOfWorkRepository {
+public class EntityUnitOfWorkRepository {
 
   private static final String UOW_ID = "uow_id";
   private static final String UOW_EVENTS = "uow_events";
@@ -44,14 +38,14 @@ public class VertxUnitOfWorkRepository {
   private final String aggregateRootName;
   private final JDBCClient client;
 
-  private final TypeReference<List<Event>> eventsListTpe =  new TypeReference<List<Event>>() {};
+  private final TypeReference<List<DomainEvent>> eventsListTpe =  new TypeReference<List<DomainEvent>>() {};
 
-  public VertxUnitOfWorkRepository(@NonNull Class<? extends AggregateRoot> aggregateRootName, @NonNull JDBCClient client) {
+  public EntityUnitOfWorkRepository(@NonNull Class<? extends Aggregate> aggregateRootName, @NonNull JDBCClient client) {
     this.aggregateRootName = aggregateRootName.getSimpleName();
     this.client = client;
   }
 
-  public void get(@NonNull final UUID uowId, @NonNull final Future<Optional<UnitOfWork>> getFuture) {
+  public void get(@NonNull final UUID uowId, @NonNull final Future<Optional<EntityUnitOfWork>> getFuture) {
 
     val SELECT_UOW_BY_ID = "select * from units_of_work where uow_id =? ";
     val params = new JsonArray().add(uowId.toString());
@@ -83,10 +77,10 @@ public class VertxUnitOfWorkRepository {
           getFuture.complete(Optional.empty());
         } else {
           for (JsonObject row : rows) {
-            val command = Json.decodeValue(row.getString(CMD_DATA), Command.class);
-            final List<Event> events = readEvents(row.getString(UOW_EVENTS));
-            val uow = new UnitOfWork(UUID.fromString(row.getString(UOW_ID)), command,
-                    new Version(row.getLong(VERSION)), events);
+            val command = Json.decodeValue(row.getString(CMD_DATA), EntityCommand.class);
+            final List<DomainEvent> events = readEvents(row.getString(UOW_EVENTS));
+            val uow = new EntityUnitOfWork(UUID.fromString(row.getString(UOW_ID)), command,
+                    events, new Version(row.getLong(VERSION)));
             getFuture.complete(Optional.of(uow));
           }
         }
@@ -159,7 +153,7 @@ public class VertxUnitOfWorkRepository {
             val finalVersion = list.size() == 0 ? new Version(0) :
                                                   list.get(list.size() - 1).getVersion();
 
-            final List<Event> flatMappedToEvents = list.stream()
+            final List<DomainEvent> flatMappedToEvents = list.stream()
                     .flatMap(sd -> sd.getEvents().stream()).collect(Collectors.toList());
 
             selectAfterVersionFuture.complete(new SnapshotData(finalVersion, flatMappedToEvents));
@@ -179,7 +173,7 @@ public class VertxUnitOfWorkRepository {
     });
   }
 
-  public void append(@NonNull final UnitOfWork unitOfWork, Future<Either<Throwable, Long>> appendFuture) {
+  public void append(@NonNull final EntityUnitOfWork unitOfWork, Future<Long> appendFuture) {
 
     val SELECT_CURRENT_VERSION =
             "select max(version) as last_version from units_of_work where ar_id = ? and ar_name = ? ";
@@ -209,7 +203,6 @@ public class VertxUnitOfWorkRepository {
         }
 
         // check current version  // TODO also check if command was not already processed given the commandId
-
         val params1 = new JsonArray()
                 .add(unitOfWork.targetId().getStringValue())
                 .add(aggregateRootName);
@@ -232,7 +225,6 @@ public class VertxUnitOfWorkRepository {
           log.info("Found version  {}", currentVersion);
 
           // apply optimistic locking
-
           if (currentVersion != unitOfWork.getVersion().getValueAsLong() - 1) {
 
             val error = new DbConcurrencyException (
@@ -240,7 +232,7 @@ public class VertxUnitOfWorkRepository {
                             unitOfWork.targetId().getStringValue(),
                             currentVersion, unitOfWork.getVersion().getValueAsLong())) ;
 
-            appendFuture.complete(Eithers.left(error));
+            appendFuture.fail(error);
 
             // and close the connection
             sqlConn.close(done -> {
@@ -253,12 +245,11 @@ public class VertxUnitOfWorkRepository {
           }
 
           // if version is OK, then insert
-
           val cmdAsJson = writeValueAsString(Json.mapper.writerFor(Command.class), unitOfWork.getCommand());
           val eventsAsJson = writeValueAsString(Json.mapper.writerFor(eventsListTpe), unitOfWork.getEvents());
 
           val params2 = new JsonArray()
-                  .add(unitOfWork.getUnitOfWorkId().toString())
+                  .add(unitOfWork.getId().toString())
                   .add(eventsAsJson)
                   .add(unitOfWork.getCommand().getCommandId().toString())
                   .add(cmdAsJson)
@@ -289,7 +280,7 @@ public class VertxUnitOfWorkRepository {
                 return;
               }
 
-              appendFuture.complete(Eithers.right(updateResult.getKeys().getLong(0)));
+              appendFuture.complete(updateResult.getKeys().getLong(0));
 
               // and close the connection
               sqlConn.close(done -> {
@@ -323,7 +314,7 @@ public class VertxUnitOfWorkRepository {
     }
   }
 
-  List<Event> readEvents(String eventsAsJson) {
+  List<DomainEvent> readEvents(String eventsAsJson) {
     try {
       return Json.mapper.readerFor(eventsListTpe).readValue(eventsAsJson);
     } catch (IOException e) {

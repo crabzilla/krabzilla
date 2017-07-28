@@ -1,7 +1,7 @@
 package crabzilla.vertx.verticles;
 
-import crabzilla.model.AggregateRoot;
-import crabzilla.model.Command;
+import crabzilla.Command;
+import crabzilla.Entity;
 import crabzilla.vertx.CommandExecution;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
@@ -23,12 +23,12 @@ import java.util.Set;
 import static crabzilla.vertx.util.StringHelper.*;
 
 @Slf4j
-public class CommandRestVerticle<A extends AggregateRoot> extends AbstractVerticle {
+public class EntityCommandRestVerticle<E> extends AbstractVerticle {
 
   final Vertx vertx;
-  final Class<A> aggregateRootClass;
+  final Class<E> aggregateRootClass;
 
-  public CommandRestVerticle(Vertx vertx, @NonNull Class<A> aggregateRootClass) {
+  public EntityCommandRestVerticle(Vertx vertx, @NonNull Class<E> aggregateRootClass) {
     this.vertx = vertx;
     this.aggregateRootClass = aggregateRootClass;
   }
@@ -38,7 +38,7 @@ public class CommandRestVerticle<A extends AggregateRoot> extends AbstractVertic
 
     val router = Router.router(vertx);
 
-    router.route(HttpMethod.PUT, "/" + aggregateRootId(aggregateRootClass) + "/commands")
+    router.route(HttpMethod.PUT, "/" + entityId(aggregateRootClass) + "/commands")
           .handler(contextHandler());
 
     // Getting the routes
@@ -66,13 +66,13 @@ public class CommandRestVerticle<A extends AggregateRoot> extends AbstractVertic
             log.info("success commands handler: {}", response);
             val result = (CommandExecution) response.result().body();
             if (CommandExecution.RESULT.SUCCESS.equals(result.getResult())) {
-              val headers = new CaseInsensitiveHeaders().add("uowSequence", result.getUowSequence().get().toString());
+              val headers = new CaseInsensitiveHeaders().add("uowSequence", result.getUowSequence().toString());
               val optionsUow = new DeliveryOptions().setCodecName("UnitOfWork").setHeaders(headers);
-              vertx.<String>eventBus().publish(eventsHandlerId("example1"), result.getUnitOfWork().get(), optionsUow);
+              vertx.<String>eventBus().publish(eventsHandlerId("example1"), result.getUnitOfWork(), optionsUow);
               httpResp.end(response.result().body().toString());
             } else {
               //  TODO inform more details
-              httpResp.setStatusCode(500).end(result.getConstraints().get().get(0));
+              httpResp.setStatusCode(500).end(result.getConstraints().get(0));
             }
           } else {
             httpResp.setStatusCode(500).end(response.cause().getMessage());
