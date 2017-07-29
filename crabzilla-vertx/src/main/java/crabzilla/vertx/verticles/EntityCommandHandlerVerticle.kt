@@ -165,12 +165,12 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
           //fold is there, if you want to handle both success and failure
           cmdHandlerResult.inCaseOfError( { error ->
 
-            log.error("Command handling error for ${command.commandId} -> $error.message")
+            log.error("Command handling error for $command -> $error.message")
 
             val cmdExecResult = when(error) {
 
               is UnknownCommandException -> CommandExecution(commandId = command.commandId,
-                                                             result = RESULT.CONCURRENCY_ERROR,
+                                                             result = RESULT.UNKNOWN_COMMAND,
                                                              constraints = listOf("" + error.message))
 
               else -> CommandExecution(commandId = command.commandId, result = RESULT.HANDLING_ERROR,
@@ -186,11 +186,11 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
         }, false, { res ->
 
-          println("The result is: ${res.result()}")
-
           if (res.succeeded()) {
+            println("The result is: ${res.result()}")
             future1.complete(res.result())
           } else {
+            println("The error is: ${res.cause()}")
             future1.fail(res.cause())
           }
 

@@ -6,4 +6,4 @@ Leveraring the work from [Crabzilla](https://github.com/crabzilla/crabzilla).
 
 ## Status
 
-all tests are passing, except the most important: EntityCommandHandlerVerticleTest is not passing yet
+All current tests are passing. But found a new bug when reading events from db.

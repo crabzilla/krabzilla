@@ -114,11 +114,11 @@ open class VersionTracker<E> @Inject constructor(val trackerFactory: (E) -> Stat
 
 }
 
-class UnknownCommandException(p0: String?) : Exception(p0)
+class UnknownCommandException(p0: String?) : RuntimeException(p0)
 
-class ConcurrencyConflictException(p0: String?) : Exception(p0)
+class ConcurrencyConflictException(p0: String?) : RuntimeException(p0)
 
-class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error: Exception? = null) {
+class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error: RuntimeException? = null) {
 
   fun inCaseOfSuccess(uowFn: (EntityUnitOfWork?) -> Unit) {
     if (successValue != null) {
@@ -126,7 +126,7 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
     }
   }
 
-  fun inCaseOfError(uowFn: (Exception) -> Unit) {
+  fun inCaseOfError(uowFn: (RuntimeException) -> Unit) {
     if (error != null) {
       uowFn.invoke(error)
     }
@@ -136,8 +136,8 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
 
     fun unitOfWorkFn(f: () -> EntityUnitOfWork?): CommandHandlerResult {
 
-      return try { CommandHandlerResult(successValue=f.invoke()) }
-            catch (e: Exception) { CommandHandlerResult(error=e) }
+      return try { println("sucesso"); CommandHandlerResult(successValue=f.invoke()) }
+            catch (e: Throwable) { println("erro"); CommandHandlerResult(error=RuntimeException("unexpected error", e)) }
 
     }
 

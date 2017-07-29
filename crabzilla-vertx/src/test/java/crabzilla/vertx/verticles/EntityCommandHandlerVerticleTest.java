@@ -338,7 +338,7 @@ public class EntityCommandHandlerVerticleTest {
             .when(eventRepository).append(eq(expectedUow), any(Future.class));
 
     when(cmdHandlerFn.invoke(eq(createCustomerCmd), eq(initialSnapshot)))
-            .thenThrow(new RuntimeException("SOME ERROR WITHIN COMMAND HANDLER"));
+            .thenReturn(new CommandHandlerResult(null, new RuntimeException("SOME ERROR WITHIN COMMAND HANDLER")));
 
     val options = new DeliveryOptions().setCodecName("Command");
 
@@ -423,7 +423,7 @@ public class EntityCommandHandlerVerticleTest {
             any(Future.class));
 
     when(cmdHandlerFn.invoke(eq(createCustomerCmd), eq(initialSnapshot)))
-            .thenThrow(new UnknownCommandException("for command UnknownCommand"));
+            .thenReturn(new CommandHandlerResult(null, new UnknownCommandException("for command UnknownCommand")));
 
     val options = new DeliveryOptions().setCodecName("Command");
 
