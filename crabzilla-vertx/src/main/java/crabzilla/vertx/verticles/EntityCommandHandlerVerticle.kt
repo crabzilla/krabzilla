@@ -131,7 +131,8 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
               if (appendAsyncResult.failed()) {
 
                 val error = appendAsyncResult.cause()
-                log.error("Exception for command {} message {}", command.commandId, error.message)
+
+                log.error("When appending uow of command ${command.commandId} -> ${error.message}")
 
                 when (error) {
 

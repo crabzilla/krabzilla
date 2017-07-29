@@ -90,21 +90,21 @@ public class Example1Launcher {
 
         log.info("Result: {}", asyncResult.result().body());
 
-        val activateCustomerCmd = new ActivateCustomerCmd(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
-
-        // activate customer command
-        vertx.eventBus().<CommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {
-
-          log.info("Successful activate customer test? {}", asyncResult2.succeeded());
-
-          if (asyncResult2.succeeded()) {
-            log.info("Result: {}", asyncResult2.result().body());
-          } else {
-            log.info("Cause: {}", asyncResult2.cause());
-            log.info("Message: {}", asyncResult2.cause().getMessage());
-          }
-
-        });
+//        val activateCustomerCmd = new ActivateCustomerCmd(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
+//
+//        // activate customer command
+//        vertx.eventBus().<CommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {
+//
+//          log.info("Successful activate customer test? {}", asyncResult2.succeeded());
+//
+//          if (asyncResult2.succeeded()) {
+//            log.info("Result: {}", asyncResult2.result().body());
+//          } else {
+//            log.info("Cause: {}", asyncResult2.cause());
+//            log.info("Message: {}", asyncResult2.cause().getMessage());
+//          }
+//
+//        });
 
       } else {
         log.info("Cause: {}", asyncResult.cause());

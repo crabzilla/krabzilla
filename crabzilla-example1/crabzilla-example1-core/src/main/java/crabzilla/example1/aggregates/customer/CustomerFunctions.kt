@@ -40,7 +40,7 @@ class CustomerEntityCommandHandlerFn @Inject constructor(val trackerFactory: (Cu
   override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {
 
     val target = snapshot.instance
-    val newVersion = snapshot.version
+    val newVersion = snapshot.version.nextVersion()
 
     return CommandHandlerResult.unitOfWorkFn {
 
