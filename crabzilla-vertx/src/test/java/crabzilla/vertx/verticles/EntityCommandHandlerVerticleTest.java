@@ -70,7 +70,7 @@
 //  @Mock
 //  EntityUnitOfWorkRepository eventRepository;
 //  @Mock
-//  SnapshotTransitionsTracker<Customer> snapshotter;
+//  SnapshotTransitionsTracker<Customer> snapshotterFn;
 //
 //  @Before
 //  public void setUp(TestContext context) {
@@ -87,7 +87,7 @@
 //    );
 //
 //    val verticle = new EntityCommandHandlerVerticle<Customer>(Customer.class, supplier, cmdHandlerFn,
-//                              validatorFn, snapshotter, eventRepository, cache, vertx, circuitBreaker);
+//                              validatorFn, snapshotterFn, eventRepository, cache, vertx, circuitBreaker);
 //
 //    vertx.deployVerticle(verticle, context.asyncAssertSuccess());
 //
@@ -122,7 +122,7 @@
 //            future.complete(Eithers.right(1L))))
 //            .when(eventRepository).append(eq(expectedUow), any(Future.class));
 //
-//    when(snapshotter.getEmptySnapshot()).thenReturn(initialSnapshot);
+//    when(snapshotterFn.getEmptySnapshot()).thenReturn(initialSnapshot);
 //    when(cmdHandlerFn.apply(eq(createCustomerCmd), eq(initialSnapshot)))
 //            .thenReturn(Eithers.right(Optional.of(expectedUow)));
 //
@@ -182,7 +182,7 @@
 //                                                      eq(initialSnapshot.getVersion()),
 //                                                      any(Future.class));
 //
-//    when(snapshotter.getEmptySnapshot()).thenReturn(initialSnapshot);
+//    when(snapshotterFn.getEmptySnapshot()).thenReturn(initialSnapshot);
 //
 //    val options = new DeliveryOptions().setCodecName("Command");
 //
@@ -235,7 +235,7 @@
 //            future.fail(expectedException)))
 //            .when(eventRepository).append(eq(expectedUow), any(Future.class));
 //
-//    when(snapshotter.getEmptySnapshot()).thenReturn(initialSnapshot);
+//    when(snapshotterFn.getEmptySnapshot()).thenReturn(initialSnapshot);
 //    when(cmdHandlerFn.apply(eq(createCustomerCmd), eq(initialSnapshot)))
 //            .thenReturn(Eithers.right(Optional.of(expectedUow)));
 //
@@ -293,7 +293,7 @@
 //            future.complete(Eithers.left(new DbConcurrencyException(FORCED_CONCURRENCY_EXCEPTION)))))
 //            .when(eventRepository).append(eq(expectedUow), any(Future.class));
 //
-//    when(snapshotter.getEmptySnapshot()).thenReturn(initialSnapshot);
+//    when(snapshotterFn.getEmptySnapshot()).thenReturn(initialSnapshot);
 //    when(cmdHandlerFn.apply(eq(createCustomerCmd), eq(initialSnapshot)))
 //            .thenReturn(Eithers.right(Optional.of(expectedUow)));
 //
@@ -353,7 +353,7 @@
 //            future.complete(Eithers.right(1L))))
 //            .when(eventRepository).append(eq(expectedUow), any(Future.class));
 //
-//    when(snapshotter.getEmptySnapshot()).thenReturn(initialSnapshot);
+//    when(snapshotterFn.getEmptySnapshot()).thenReturn(initialSnapshot);
 //
 //    when(cmdHandlerFn.apply(eq(createCustomerCmd), eq(initialSnapshot)))
 //            .thenReturn(Eithers.left(new RuntimeException("SOME ERROR WITHIN COMMAND HANDLER")));
@@ -444,7 +444,7 @@
 //            eq(initialSnapshot.getVersion()),
 //            any(Future.class));
 //
-//    when(snapshotter.getEmptySnapshot()).thenReturn(initialSnapshot);
+//    when(snapshotterFn.getEmptySnapshot()).thenReturn(initialSnapshot);
 //
 //    when(cmdHandlerFn.apply(eq(createCustomerCmd), eq(initialSnapshot)))
 //            .thenReturn(Eithers.right(Optional.empty()));

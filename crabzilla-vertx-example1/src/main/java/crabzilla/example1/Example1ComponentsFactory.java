@@ -1,8 +1,8 @@
 package crabzilla.example1;
 
+import crabzilla.vertx.BoundedContextComponentsFactory;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
-import crabzilla.vertx.VertxBoundedContextComponentsFactory;
 import crabzilla.vertx.repositories.VertxProjectionRepository;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.jooq.Configuration;
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.function.BiFunction;
 
-class Example1ComponentsFactory implements VertxBoundedContextComponentsFactory {
+class Example1ComponentsFactory implements BoundedContextComponentsFactory {
 
   private final Configuration jooq;
   private final JDBCClient jdbcClient;

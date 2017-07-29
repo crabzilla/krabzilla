@@ -35,7 +35,7 @@ class CustomerEntityCommandValidatorFn : EntityCommandValidatorFn {
 
 }
 
-class CustomerEntityCommandHandlerFn @Inject constructor(val trackerFactory: StateTransitionsTrackerFactory<Customer> ) :
+class CustomerEntityCommandHandlerFn @Inject constructor(val trackerFactory: (Customer) -> StateTracker<Customer>) :
         EntityCommandHandlerFn<Customer> {
 
   override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): Result<EntityUnitOfWork, Exception> {

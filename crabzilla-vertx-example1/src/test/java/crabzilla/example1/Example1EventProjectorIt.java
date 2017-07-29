@@ -2,9 +2,9 @@ package crabzilla.example1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
+import crabzilla.example1.aggregates.customer.CustomerActivated;
+import crabzilla.example1.aggregates.customer.CustomerCreated;
 import crabzilla.example1.aggregates.customer.CustomerId;
-import crabzilla.example1.aggregates.customer.events.CustomerActivated;
-import crabzilla.example1.aggregates.customer.events.CustomerCreated;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
 import crabzilla.vertx.util.DbConcurrencyException;

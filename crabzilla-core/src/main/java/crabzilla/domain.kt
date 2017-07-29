@@ -62,34 +62,13 @@ data class Snapshot<out E>(val instance: E, val version: Version) {
 
 }
 
-interface StateTransitionsTrackerFactory<E> : (E) -> StateTransitionsTracker<E>
-
-class SnapshotTransitionsTracker<E> @Inject constructor(val trackerFactory: StateTransitionsTrackerFactory<E>) :
-        (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
-
-
-  override fun invoke(originalSnapshot: Snapshot<E>, newVersion: Version, newEvents: List<DomainEvent>): Snapshot<E> {
-
-    if (originalSnapshot.version.valueAsLong != newVersion.valueAsLong - 1) {
-      throw RuntimeException(String.format("Cannot upgrade to version %s since my version is %s",
-              newVersion, originalSnapshot.version))
-    }
-
-    val tracker = trackerFactory.invoke(originalSnapshot.instance)
-
-    return Snapshot(tracker.applyEvents({ e -> newEvents }).currentState(), newVersion)
-
-  }
-
-}
-
-class StateTransitionsTracker<E>(val originalInstance: E,
-                                 val applyEventsFn: (DomainEvent, E) -> E,
-                                 val dependencyInjectionFn: (E) -> E) {
+class StateTracker<E>(val originalInstance: E,
+                      val applyEventsFn: (DomainEvent, E) -> E,
+                      val dependencyInjectionFn: (E) -> E) {
 
   internal val stateTransitions: MutableList<StateTransition<E>> = ArrayList()
 
-  inline fun applyEvents(function: (E) -> List<DomainEvent>): StateTransitionsTracker<E> {
+  inline fun applyEvents(function: (E) -> List<DomainEvent>): StateTracker<E> {
     val newEvents = function.invoke(currentState())
     return applyEvents(newEvents)
   }
@@ -106,7 +85,7 @@ class StateTransitionsTracker<E>(val originalInstance: E,
   val isEmpty: Boolean
     get() = stateTransitions.isEmpty()
 
-  fun applyEvents(events: List<DomainEvent>): StateTransitionsTracker<E> {
+  fun applyEvents(events: List<DomainEvent>): StateTracker<E> {
     events.forEach { e ->
       val newInstance = applyEventsFn.invoke(e, currentState())
       stateTransitions.add(StateTransition(newInstance, e))
@@ -115,6 +94,24 @@ class StateTransitionsTracker<E>(val originalInstance: E,
   }
 
   internal inner class StateTransition<out T>(val newInstance: T, val afterThisEvent: DomainEvent)
+
+}
+
+class VersionTracker<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
+        (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
+
+  override fun invoke(originalSnapshot: Snapshot<E>, newVersion: Version, newEvents: List<DomainEvent>): Snapshot<E> {
+
+    if (originalSnapshot.version.valueAsLong != newVersion.valueAsLong - 1) {
+      throw RuntimeException(String.format("Cannot upgrade to version %s since my version is %s",
+              newVersion, originalSnapshot.version))
+    }
+
+    val tracker = trackerFactory.invoke(originalSnapshot.instance)
+
+    return Snapshot(tracker.applyEvents({ e -> newEvents }).currentState(), newVersion)
+
+  }
 
 }
 
@@ -138,6 +135,6 @@ interface EntityFunctionsFactory<E> {
 
   fun depInjectionFn(): (E) -> E
 
-  fun snapshotTransitionsTrackerFn(): SnapshotTransitionsTracker<E>
+  fun snapshotterFn(): VersionTracker<E>
 
 }

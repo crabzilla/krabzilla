@@ -20,7 +20,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                                       internal val validatorFn: EntityCommandValidatorFn,
                                       internal val cmdHandler: EntityCommandHandlerFn<E>,
                                       internal val cache: LoadingCache<String, Snapshot<E>>,
-                                      internal val snapshotter: SnapshotTransitionsTracker<E>,
+                                      internal val versionTracker: VersionTracker<E>,
                                       internal val eventRepository: EntityUnitOfWorkRepository,
                                       internal val circuitBreaker: CircuitBreaker) : AbstractVerticle() {
 
@@ -105,7 +105,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                 nonCached.version)
 
         val resultingSnapshot = if (totalOfNonCachedEvents > 0)
-          snapshotter.invoke(cachedSnapshot, nonCached.version, nonCached.events)
+          versionTracker.invoke(cachedSnapshot, nonCached.version, nonCached.events)
         else
           cachedSnapshot
 

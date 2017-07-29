@@ -3,14 +3,15 @@ package crabzilla.example1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import crabzilla.Command;
+import crabzilla.EntityUnitOfWork;
+import crabzilla.Version;
+import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
+import crabzilla.example1.aggregates.customer.CustomerActivated;
+import crabzilla.example1.aggregates.customer.CustomerCreated;
 import crabzilla.example1.aggregates.customer.CustomerId;
-import crabzilla.example1.aggregates.customer.commands.CreateCustomerCmd;
-import crabzilla.example1.aggregates.customer.events.CustomerActivated;
-import crabzilla.example1.aggregates.customer.events.CustomerCreated;
-import crabzilla.model.Command;
-import crabzilla.model.UnitOfWork;
-import crabzilla.model.Version;
 import io.vertx.core.json.Json;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +32,8 @@ public class JacksonJsonTest {
   public void setup() {
     mapper.registerModule(new ParameterNamesModule())
             .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule());
-   // mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+            .registerModule(new JavaTimeModule())
+            .registerModule(new KotlinModule());
   }
 
   @Test
@@ -41,14 +42,14 @@ public class JacksonJsonTest {
     val id = new CustomerId(UUID.randomUUID().toString());
     val command = new CreateCustomerCmd(UUID.randomUUID(), id, "customer1");
     val event = new CustomerCreated(id, command.getName());
-    val uow1 = UnitOfWork.unitOfWork(command, Version.create(1), Collections.singletonList(event));
+    val uow1 = new EntityUnitOfWork(command, Collections.singletonList(event), new Version(1));
 
     val uowAsJson = mapper.writeValueAsString(uow1);
 
     System.out.println(mapper.writerFor(Command.class).writeValueAsString(command));
     System.out.println(uowAsJson);
 
-    val uow2 = mapper.readValue(uowAsJson, UnitOfWork.class);
+    val uow2 = mapper.readValue(uowAsJson, EntityUnitOfWork.class);
 
     assertThat(uow2).isEqualTo(uow1);
 
@@ -62,13 +63,13 @@ public class JacksonJsonTest {
     val event1 = new CustomerCreated(id, command.getName());
     val event2 = new CustomerActivated("a rgood reason", Instant.now());
 
-    val uow1 = UnitOfWork.unitOfWork(command, Version.create(1), asList(event1,  event2));
+    val uow1 = new EntityUnitOfWork(command, asList(event1,  event2), new Version(1));
 
     val uowAsJson = mapper.writeValueAsString(uow1);
 
     System.out.println(uowAsJson);
 
-    val uow2 = mapper.readValue(uowAsJson, UnitOfWork.class);
+    val uow2 = mapper.readValue(uowAsJson, EntityUnitOfWork.class);
 
     assertThat(uow2).isEqualTo(uow1);
 

@@ -42,7 +42,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @RunWith(VertxUnitRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Slf4j
-public class VertxUnitOfWorkRepositoryIT {
+public class EntityUnitOfWorkRepositoryIT {
 
   static Vertx vertx;
   static JDBCClient jdbcClient;

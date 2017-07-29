@@ -6,8 +6,8 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import crabzilla.example1.aggregates.customer.Customer;
-import crabzilla.vertx.verticles.CommandHandlerVerticle;
-import crabzilla.vertx.verticles.CommandRestVerticle;
+import crabzilla.vertx.verticles.EntityCommandHandlerVerticle;
+import crabzilla.vertx.verticles.EntityCommandRestVerticle;
 import io.vertx.core.Verticle;
 
 public class CustomerModule extends AbstractModule {
@@ -19,8 +19,8 @@ public class CustomerModule extends AbstractModule {
     bind(CustomerFactory.class).asEagerSingleton();
 
     // to bind verticles for this aggregate
-    TypeLiteral<CommandRestVerticle<Customer>> restType = new TypeLiteral<CommandRestVerticle<Customer>>() {};
-    TypeLiteral<CommandHandlerVerticle<Customer>> handlerType = new TypeLiteral<CommandHandlerVerticle<Customer>>() {};
+    TypeLiteral<EntityCommandRestVerticle<Customer>> restType = new TypeLiteral<EntityCommandRestVerticle<Customer>>() {};
+    TypeLiteral<EntityCommandHandlerVerticle<Customer>> handlerType = new TypeLiteral<EntityCommandHandlerVerticle<Customer>>() {};
 
     MapBinder<String, Verticle> mapbinder = MapBinder.newMapBinder(binder(), String.class, Verticle.class);
 
@@ -31,13 +31,13 @@ public class CustomerModule extends AbstractModule {
 
   @Provides
   @Singleton
-  CommandRestVerticle<Customer> restVerticle(CustomerFactory componentsFactory) {
+  EntityCommandRestVerticle<Customer> restVerticle(CustomerFactory componentsFactory) {
     return componentsFactory.restVerticle();
   }
 
   @Provides
   @Singleton
-  CommandHandlerVerticle<Customer> handler(CustomerFactory componentsFactory) {
+  EntityCommandHandlerVerticle<Customer> handler(CustomerFactory componentsFactory) {
     return componentsFactory.cmdHandlerVerticle();
   }
 
