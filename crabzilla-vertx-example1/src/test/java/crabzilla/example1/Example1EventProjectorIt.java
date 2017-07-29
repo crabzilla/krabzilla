@@ -2,12 +2,12 @@ package crabzilla.example1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
+import crabzilla.ConcurrencyConflictException;
 import crabzilla.example1.aggregates.customer.CustomerActivated;
 import crabzilla.example1.aggregates.customer.CustomerCreated;
 import crabzilla.example1.aggregates.customer.CustomerId;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
-import crabzilla.vertx.util.DbConcurrencyException;
 import example1.datamodel.tables.pojos.CustomerSummary;
 import io.vertx.core.Vertx;
 import lombok.val;
@@ -46,7 +46,7 @@ public class Example1EventProjectorIt {
 
 
   @Test
-  public void can_project_two_events() throws DbConcurrencyException {
+  public void can_project_two_events() throws ConcurrencyConflictException {
 
     val id = new CustomerId("customer#1");
     val event1 = new CustomerCreated(id,  "customer1");

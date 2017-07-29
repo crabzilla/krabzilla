@@ -6,7 +6,6 @@ import crabzilla.vertx.CommandExecution
 import crabzilla.vertx.CommandExecution.RESULT
 import crabzilla.vertx.SnapshotData
 import crabzilla.vertx.repositories.EntityUnitOfWorkRepository
-import crabzilla.vertx.util.DbConcurrencyException
 import crabzilla.vertx.util.StringHelper.commandHandlerId
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.core.AbstractVerticle
@@ -16,7 +15,7 @@ import io.vertx.core.eventbus.Message
 
 
 class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
-                                      internal val supplier: FirstInstanceFn<E>,
+                                      internal val seedValue: Lazy<E>,
                                       internal val validatorFn: EntityCommandValidatorFn,
                                       internal val cmdHandler: EntityCommandHandlerFn<E>,
                                       internal val cache: LoadingCache<String, Snapshot<E>>,
@@ -81,7 +80,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       val snapshotFromCache = cache.getIfPresent(targetId)
 
-      val cachedSnapshot = snapshotFromCache ?: Snapshot(supplier.invoke().value, Version(0))
+      val cachedSnapshot = snapshotFromCache ?: Snapshot(seedValue.value, Version(0))
 
       log.debug("id {} cached lastSnapshotData has version {}. Will check if there any version beyond it",
               targetId, cachedSnapshot.version)
@@ -117,14 +116,13 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
         // external services
         vertx.executeBlocking<CommandExecution>({ future2 ->
 
-          val cmdExecution = cmdHandler.invoke(command, resultingSnapshot)
+          val cmdHandlerResult = cmdHandler.invoke(command, resultingSnapshot)
 
-          //fold is there, if you want to handle both success and failure
-          cmdExecution.fold({ uow ->
+          cmdHandlerResult.inCaseOfSuccess({ uow ->
 
             val appendFuture = Future.future<Long>()
 
-            eventRepository.append(uow, appendFuture)
+            eventRepository.append(uow!!, appendFuture)
 
             appendFuture.setHandler { appendAsyncResult ->
 
@@ -135,7 +133,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
                 when (error) {
 
-                  is DbConcurrencyException -> {
+                  is ConcurrencyConflictException -> {
                     val cmdExecResult = CommandExecution(commandId = command.commandId, result = RESULT.CONCURRENCY_ERROR,
                             constraints = listOf("Concurrency: " + error.message))
                     future2.complete(cmdExecResult)
@@ -159,12 +157,23 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
             }
 
-          }, { error ->
+          })
+
+          //fold is there, if you want to handle both success and failure
+          cmdHandlerResult.inCaseOfError( { error ->
 
             log.error("Command handling error for command {} message {}", command.commandId, error.message)
 
-            val cmdExecResult = CommandExecution(commandId = command.commandId, result = RESULT.CONCURRENCY_ERROR,
-                    constraints = listOf("" + error.message))
+            val cmdExecResult = when(error) {
+
+              is UnknownCommandException -> CommandExecution(commandId = command.commandId,
+                                                             result = RESULT.CONCURRENCY_ERROR,
+                                                             constraints = listOf("" + error.message))
+
+              else -> CommandExecution(commandId = command.commandId, result = RESULT.HANDLING_ERROR,
+                      constraints = listOf("" + error.message))
+
+            }
 
             future2.complete(cmdExecResult)
 

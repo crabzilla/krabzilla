@@ -22,7 +22,7 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
 
   val factory: (Customer) -> StateTracker<Customer> =  { c -> StateTracker(c, stateTransitionFn(), depInjectionFn())}
 
-  override fun firstInstanceFn(): FirstInstanceFn<Customer> {
+  override fun seedValue(): () -> Lazy<Customer> {
     return CustomerFirstInstanceFn()
   }
 
@@ -38,7 +38,7 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
     return CustomerEntityCommandHandlerFn(factory)
   }
 
-  override fun snapshotterFn(): VersionTracker<Customer> {
+  override fun versionTracker(): VersionTracker<Customer> {
     return VersionTracker(factory)
   }
 
@@ -65,8 +65,8 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
                     .setResetTimeout(10000) // time spent in open state before attempting to re-try
     )
 
-    return EntityCommandHandlerVerticle(Customer::class.java, firstInstanceFn(),
-            cmdValidatorFn(), cmdHandlerFn(), cache, snapshotterFn(), uowRepository(), circuitBreaker)
+    return EntityCommandHandlerVerticle(Customer::class.java, seedValue().invoke(),
+            cmdValidatorFn(), cmdHandlerFn(), cache, versionTracker(), uowRepository(), circuitBreaker)
   }
 
   override fun uowRepository(): EntityUnitOfWorkRepository {

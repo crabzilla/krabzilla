@@ -7,11 +7,11 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import crabzilla.ConcurrencyConflictException;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
 import crabzilla.example1.aggregates.customer.*;
 import crabzilla.vertx.SnapshotData;
-import crabzilla.vertx.util.DbConcurrencyException;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -241,7 +241,7 @@ public class EntityUnitOfWorkRepositoryIT {
 
     appendFuture.setHandler(appendAsyncResult -> {
 
-      assertThat(appendAsyncResult.cause()).isInstanceOf(DbConcurrencyException.class);
+      assertThat(appendAsyncResult.cause()).isInstanceOf(ConcurrencyConflictException.class);
 
       async.complete();
 

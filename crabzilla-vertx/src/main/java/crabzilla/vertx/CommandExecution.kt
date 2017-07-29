@@ -4,7 +4,7 @@ import crabzilla.EntityUnitOfWork
 import java.io.Serializable
 import java.util.*
 
-class CommandExecution(val result: RESULT, val commandId: UUID?, val constraints: List<String>? = null,
+data class CommandExecution(val result: RESULT, val commandId: UUID?, val constraints: List<String>? = null,
                        val uowSequence: Long? = null, val unitOfWork: EntityUnitOfWork? = null) : Serializable {
 
   enum class RESULT {

@@ -6,4 +6,4 @@ Leveraring the work from [Crabzilla](https://github.com/crabzilla/crabzilla).
 
 ## Status
 
-crabzilla-vertx-example1 is not even compiling yet, i'm still trying to wire the new components
+all tests are passing, except the most important: EntityCommandHandlerVerticleTest is not passing yet

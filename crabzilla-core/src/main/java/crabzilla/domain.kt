@@ -1,7 +1,6 @@
 package crabzilla
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.github.kittinunf.result.Result
 import java.io.Serializable
 import java.util.*
 import javax.inject.Inject
@@ -115,17 +114,46 @@ class VersionTracker<E> @Inject constructor(val trackerFactory: (E) -> StateTrac
 
 }
 
-interface FirstInstanceFn<out E> : () -> Lazy<E>
+class UnknownCommandException(p0: String?) : Exception(p0)
+
+class ConcurrencyConflictException(p0: String?) : Exception(p0)
+
+class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error: Exception? = null) {
+
+  fun inCaseOfSuccess(uowFn: (EntityUnitOfWork?) -> Unit) {
+    if (successValue != null) {
+      uowFn.invoke(successValue)
+    }
+  }
+
+  fun inCaseOfError(uowFn: (Exception) -> Unit) {
+    if (error != null) {
+      uowFn.invoke(error)
+    }
+  }
+
+  companion object {
+
+    fun unitOfWorkFn(f: () -> EntityUnitOfWork?): CommandHandlerResult {
+
+      return try { CommandHandlerResult(successValue=f.invoke()) }
+            catch (e: Exception) { CommandHandlerResult(error=e) }
+
+    }
+
+  }
+
+}
 
 interface StateTransitionFn<E> : (DomainEvent, E) -> E
 
 interface EntityCommandValidatorFn : (EntityCommand) -> List<String>
 
-interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> Result<EntityUnitOfWork, Exception>
+interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> CommandHandlerResult
 
 interface EntityFunctionsFactory<E> {
 
-  fun firstInstanceFn(): FirstInstanceFn<E>
+  fun seedValue(): () -> Lazy<E>
 
   fun stateTransitionFn(): StateTransitionFn<E>
 
@@ -135,6 +163,6 @@ interface EntityFunctionsFactory<E> {
 
   fun depInjectionFn(): (E) -> E
 
-  fun snapshotterFn(): VersionTracker<E>
+  fun versionTracker(): VersionTracker<E>
 
 }

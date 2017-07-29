@@ -40,12 +40,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.derive4j</groupId>
-            <artifactId>derive4j</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- log -->
 
         <dependency>

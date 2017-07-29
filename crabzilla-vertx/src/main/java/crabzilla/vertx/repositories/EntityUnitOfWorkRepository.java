@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import crabzilla.*;
 import crabzilla.vertx.SnapshotData;
-import crabzilla.vertx.util.DbConcurrencyException;
 import io.vertx.core.Future;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
@@ -227,7 +226,7 @@ public class EntityUnitOfWorkRepository {
           // apply optimistic locking
           if (currentVersion != unitOfWork.getVersion().getValueAsLong() - 1) {
 
-            val error = new DbConcurrencyException (
+            val error = new ConcurrencyConflictException (
                     String.format("ar_id = [%s], current_version = %d, new_version = %d",
                             unitOfWork.targetId().getStringValue(),
                             currentVersion, unitOfWork.getVersion().getValueAsLong())) ;
