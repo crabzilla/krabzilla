@@ -403,11 +403,6 @@ public class EntityCommandHandlerVerticleTest {
 //
 //  }
 
-  @Value
-  class UnknownCommand implements EntityCommand {
-    UUID commandId;
-    CustomerId targetId;
-  }
 
   @Test
   public void UNKNOWN_COMMAND_scenario(TestContext tc) {

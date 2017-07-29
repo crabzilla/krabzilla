@@ -96,7 +96,7 @@ class StateTracker<E>(val originalInstance: E,
 
 }
 
-class VersionTracker<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
+open class VersionTracker<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
         (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
 
   override fun invoke(originalSnapshot: Snapshot<E>, newVersion: Version, newEvents: List<DomainEvent>): Snapshot<E> {
@@ -147,9 +147,9 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
 
 interface StateTransitionFn<E> : (DomainEvent, E) -> E
 
-interface EntityCommandValidatorFn : (EntityCommand) -> List<String>
+open interface EntityCommandValidatorFn : (EntityCommand) -> List<String>
 
-interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> CommandHandlerResult
+open interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> CommandHandlerResult
 
 interface EntityFunctionsFactory<E> {
 
@@ -166,3 +166,4 @@ interface EntityFunctionsFactory<E> {
   fun versionTracker(): VersionTracker<E>
 
 }
+

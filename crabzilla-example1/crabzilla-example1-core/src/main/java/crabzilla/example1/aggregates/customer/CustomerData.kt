@@ -32,4 +32,8 @@ data class DeactivateCustomerCmd(override val commandId: UUID, override val targ
 data class CreateActivateCustomerCmd(override val commandId: UUID, override val targetId: CustomerId, val name: String,
                                      val reason: String) : EntityCommand
 
+// this is just for testing purposes
+
+data class UnknownCommand(override val commandId: UUID, override val targetId: CustomerId)
+    : EntityCommand
 

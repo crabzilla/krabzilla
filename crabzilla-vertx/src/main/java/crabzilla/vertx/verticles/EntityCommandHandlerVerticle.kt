@@ -42,7 +42,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
         return@handler
       }
 
-      log.info("received a command {}", command)
+      log.info("received a command $command")
 
       val constraints = validatorFn.invoke(command)
 
@@ -120,6 +120,8 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
           cmdHandlerResult.inCaseOfSuccess({ uow ->
 
+            log.info("Command handling success for ${command.commandId} -> $uow")
+
             val appendFuture = Future.future<Long>()
 
             eventRepository.append(uow!!, appendFuture)
@@ -135,7 +137,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
                   is ConcurrencyConflictException -> {
                     val cmdExecResult = CommandExecution(commandId = command.commandId, result = RESULT.CONCURRENCY_ERROR,
-                            constraints = listOf("Concurrency: " + error.message))
+                            constraints = listOf("" + error.message))
                     future2.complete(cmdExecResult)
                   }
 
@@ -162,7 +164,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
           //fold is there, if you want to handle both success and failure
           cmdHandlerResult.inCaseOfError( { error ->
 
-            log.error("Command handling error for command {} message {}", command.commandId, error.message)
+            log.error("Command handling error for ${command.commandId} -> $error.message")
 
             val cmdExecResult = when(error) {
 
@@ -206,13 +208,13 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
       if (resultHandler.succeeded()) {
 
         val resp = resultHandler.result()
-        log.info("success: {}", resp)
+        log.info("success: $resp")
         msg.reply(resp)
 
       } else {
 
-        log.error("error cause: {}", resultHandler.cause())
-        log.error("error message: {}", resultHandler.cause().message)
+        log.error("error cause: $resultHandler.cause()")
+        log.error("error message: $resultHandler.cause().message")
         resultHandler.cause().printStackTrace()
         // TODO customize conform commandResult
         msg.fail(400, resultHandler.cause().message)
