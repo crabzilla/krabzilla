@@ -1,6 +1,5 @@
 package crabzilla.example1;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
@@ -26,9 +25,7 @@ import crabzilla.vertx.codecs.JacksonGenericCodec;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.Json;
 import io.vertx.ext.jdbc.JDBCClient;
-import lombok.val;
 import org.jooq.Configuration;
 import org.jooq.ConnectionProvider;
 import org.jooq.SQLDialect;
@@ -40,6 +37,8 @@ import org.jooq.impl.DefaultTransactionProvider;
 
 import java.util.Properties;
 
+import static io.vertx.core.json.Json.mapper;
+
 class Example1Module extends AbstractModule {
 
   final Vertx vertx;
@@ -50,6 +49,8 @@ class Example1Module extends AbstractModule {
 
   @Override
   protected void configure() {
+
+    configureVertx();
 
     // aggregates
     install(new CustomerModule());
@@ -84,30 +85,14 @@ class Example1Module extends AbstractModule {
 
   @Provides
   @Singleton
-  EventProjector eventsProjector(Example1ComponentsFactory f) {
-    return f.eventsProjector() ;
+  Vertx vertx() {
+    return vertx;
   }
 
   @Provides
   @Singleton
-  Vertx vertx(ObjectMapper mapper) {
-
-    vertx.eventBus().registerDefaultCodec(CommandExecution.class,
-            new JacksonGenericCodec<>(mapper, CommandExecution.class));
-
-    vertx.eventBus().registerDefaultCodec(EntityId.class,
-            new JacksonGenericCodec<>(mapper, EntityId.class));
-
-    vertx.eventBus().registerDefaultCodec(Command.class,
-            new JacksonGenericCodec<>(mapper, Command.class));
-
-    vertx.eventBus().registerDefaultCodec(DomainEvent.class,
-            new JacksonGenericCodec<>(mapper, DomainEvent.class));
-
-    vertx.eventBus().registerDefaultCodec(EntityUnitOfWork.class,
-            new JacksonGenericCodec<>(mapper, EntityUnitOfWork.class));
-
-    return vertx;
+  EventProjector eventsProjector(Example1ComponentsFactory f) {
+    return f.eventsProjector() ;
   }
 
   @Provides
@@ -146,22 +131,35 @@ class Example1Module extends AbstractModule {
     return cfg;
   }
 
-  @Provides
-  @Singleton
-  ObjectMapper mapper() {
-    val mapper = Json.mapper;
-    mapper.registerModule(new ParameterNamesModule())
-            .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule())
-            .registerModule(new KotlinModule());
-    return mapper;
-  }
-
 //  Not being used yet. This can improve a lot serialization speed (it's binary). But so far it was not necessary.
 //  @Provides
 //  @Singleton
 //  FSTConfiguration conf() {
 //    return FSTConfiguration.createDefaultConfiguration();
 //  }
+
+  void configureVertx() {
+
+    mapper.registerModule(new ParameterNamesModule())
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule())
+            .registerModule(new KotlinModule());
+
+    vertx.eventBus().registerDefaultCodec(CommandExecution.class,
+            new JacksonGenericCodec<>(mapper, CommandExecution.class));
+
+    vertx.eventBus().registerDefaultCodec(EntityId.class,
+            new JacksonGenericCodec<>(mapper, EntityId.class));
+
+    vertx.eventBus().registerDefaultCodec(Command.class,
+            new JacksonGenericCodec<>(mapper, Command.class));
+
+    vertx.eventBus().registerDefaultCodec(DomainEvent.class,
+            new JacksonGenericCodec<>(mapper, DomainEvent.class));
+
+    vertx.eventBus().registerDefaultCodec(EntityUnitOfWork.class,
+            new JacksonGenericCodec<>(mapper, EntityUnitOfWork.class));
+
+  }
 
 }

@@ -1,9 +1,5 @@
 package crabzilla.example1;
 
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.inject.Guice;
 import crabzilla.example1.aggregates.customer.ActivateCustomerCmd;
 import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
@@ -28,7 +24,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static crabzilla.vertx.util.StringHelper.commandHandlerId;
-import static io.vertx.core.json.Json.mapper;
 import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
 import static java.lang.System.setProperty;
 
@@ -41,8 +36,7 @@ public class Example1Launcher {
   @Inject
   EventsProjectionVerticle projectionVerticle;
 
-  @Inject
-  Vertx vertx;
+  static Vertx vertx;
 
   public static void main(String args[]) throws InterruptedException {
 
@@ -54,12 +48,7 @@ public class Example1Launcher {
 
       if (res.succeeded()) {
 
-        Vertx vertx = res.result();
-
-        mapper.registerModule(new ParameterNamesModule())
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
-                .registerModule(new KotlinModule());
+        vertx = res.result();
 
         EventBus eventBus = vertx.eventBus();
         log.info("We now have a clustered event bus: " + eventBus);
@@ -70,10 +59,10 @@ public class Example1Launcher {
         Guice.createInjector(new Example1Module(vertx)).injectMembers(launcher);
 
         for (Map.Entry<String,Verticle> v: launcher.aggregateRootVerticles.entrySet()) {
-          launcher.vertx.deployVerticle(v.getValue(), event -> log.info("Deployed {} ? {}", v.getKey(), event.succeeded()));
+          vertx.deployVerticle(v.getValue(), event -> log.info("Deployed {} ? {}", v.getKey(), event.succeeded()));
         }
 
-        launcher.vertx.deployVerticle(launcher.projectionVerticle, event -> log.info("Deployed ? {}", event.succeeded()));
+        vertx.deployVerticle(launcher.projectionVerticle, event -> log.info("Deployed ? {}", event.succeeded()));
 
         // a test
         launcher.justForTest();
