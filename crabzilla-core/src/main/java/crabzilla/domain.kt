@@ -63,9 +63,9 @@ class StateTracker<E>(val originalInstance: E,
 
   internal val stateTransitions: MutableList<StateTransition<E>> = ArrayList()
 
-  inline fun applyEvents(function: (E) -> List<DomainEvent>): StateTracker<E> {
-    val newEvents = function.invoke(currentState())
-    return applyEvents(newEvents)
+  inline fun applyEvents(aggregateRootMethodFn: (E) -> List<DomainEvent>): StateTracker<E> {
+    val newEvents = aggregateRootMethodFn.invoke(currentState()) 
+    return applyEvents(newEvents) 
   }
 
   fun collectEvents(): List<DomainEvent> {
@@ -128,24 +128,22 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
     }
   }
 
-  companion object {
-
-    fun unitOfWorkFn(f: () -> EntityUnitOfWork?): CommandHandlerResult {
-
-      return try { CommandHandlerResult(successValue=f.invoke()) }
-            catch (e: Throwable) { CommandHandlerResult(error=RuntimeException("unexpected error", e)) }
-
-    }
-
-  }
-
 }
 
 interface StateTransitionFn<E> : (DomainEvent, E) -> E
 
 open interface EntityCommandValidatorFn : (EntityCommand) -> List<String>
 
-open interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> CommandHandlerResult
+open interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> CommandHandlerResult {
+
+  fun result(f: () -> EntityUnitOfWork?): CommandHandlerResult {
+
+    return try { CommandHandlerResult(successValue=f.invoke()) }
+    catch (e: Throwable) { CommandHandlerResult(error=RuntimeException("from command handler", e)) }
+
+  }
+
+}
 
 interface EntityFunctionsFactory<E> {
 

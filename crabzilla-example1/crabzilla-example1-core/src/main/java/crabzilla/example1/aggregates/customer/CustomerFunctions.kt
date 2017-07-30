@@ -42,7 +42,7 @@ class CustomerCommandHandlerFn @Inject constructor(val trackerFactory: (Customer
     val target = snapshot.instance
     val newVersion = snapshot.version.nextVersion()
 
-    return CommandHandlerResult.unitOfWorkFn {
+    return result {
 
       when (command) {
 
