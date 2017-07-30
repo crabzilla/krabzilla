@@ -19,7 +19,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                                       internal val validatorFn: EntityCommandValidatorFn,
                                       internal val cmdHandler: EntityCommandHandlerFn<E>,
                                       internal val cache: LoadingCache<String, Snapshot<E>>,
-                                      internal val versionTracker: VersionTracker<E>,
+                                      internal val versionTracker: VersionTrackerFn<E>,
                                       internal val eventRepository: EntityUnitOfWorkRepository,
                                       internal val circuitBreaker: CircuitBreaker) : AbstractVerticle() {
 

@@ -58,7 +58,7 @@ public class EntityCommandHandlerVerticleTest {
   @Mock
   EntityUnitOfWorkRepository eventRepository;
   @Mock
-  VersionTracker<Customer> versionTracker;
+  VersionTrackerFn<Customer> versionTrackerFn;
 
   @Before
   public void setUp(TestContext context) {
@@ -75,7 +75,7 @@ public class EntityCommandHandlerVerticleTest {
     );
 
     val verticle = new EntityCommandHandlerVerticle<Customer>(Customer.class, lazyCust, validatorFn, cmdHandlerFn,
-            cache, versionTracker, eventRepository, circuitBreaker);
+            cache, versionTrackerFn, eventRepository, circuitBreaker);
 
     vertx.deployVerticle(verticle, context.asyncAssertSuccess());
 

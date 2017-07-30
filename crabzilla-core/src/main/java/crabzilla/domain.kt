@@ -92,7 +92,7 @@ class StateTracker<E>(val originalInstance: E,
 
 }
 
-open class VersionTracker<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
+open class VersionTrackerFn<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
         (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
 
   override fun invoke(originalSnapshot: Snapshot<E>, newVersion: Version, newEvents: List<DomainEvent>): Snapshot<E> {
@@ -159,7 +159,7 @@ interface EntityFunctionsFactory<E> {
 
   fun depInjectionFn(): (E) -> E
 
-  fun versionTracker(): VersionTracker<E>
+  fun versionTrackerFn(): VersionTrackerFn<E>
 
 }
 
