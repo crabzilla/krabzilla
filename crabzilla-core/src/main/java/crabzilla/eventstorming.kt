@@ -27,8 +27,3 @@ interface ExternalSystem
 
 interface Policy
 
-interface EventListener : Policy
-
-interface ProcessManager : Serializable, Policy {
-  val id: EntityId?
-}
