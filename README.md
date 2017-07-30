@@ -6,4 +6,5 @@ Leveraring the work from [Crabzilla](https://github.com/crabzilla/crabzilla).
 
 ## Status
 
-All current tests are passing. But found a new bug when reading events from db.
+All tests are passing (it's too early for badges) and Example1Launcher is working on my machine :)
+
