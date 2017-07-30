@@ -1,5 +1,6 @@
 package crabzilla.example1.aggregates
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.benmanes.caffeine.cache.Caffeine
 import crabzilla.*
 import crabzilla.example1.aggregates.customer.*
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CustomerFactory @Inject
-constructor(private val service: SampleService, private val vertx: Vertx, private val jdbcClient: JDBCClient)
+constructor(private val service: SampleService, private val mapper: ObjectMapper, private val vertx: Vertx, private val jdbcClient: JDBCClient)
   : EntityComponentsFactory<Customer> {
 
   val factory: (Customer) -> StateTracker<Customer> =  { c -> StateTracker(c, stateTransitionFn(), depInjectionFn())}
@@ -70,7 +71,7 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
   }
 
   override fun uowRepository(): EntityUnitOfWorkRepository {
-    return EntityUnitOfWorkRepository(Customer::class.java, jdbcClient)
+    return EntityUnitOfWorkRepository(Customer::class.java, jdbcClient, mapper)
   }
 
 

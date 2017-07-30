@@ -1,11 +1,13 @@
 package crabzilla.example1;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import crabzilla.Command;
+import crabzilla.DomainEvent;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
 import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
@@ -18,7 +20,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
@@ -27,6 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JacksonJsonTest {
 
   ObjectMapper mapper = Json.mapper;
+
+  private final TypeReference<List<DomainEvent>> listOfEventsType =  new TypeReference<List<DomainEvent>>() {};
 
   @BeforeEach
   public void setup() {
@@ -74,5 +80,26 @@ public class JacksonJsonTest {
     assertThat(uow2).isEqualTo(uow1);
 
   }
+
+  @Test
+  public void listOfEvents() throws Exception {
+
+    CustomerId id = new CustomerId("customer#1");
+    CreateCustomerCmd command = new CreateCustomerCmd(UUID.randomUUID(), id, "customer1");
+    CustomerCreated event1 = new CustomerCreated(id, command.getName());
+    CustomerActivated event2 = new CustomerActivated("a rgood reason", Instant.now());
+
+    List<DomainEvent> listOfEvents = Arrays.asList(event1, event2);
+
+    String listOfEventsAsJson = mapper.writerFor(listOfEventsType).writeValueAsString(listOfEvents);
+
+    System.out.println(listOfEventsAsJson);
+
+    List<DomainEvent> listOfEventsFromJson = mapper.readValue(listOfEventsAsJson, listOfEventsType);
+
+    assertThat(listOfEventsFromJson).isEqualTo(listOfEvents);
+
+  }
+
 
 }

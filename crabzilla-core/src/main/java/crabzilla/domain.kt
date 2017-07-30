@@ -11,7 +11,7 @@ data class UnitOfWork(val id: UUID = UUID.randomUUID(),
                       val command: Command,
                       val events: List<DomainEvent>) : Serializable
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 interface EntityId : Serializable {
   val stringValue: String
 }
@@ -136,8 +136,8 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
 
     fun unitOfWorkFn(f: () -> EntityUnitOfWork?): CommandHandlerResult {
 
-      return try { println("sucesso"); CommandHandlerResult(successValue=f.invoke()) }
-            catch (e: Throwable) { println("erro"); CommandHandlerResult(error=RuntimeException("unexpected error", e)) }
+      return try { CommandHandlerResult(successValue=f.invoke()) }
+            catch (e: Throwable) { CommandHandlerResult(error=RuntimeException("unexpected error", e)) }
 
     }
 

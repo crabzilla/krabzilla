@@ -47,6 +47,7 @@ public class EntityUnitOfWorkRepositoryIT {
   static Vertx vertx;
   static JDBCClient jdbcClient;
   static DBI dbi;
+  static ObjectMapper mapper;
 
   EntityUnitOfWorkRepository repo;
 
@@ -64,8 +65,7 @@ public class EntityUnitOfWorkRepositoryIT {
 
     vertx = Vertx.vertx();
 
-    val mapper = Json.mapper;
-    mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+    mapper = Json.mapper;
     mapper.registerModule(new ParameterNamesModule())
             .registerModule(new Jdk8Module())
             .registerModule(new JavaTimeModule())
@@ -103,7 +103,7 @@ public class EntityUnitOfWorkRepositoryIT {
   @Before
   public void setup(TestContext context) throws IOException, URISyntaxException {
 
-    this.repo = new EntityUnitOfWorkRepository(Customer.class, jdbcClient);
+    this.repo = new EntityUnitOfWorkRepository(Customer.class, jdbcClient, mapper);
 
   }
 
@@ -242,6 +242,29 @@ public class EntityUnitOfWorkRepositoryIT {
     appendFuture.setHandler(appendAsyncResult -> {
 
       assertThat(appendAsyncResult.cause()).isInstanceOf(ConcurrencyConflictException.class);
+
+      async.complete();
+
+    });
+  }
+
+  @Test
+  public void step4_select_version2(TestContext tc) {
+
+    Async async = tc.async();
+
+    Future<SnapshotData> selectFuture = Future.future();
+
+    repo.selectAfterVersion(customerId.getStringValue(), new Version(0), selectFuture);
+
+    selectFuture.setHandler(selectAsyncResult -> {
+
+      val snapshotData = selectAsyncResult.result();
+
+      assertThat(snapshotData.getVersion()).isEqualTo(new Version(2));
+      assertThat(snapshotData.getEvents().get(0)).isEqualTo(created);
+      assertThat(snapshotData.getEvents().get(1)).isEqualToIgnoringGivenFields(activated, "_when");
+      //TODO problem with Instant serialization
 
       async.complete();
 

@@ -1,5 +1,9 @@
 package crabzilla.example1;
 
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.inject.Guice;
 import crabzilla.example1.aggregates.customer.ActivateCustomerCmd;
 import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
@@ -24,6 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static crabzilla.vertx.util.StringHelper.commandHandlerId;
+import static io.vertx.core.json.Json.mapper;
 import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
 import static java.lang.System.setProperty;
 
@@ -50,6 +55,12 @@ public class Example1Launcher {
       if (res.succeeded()) {
 
         Vertx vertx = res.result();
+
+        mapper.registerModule(new ParameterNamesModule())
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule())
+                .registerModule(new KotlinModule());
+
         EventBus eventBus = vertx.eventBus();
         log.info("We now have a clustered event bus: " + eventBus);
 
@@ -90,21 +101,21 @@ public class Example1Launcher {
 
         log.info("Result: {}", asyncResult.result().body());
 
-//        val activateCustomerCmd = new ActivateCustomerCmd(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
-//
-//        // activate customer command
-//        vertx.eventBus().<CommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {
-//
-//          log.info("Successful activate customer test? {}", asyncResult2.succeeded());
-//
-//          if (asyncResult2.succeeded()) {
-//            log.info("Result: {}", asyncResult2.result().body());
-//          } else {
-//            log.info("Cause: {}", asyncResult2.cause());
-//            log.info("Message: {}", asyncResult2.cause().getMessage());
-//          }
-//
-//        });
+        val activateCustomerCmd = new ActivateCustomerCmd(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
+
+        // activate customer command
+        vertx.eventBus().<CommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {
+
+          log.info("Successful activate customer test? {}", asyncResult2.succeeded());
+
+          if (asyncResult2.succeeded()) {
+            log.info("Result: {}", asyncResult2.result().body());
+          } else {
+            log.info("Cause: {}", asyncResult2.cause());
+            log.info("Message: {}", asyncResult2.cause().getMessage());
+          }
+
+        });
 
       } else {
         log.info("Cause: {}", asyncResult.cause());

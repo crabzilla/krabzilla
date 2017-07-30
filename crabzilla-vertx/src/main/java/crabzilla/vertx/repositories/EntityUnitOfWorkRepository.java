@@ -2,7 +2,7 @@ package crabzilla.vertx.repositories;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import crabzilla.*;
 import crabzilla.vertx.SnapshotData;
 import io.vertx.core.Future;
@@ -36,12 +36,15 @@ public class EntityUnitOfWorkRepository {
 
   private final String aggregateRootName;
   private final JDBCClient client;
+  private final ObjectMapper mapper;
 
   private final TypeReference<List<DomainEvent>> eventsListTpe =  new TypeReference<List<DomainEvent>>() {};
 
-  public EntityUnitOfWorkRepository(@NonNull Class<? extends Aggregate> aggregateRootName, @NonNull JDBCClient client) {
+  public EntityUnitOfWorkRepository(@NonNull Class<? extends Aggregate> aggregateRootName, @NonNull JDBCClient client,
+                                    ObjectMapper mapper) {
     this.aggregateRootName = aggregateRootName.getSimpleName();
     this.client = client;
+    this.mapper = mapper;
   }
 
   public void get(@NonNull final UUID uowId, @NonNull final Future<Optional<EntityUnitOfWork>> getFuture) {
@@ -211,6 +214,7 @@ public class EntityUnitOfWorkRepository {
         queryWithParams(sqlConn, SELECT_CURRENT_VERSION, params1, resultSetFuture);
 
         resultSetFuture.setHandler(asyncResultResultSet -> {
+
           if (asyncResultResultSet.failed()) {
             appendFuture.fail(asyncResultResultSet.cause());
             return;
@@ -244,12 +248,12 @@ public class EntityUnitOfWorkRepository {
           }
 
           // if version is OK, then insert
-          val cmdAsJson = writeValueAsString(Json.mapper.writerFor(Command.class), unitOfWork.getCommand());
-          val eventsAsJson = writeValueAsString(Json.mapper.writerFor(eventsListTpe), unitOfWork.getEvents());
+          final String cmdAsJson = commandToJson(unitOfWork.getCommand());
+          final String eventsListAsJson = listOfEventsToJson(unitOfWork.getEvents());
 
           val params2 = new JsonArray()
                   .add(unitOfWork.getId().toString())
-                  .add(eventsAsJson)
+                  .add(eventsListAsJson)
                   .add(unitOfWork.getCommand().getCommandId().toString())
                   .add(cmdAsJson)
                   .add(unitOfWork.targetId().getStringValue())
@@ -261,6 +265,7 @@ public class EntityUnitOfWorkRepository {
           updateWithParams(sqlConn, INSERT_UOW, params2, updateResultFuture);
 
           updateResultFuture.setHandler(asyncResultUpdateResult -> {
+
             if (asyncResultUpdateResult.failed()) {
               appendFuture.fail(asyncResultUpdateResult.cause());
               return;
@@ -274,6 +279,7 @@ public class EntityUnitOfWorkRepository {
             commitTx(sqlConn, commitFuture);
 
             commitFuture.setHandler(commitAsyncResult -> {
+
               if (commitAsyncResult.failed()) {
                 appendFuture.fail(commitAsyncResult.cause());
                 return;
@@ -297,25 +303,32 @@ public class EntityUnitOfWorkRepository {
 
     });
 
-    // TODO decide about to save scheduled commands here
-    ////              uow.collectEvents().stream()
-    ////            .filter(event -> event instanceof CommandSchedulingEvent) // TODO idempotency
-    ////            .map(event -> (CommandSchedulingEvent) e)
-    ////            .forEachOrdered(cs -> commandScheduler.schedule(commandId, cs));
-
   }
 
-  String writeValueAsString(ObjectWriter writer, Object obj) {
+  String commandToJson(Command command) {
     try {
-      return writer.writeValueAsString(obj);
+      val cmdAsJson = mapper.writerFor(Command.class).writeValueAsString(command);
+      log.info("commandToJson {}", cmdAsJson);
+      return cmdAsJson;
     } catch (JsonProcessingException e) {
-      throw new RuntimeException("When writing to JSON", e);
+      throw new RuntimeException("When writing commandToJson", e);
+    }
+  }
+
+  String listOfEventsToJson(List<DomainEvent> events) {
+    try {
+      val cmdAsJson = mapper.writerFor(eventsListTpe).writeValueAsString(events);
+      log.info("listOfEventsToJson {}", cmdAsJson);
+      return cmdAsJson;
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("When writing listOfEventsToJson", e);
     }
   }
 
   List<DomainEvent> readEvents(String eventsAsJson) {
     try {
-      return Json.mapper.readerFor(eventsListTpe).readValue(eventsAsJson);
+      log.info("eventsAsJson {}", eventsAsJson);
+      return mapper.readerFor(eventsListTpe).readValue(eventsAsJson);
     } catch (IOException e) {
       throw new RuntimeException("When reading events list from JSON", e);
     }
