@@ -18,7 +18,7 @@ class CustomerStateTransitionFn : StateTransitionFn<Customer> {
     return when(event) {
       is CustomerCreated -> customer.copy(id = event.id, name =  event.name)
       is CustomerActivated -> customer.copy(isActive = true, reason = event.reason)
-      is CustomerDeactivated ->customer.copy(isActive = false, reason = event.reason)
+      is CustomerDeactivated -> customer.copy(isActive = false, reason = event.reason)
       else -> customer
     }
 
@@ -26,7 +26,7 @@ class CustomerStateTransitionFn : StateTransitionFn<Customer> {
 
 }
 
-class CustomerEntityCommandValidatorFn : EntityCommandValidatorFn {
+class CustomerCommandValidatorFn : EntityCommandValidatorFn {
 
   override fun invoke(command: EntityCommand): List<String> {
     return listOf() // TODO implement. Right now all commands are valid
@@ -34,7 +34,7 @@ class CustomerEntityCommandValidatorFn : EntityCommandValidatorFn {
 
 }
 
-class CustomerEntityCommandHandlerFn @Inject constructor(val trackerFactory: (Customer) -> StateTracker<Customer>) :
+class CustomerCommandHandlerFn @Inject constructor(val trackerFactory: (Customer) -> StateTracker<Customer>) :
         EntityCommandHandlerFn<Customer> {
 
   override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {

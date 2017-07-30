@@ -32,11 +32,11 @@ constructor(private val service: SampleService, private val mapper: ObjectMapper
   }
 
   override fun cmdValidatorFn(): EntityCommandValidatorFn {
-    return CustomerEntityCommandValidatorFn()
+    return CustomerCommandValidatorFn()
   }
 
   override fun cmdHandlerFn(): EntityCommandHandlerFn<Customer> {
-    return CustomerEntityCommandHandlerFn(factory)
+    return CustomerCommandHandlerFn(factory)
   }
 
   override fun versionTracker(): VersionTracker<Customer> {
