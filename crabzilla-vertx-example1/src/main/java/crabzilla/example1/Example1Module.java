@@ -19,7 +19,7 @@ import crabzilla.EntityUnitOfWork;
 import crabzilla.example1.aggregates.CustomerModule;
 import crabzilla.example1.services.SampleService;
 import crabzilla.example1.services.SampleServiceImpl;
-import crabzilla.vertx.command.CommandExecution;
+import crabzilla.vertx.commands.CommandExecution;
 import crabzilla.vertx.events.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
 import io.vertx.circuitbreaker.CircuitBreaker;

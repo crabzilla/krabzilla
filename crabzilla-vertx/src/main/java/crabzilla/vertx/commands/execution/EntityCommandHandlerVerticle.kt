@@ -1,10 +1,10 @@
-package crabzilla.vertx.command.execution
+package crabzilla.vertx.commands.execution
 
 import com.github.benmanes.caffeine.cache.LoadingCache
 import crabzilla.*
 import crabzilla.vertx.SnapshotData
-import crabzilla.vertx.command.CommandExecution
-import crabzilla.vertx.command.CommandExecution.RESULT
+import crabzilla.vertx.commands.CommandExecution
+import crabzilla.vertx.commands.CommandExecution.RESULT
 import crabzilla.vertx.util.StringHelper.commandHandlerId
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.core.AbstractVerticle

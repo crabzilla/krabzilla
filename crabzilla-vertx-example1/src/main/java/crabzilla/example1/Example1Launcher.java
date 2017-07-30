@@ -5,7 +5,7 @@ import crabzilla.example1.aggregates.ActivateCustomerCmd;
 import crabzilla.example1.aggregates.CreateCustomerCmd;
 import crabzilla.example1.aggregates.Customer;
 import crabzilla.example1.aggregates.CustomerId;
-import crabzilla.vertx.command.CommandExecution;
+import crabzilla.vertx.commands.CommandExecution;
 import crabzilla.vertx.events.projection.EventsProjectionVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Verticle;

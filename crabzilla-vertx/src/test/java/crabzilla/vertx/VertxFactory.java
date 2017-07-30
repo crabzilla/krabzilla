@@ -6,7 +6,7 @@ import crabzilla.DomainEvent;
 import crabzilla.EntityId;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
-import crabzilla.vertx.command.CommandExecution;
+import crabzilla.vertx.commands.CommandExecution;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
 import lombok.val;

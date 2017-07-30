@@ -1,4 +1,4 @@
-package crabzilla.vertx.command
+package crabzilla.vertx.commands
 
 import crabzilla.EntityUnitOfWork
 import java.io.Serializable

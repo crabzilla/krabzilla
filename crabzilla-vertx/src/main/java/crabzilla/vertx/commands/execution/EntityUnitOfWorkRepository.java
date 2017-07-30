@@ -1,4 +1,4 @@
-package crabzilla.vertx.command.execution;
+package crabzilla.vertx.commands.execution;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

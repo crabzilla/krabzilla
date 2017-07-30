@@ -1,7 +1,7 @@
-package crabzilla.vertx.command.execution;
+package crabzilla.vertx.commands.execution;
 
 import crabzilla.Command;
-import crabzilla.vertx.command.CommandExecution;
+import crabzilla.vertx.commands.CommandExecution;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;

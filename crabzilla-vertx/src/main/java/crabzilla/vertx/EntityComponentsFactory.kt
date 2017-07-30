@@ -1,9 +1,9 @@
 package crabzilla.vertx
 
 import crabzilla.EntityFunctionsFactory
-import crabzilla.vertx.command.execution.EntityCommandHandlerVerticle
-import crabzilla.vertx.command.execution.EntityCommandRestVerticle
-import crabzilla.vertx.command.execution.EntityUnitOfWorkRepository
+import crabzilla.vertx.commands.execution.EntityCommandHandlerVerticle
+import crabzilla.vertx.commands.execution.EntityCommandRestVerticle
+import crabzilla.vertx.commands.execution.EntityUnitOfWorkRepository
 
 interface EntityComponentsFactory<E> : EntityFunctionsFactory<E> {
 

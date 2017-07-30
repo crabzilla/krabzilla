@@ -11,7 +11,7 @@ import crabzilla.ConcurrencyConflictException;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
 import crabzilla.example1.aggregates.*;
-import crabzilla.vertx.command.execution.EntityUnitOfWorkRepository;
+import crabzilla.vertx.commands.execution.EntityUnitOfWorkRepository;
 import crabzilla.vertx.SnapshotData;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
