@@ -2,7 +2,7 @@ package crabzilla.vertx.verticles;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import crabzilla.*;
-import crabzilla.example1.aggregates.customer.*;
+import crabzilla.example1.aggregates.*;
 import crabzilla.vertx.CommandExecution;
 import crabzilla.vertx.SnapshotData;
 import crabzilla.vertx.VertxFactory;
@@ -46,7 +46,7 @@ public class EntityCommandHandlerVerticleTest {
   Vertx vertx;
   CircuitBreaker circuitBreaker;
 
-  final Lazy<Customer> lazyCust =  new CustomerFirstInstanceFn().invoke();
+  final Lazy<Customer> lazyCust =  new CustomerSeedValueFn().invoke();
   final Snapshot<Customer> emptySnapshot = new Snapshot<>(lazyCust.getValue(),  new Version(0));
 
   @Mock

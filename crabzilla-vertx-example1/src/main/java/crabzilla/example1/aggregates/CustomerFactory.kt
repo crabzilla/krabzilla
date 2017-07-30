@@ -3,7 +3,6 @@ package crabzilla.example1.aggregates
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.benmanes.caffeine.cache.Caffeine
 import crabzilla.*
-import crabzilla.example1.aggregates.customer.*
 import crabzilla.example1.services.SampleService
 import crabzilla.vertx.EntityComponentsFactory
 import crabzilla.vertx.repositories.EntityUnitOfWorkRepository
@@ -23,8 +22,8 @@ constructor(private val service: SampleService, private val mapper: ObjectMapper
 
   val factory: (Customer) -> StateTracker<Customer> =  { c -> StateTracker(c, stateTransitionFn(), depInjectionFn())}
 
-  override fun seedValue(): () -> Lazy<Customer> {
-    return CustomerFirstInstanceFn()
+  override fun seedValueFn(): () -> Lazy<Customer> {
+    return CustomerSeedValueFn()
   }
 
   override fun stateTransitionFn(): StateTransitionFn<Customer> {
@@ -66,7 +65,7 @@ constructor(private val service: SampleService, private val mapper: ObjectMapper
                     .setResetTimeout(10000) // time spent in open state before attempting to re-try
     )
 
-    return EntityCommandHandlerVerticle(Customer::class.java, seedValue().invoke(),
+    return EntityCommandHandlerVerticle(Customer::class.java, seedValueFn().invoke(),
             cmdValidatorFn(), cmdHandlerFn(), cache, versionTrackerFn(), uowRepository(), circuitBreaker)
   }
 

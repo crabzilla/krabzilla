@@ -5,7 +5,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
-import crabzilla.example1.aggregates.customer.Customer;
 import crabzilla.vertx.verticles.EntityCommandHandlerVerticle;
 import crabzilla.vertx.verticles.EntityCommandRestVerticle;
 import io.vertx.core.Verticle;

@@ -2,9 +2,9 @@ package crabzilla.example1
 
 
 import crabzilla.DomainEvent
-import crabzilla.example1.aggregates.customer.CustomerActivated
-import crabzilla.example1.aggregates.customer.CustomerCreated
-import crabzilla.example1.aggregates.customer.CustomerDeactivated
+import crabzilla.example1.aggregates.CustomerActivated
+import crabzilla.example1.aggregates.CustomerCreated
+import crabzilla.example1.aggregates.CustomerDeactivated
 import crabzilla.vertx.EventProjector
 import crabzilla.vertx.ProjectionData
 import example1.datamodel.Tables.CUSTOMER_SUMMARY

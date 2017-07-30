@@ -1,10 +1,10 @@
 package crabzilla.example1;
 
 import com.google.inject.Guice;
-import crabzilla.example1.aggregates.customer.ActivateCustomerCmd;
-import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
-import crabzilla.example1.aggregates.customer.Customer;
-import crabzilla.example1.aggregates.customer.CustomerId;
+import crabzilla.example1.aggregates.ActivateCustomerCmd;
+import crabzilla.example1.aggregates.CreateCustomerCmd;
+import crabzilla.example1.aggregates.Customer;
+import crabzilla.example1.aggregates.CustomerId;
 import crabzilla.vertx.CommandExecution;
 import crabzilla.vertx.verticles.EventsProjectionVerticle;
 import io.vertx.core.AsyncResult;

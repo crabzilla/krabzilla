@@ -3,7 +3,7 @@ package crabzilla.example1;
 import crabzilla.vertx.BoundedContextComponentsFactory;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
-import crabzilla.vertx.repositories.VertxProjectionRepository;
+import crabzilla.vertx.repositories.ProjectionRepository;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.jooq.Configuration;
 
@@ -29,7 +29,7 @@ class Example1ComponentsFactory implements BoundedContextComponentsFactory {
 
   @Override
   public BiFunction<Long, Integer, List<ProjectionData>> projectionRepository() {
-    return new VertxProjectionRepository(jdbcClient);
+    return new ProjectionRepository(jdbcClient);
   }
 
 }

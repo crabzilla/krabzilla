@@ -17,13 +17,13 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 
 @Slf4j
-public class VertxProjectionRepository implements BiFunction<Long, Integer, List<ProjectionData>> {
+public class ProjectionRepository implements BiFunction<Long, Integer, List<ProjectionData>> {
 
   private final JDBCClient client;
 
   private final TypeReference<List<DomainEvent>> eventsListTpe =  new TypeReference<List<DomainEvent>>() {};
 
-  public VertxProjectionRepository(@NonNull JDBCClient client) {
+  public ProjectionRepository(@NonNull JDBCClient client) {
     this.client = client;
   }
 

@@ -2,9 +2,9 @@ package crabzilla.vertx.verticles;
 
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
-import crabzilla.example1.aggregates.customer.CreateCustomerCmd;
-import crabzilla.example1.aggregates.customer.CustomerCreated;
-import crabzilla.example1.aggregates.customer.CustomerId;
+import crabzilla.example1.aggregates.CreateCustomerCmd;
+import crabzilla.example1.aggregates.CustomerCreated;
+import crabzilla.example1.aggregates.CustomerId;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
 import crabzilla.vertx.VertxFactory;

@@ -1,6 +1,6 @@
 package crabzilla;
 
-import crabzilla.example1.aggregates.customer.*;
+import crabzilla.example1.aggregates.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("A StateTransitionsTracker")
 public class StateTransitionsTrackerTest {
 
-  final Customer customer = new CustomerFirstInstanceFn().invoke().getValue();
+  final Customer customer = new CustomerSeedValueFn().invoke().getValue();
 
   StateTracker<Customer> stateTracker;
 

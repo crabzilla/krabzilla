@@ -1,4 +1,4 @@
-package crabzilla.example1.aggregates.customer
+package crabzilla.example1.aggregates
 
 import crabzilla.DomainEvent
 import crabzilla.EntityCommand

@@ -10,7 +10,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import crabzilla.ConcurrencyConflictException;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
-import crabzilla.example1.aggregates.customer.*;
+import crabzilla.example1.aggregates.*;
 import crabzilla.vertx.SnapshotData;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;

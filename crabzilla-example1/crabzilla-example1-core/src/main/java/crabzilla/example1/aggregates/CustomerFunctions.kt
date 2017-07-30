@@ -1,9 +1,8 @@
-package crabzilla.example1.aggregates.customer
+package crabzilla.example1.aggregates
 
 import crabzilla.*
-import javax.inject.Inject
 
-class CustomerFirstInstanceFn : () -> Lazy<Customer> {
+class CustomerSeedValueFn : () -> Lazy<Customer> {
 
   override fun invoke(): Lazy<Customer> {
     return lazyOf(Customer())
@@ -34,7 +33,7 @@ class CustomerCommandValidatorFn : EntityCommandValidatorFn {
 
 }
 
-class CustomerCommandHandlerFn @Inject constructor(val trackerFactory: (Customer) -> StateTracker<Customer>) :
+class CustomerCommandHandlerFn (val trackerFactory: (Customer) -> StateTracker<Customer>) :
         EntityCommandHandlerFn<Customer> {
 
   override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {

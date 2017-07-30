@@ -147,7 +147,7 @@ open interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> Co
 
 interface EntityFunctionsFactory<E> {
 
-  fun seedValue(): () -> Lazy<E>
+  fun seedValueFn(): () -> Lazy<E>
 
   fun stateTransitionFn(): StateTransitionFn<E>
 
