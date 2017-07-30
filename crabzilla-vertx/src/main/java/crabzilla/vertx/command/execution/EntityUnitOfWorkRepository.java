@@ -1,4 +1,4 @@
-package crabzilla.vertx.repositories;
+package crabzilla.vertx.command.execution;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static crabzilla.vertx.repositories.VertxSqlHelper.*;
+import static crabzilla.vertx.util.VertxSqlHelper.*;
 import static io.vertx.core.json.Json.mapper;
 
 @Slf4j

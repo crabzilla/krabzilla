@@ -1,11 +1,11 @@
-package crabzilla.vertx.repositories;
+package crabzilla.vertx.command.scheduling;
 
 // what: sagas monitoring events may emit/schedule new commands to itself/other aggregate roots
 // how: events implementing CommandSchedulingEvent. This class will retrieve these scheduled commands
 
 //public interface SchedulingRepository {
 //
-//  void schedule(CommandSchedulingEvent scheduling);
+//  void schedule(CommandSchedulingEvent commandscheduling);
 //
 //  List<CommandSchedulingEvent> listAllBefore(Instant instant, int seconds);
 //

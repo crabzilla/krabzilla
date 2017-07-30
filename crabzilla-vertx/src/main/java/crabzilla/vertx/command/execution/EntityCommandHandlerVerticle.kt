@@ -1,11 +1,10 @@
-package crabzilla.vertx.verticles
+package crabzilla.vertx.command.execution
 
 import com.github.benmanes.caffeine.cache.LoadingCache
 import crabzilla.*
-import crabzilla.vertx.CommandExecution
-import crabzilla.vertx.CommandExecution.RESULT
 import crabzilla.vertx.SnapshotData
-import crabzilla.vertx.repositories.EntityUnitOfWorkRepository
+import crabzilla.vertx.command.CommandExecution
+import crabzilla.vertx.command.CommandExecution.RESULT
 import crabzilla.vertx.util.StringHelper.commandHandlerId
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.core.AbstractVerticle
@@ -169,8 +168,8 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
             val cmdExecResult = when(error) {
 
               is UnknownCommandException -> CommandExecution(commandId = command.commandId,
-                                                             result = RESULT.UNKNOWN_COMMAND,
-                                                             constraints = listOf("" + error.message))
+                      result = RESULT.UNKNOWN_COMMAND,
+                      constraints = listOf("" + error.message))
 
               else -> CommandExecution(commandId = command.commandId, result = RESULT.HANDLING_ERROR,
                       constraints = listOf("" + error.message))
@@ -180,8 +179,6 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
             future2.complete(cmdExecResult)
 
           })
-
-          // Call some blocking API that takes a significant amount of time to return
 
         }, false, { res ->
 

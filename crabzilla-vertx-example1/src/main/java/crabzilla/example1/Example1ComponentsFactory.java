@@ -1,9 +1,9 @@
 package crabzilla.example1;
 
 import crabzilla.vertx.BoundedContextComponentsFactory;
-import crabzilla.vertx.EventProjector;
-import crabzilla.vertx.ProjectionData;
-import crabzilla.vertx.repositories.ProjectionRepository;
+import crabzilla.vertx.events.projection.EventProjector;
+import crabzilla.vertx.events.projection.ProjectionData;
+import crabzilla.vertx.events.projection.ProjectionRepository;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.jooq.Configuration;
 

@@ -1,8 +1,6 @@
-package crabzilla.vertx.verticles;
+package crabzilla.vertx.events.projection;
 
 import crabzilla.EntityUnitOfWork;
-import crabzilla.vertx.EventProjector;
-import crabzilla.vertx.ProjectionData;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.Message;

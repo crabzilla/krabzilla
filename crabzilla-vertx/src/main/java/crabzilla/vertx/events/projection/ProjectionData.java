@@ -1,4 +1,4 @@
-package crabzilla.vertx;
+package crabzilla.vertx.events.projection;
 
 import crabzilla.DomainEvent;
 import lombok.Value;

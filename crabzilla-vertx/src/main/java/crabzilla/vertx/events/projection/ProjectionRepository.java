@@ -1,8 +1,7 @@
-package crabzilla.vertx.repositories;
+package crabzilla.vertx.events.projection;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import crabzilla.DomainEvent;
-import crabzilla.vertx.ProjectionData;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.jdbc.JDBCClient;

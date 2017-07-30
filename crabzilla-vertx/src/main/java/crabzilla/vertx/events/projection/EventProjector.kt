@@ -1,4 +1,4 @@
-package crabzilla.vertx
+package crabzilla.vertx.events.projection
 
 interface EventProjector {
 

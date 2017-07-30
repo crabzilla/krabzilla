@@ -5,10 +5,10 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import crabzilla.*
 import crabzilla.example1.services.SampleService
 import crabzilla.vertx.EntityComponentsFactory
-import crabzilla.vertx.repositories.EntityUnitOfWorkRepository
+import crabzilla.vertx.command.execution.EntityUnitOfWorkRepository
 import crabzilla.vertx.util.StringHelper.circuitBreakerId
-import crabzilla.vertx.verticles.EntityCommandHandlerVerticle
-import crabzilla.vertx.verticles.EntityCommandRestVerticle
+import crabzilla.vertx.command.execution.EntityCommandHandlerVerticle
+import crabzilla.vertx.command.execution.EntityCommandRestVerticle
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.circuitbreaker.CircuitBreakerOptions
 import io.vertx.core.Vertx

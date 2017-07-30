@@ -5,8 +5,8 @@ import crabzilla.DomainEvent
 import crabzilla.example1.aggregates.CustomerActivated
 import crabzilla.example1.aggregates.CustomerCreated
 import crabzilla.example1.aggregates.CustomerDeactivated
-import crabzilla.vertx.EventProjector
-import crabzilla.vertx.ProjectionData
+import crabzilla.vertx.events.projection.EventProjector
+import crabzilla.vertx.events.projection.ProjectionData
 import example1.datamodel.Tables.CUSTOMER_SUMMARY
 import example1.datamodel.tables.records.CustomerSummaryRecord
 import org.jooq.Configuration
