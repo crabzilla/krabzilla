@@ -16,6 +16,11 @@ interface DomainEvent : Serializable
 
 interface Aggregate : Serializable {
   val id: EntityId?
+
+  fun events(vararg event: DomainEvent): List<DomainEvent> {
+    return event.asList()
+  }
+
 }
 
 interface ExternalSystem

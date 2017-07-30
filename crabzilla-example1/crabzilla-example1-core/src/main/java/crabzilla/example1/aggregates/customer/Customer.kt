@@ -14,17 +14,17 @@ data class Customer(override val id: CustomerId? = null,
 
     require(this.id == null, { "customer already created" })
 
-    return listOf<DomainEvent>(CustomerCreated(id, name))
+    return events(CustomerCreated(id, name))
   }
 
   internal fun activate(reason: String): List<DomainEvent> {
 
-    return listOf<DomainEvent>(CustomerActivated(reason, sampleService!!.now()))
+    return events(CustomerActivated(reason, sampleService!!.now()))
   }
 
   internal fun deactivate(reason: String): List<DomainEvent> {
 
-    return listOf<DomainEvent>(CustomerDeactivated(reason, sampleService!!.now()))
+    return events(CustomerDeactivated(reason, sampleService!!.now()))
   }
 
 }
