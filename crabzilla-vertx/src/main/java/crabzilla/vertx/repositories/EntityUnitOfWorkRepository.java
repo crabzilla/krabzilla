@@ -2,7 +2,6 @@ package crabzilla.vertx.repositories;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import crabzilla.*;
 import crabzilla.vertx.SnapshotData;
 import io.vertx.core.Future;
@@ -25,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static crabzilla.vertx.repositories.VertxSqlHelper.*;
+import static io.vertx.core.json.Json.mapper;
 
 @Slf4j
 public class EntityUnitOfWorkRepository {
@@ -36,15 +36,12 @@ public class EntityUnitOfWorkRepository {
 
   private final String aggregateRootName;
   private final JDBCClient client;
-  private final ObjectMapper mapper;
 
   private final TypeReference<List<DomainEvent>> eventsListTpe =  new TypeReference<List<DomainEvent>>() {};
 
-  public EntityUnitOfWorkRepository(@NonNull Class<? extends Aggregate> aggregateRootName, @NonNull JDBCClient client,
-                                    ObjectMapper mapper) {
+  public EntityUnitOfWorkRepository(@NonNull Class<? extends Aggregate> aggregateRootName, @NonNull JDBCClient client) {
     this.aggregateRootName = aggregateRootName.getSimpleName();
     this.client = client;
-    this.mapper = mapper;
   }
 
   public void get(@NonNull final UUID uowId, @NonNull final Future<Optional<EntityUnitOfWork>> getFuture) {

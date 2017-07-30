@@ -162,7 +162,6 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
           })
 
-          //fold is there, if you want to handle both success and failure
           cmdHandlerResult.inCaseOfError( { error ->
 
             log.error("Command handling error for $command -> $error.message")

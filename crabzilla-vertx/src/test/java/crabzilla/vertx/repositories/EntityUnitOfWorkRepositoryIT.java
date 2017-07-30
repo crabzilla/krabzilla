@@ -103,7 +103,7 @@ public class EntityUnitOfWorkRepositoryIT {
   @Before
   public void setup(TestContext context) throws IOException, URISyntaxException {
 
-    this.repo = new EntityUnitOfWorkRepository(Customer.class, jdbcClient, mapper);
+    this.repo = new EntityUnitOfWorkRepository(Customer.class, jdbcClient);
 
   }
 

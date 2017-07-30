@@ -71,7 +71,7 @@ constructor(private val service: SampleService, private val mapper: ObjectMapper
   }
 
   override fun uowRepository(): EntityUnitOfWorkRepository {
-    return EntityUnitOfWorkRepository(Customer::class.java, jdbcClient, mapper)
+    return EntityUnitOfWorkRepository(Customer::class.java, jdbcClient)
   }
 
 
