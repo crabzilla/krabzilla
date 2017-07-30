@@ -16,10 +16,6 @@ interface EntityId : Serializable {
   val stringValue: String
 }
 
-interface Entity : Serializable {
-  val id: EntityId?
-}
-
 interface EntityCommand : Command {
   val targetId: EntityId
 }

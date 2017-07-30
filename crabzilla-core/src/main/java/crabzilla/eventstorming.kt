@@ -24,4 +24,6 @@ interface Policy
 
 interface EventListener : Policy
 
-interface ProcessManager : Entity, Policy
+interface ProcessManager : Serializable, Policy {
+  val id: EntityId?
+}

@@ -4,9 +4,8 @@
 package example1.datamodel.tables.pojos;
 
 
-import java.io.Serializable;
-
 import javax.annotation.Generated;
+import java.io.Serializable;
 
 
 /**

@@ -3,7 +3,6 @@ package crabzilla.vertx.verticles;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.vertx.EventProjector;
 import crabzilla.vertx.ProjectionData;
-import crabzilla.vertx.util.StringHelper;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.Message;

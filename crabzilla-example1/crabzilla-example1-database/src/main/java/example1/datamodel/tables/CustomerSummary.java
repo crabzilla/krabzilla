@@ -7,18 +7,12 @@ package example1.datamodel.tables;
 import example1.datamodel.Example1db;
 import example1.datamodel.Keys;
 import example1.datamodel.tables.records.CustomerSummaryRecord;
-
-import java.util.Arrays;
-import java.util.List;
+import org.jooq.*;
+import org.jooq.impl.TableImpl;
 
 import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.TableImpl;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**

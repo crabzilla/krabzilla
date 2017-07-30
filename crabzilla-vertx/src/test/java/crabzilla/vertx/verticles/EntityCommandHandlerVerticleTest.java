@@ -17,7 +17,6 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import kotlin.Lazy;
-import lombok.Value;
 import lombok.val;
 import org.junit.After;
 import org.junit.Before;

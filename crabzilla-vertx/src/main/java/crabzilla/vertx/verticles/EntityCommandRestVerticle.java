@@ -1,7 +1,6 @@
 package crabzilla.vertx.verticles;
 
 import crabzilla.Command;
-import crabzilla.Entity;
 import crabzilla.vertx.CommandExecution;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;

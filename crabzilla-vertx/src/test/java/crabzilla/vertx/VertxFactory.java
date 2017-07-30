@@ -2,8 +2,8 @@ package crabzilla.vertx;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import crabzilla.Command;
-import crabzilla.EntityId;
 import crabzilla.DomainEvent;
+import crabzilla.EntityId;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.vertx.codecs.JacksonGenericCodec;
 import io.vertx.core.Vertx;
