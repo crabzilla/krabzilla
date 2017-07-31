@@ -1,12 +1,11 @@
 package crabzilla.vertx.verticles;
 
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import crabzilla.*;
 import crabzilla.example1.aggregates.*;
-import crabzilla.vertx.commands.CommandExecution;
-import crabzilla.vertx.commands.execution.EntityCommandHandlerVerticle;
 import crabzilla.vertx.SnapshotData;
 import crabzilla.vertx.VertxFactory;
+import crabzilla.vertx.commands.CommandExecution;
+import crabzilla.vertx.commands.execution.EntityCommandHandlerVerticle;
 import crabzilla.vertx.commands.execution.EntityUnitOfWorkRepository;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
@@ -19,6 +18,7 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import kotlin.Lazy;
 import lombok.val;
+import net.jodah.expiringmap.ExpiringMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,12 +46,10 @@ public class EntityCommandHandlerVerticleTest {
   public static final String FORCED_CONCURRENCY_EXCEPTION = "FORCED CONCURRENCY EXCEPTION";
   Vertx vertx;
   CircuitBreaker circuitBreaker;
+  ExpiringMap<String, Snapshot<Customer>> cache;
 
   final Lazy<Customer> lazyCust =  new CustomerSeedValueFn().invoke();
-  final Snapshot<Customer> emptySnapshot = new Snapshot<>(lazyCust.getValue(),  new Version(0));
 
-  @Mock
-  LoadingCache<String, Snapshot<Customer>> cache;
   @Mock
   EntityCommandValidatorFn validatorFn;
   @Mock
@@ -74,6 +72,8 @@ public class EntityCommandHandlerVerticleTest {
                     .setFallbackOnFailure(false) // do we call the fallback on failure
                     .setResetTimeout(10000) // time spent in open state before attempting to re-try
     );
+
+    cache = ExpiringMap.create();
 
     val verticle = new EntityCommandHandlerVerticle<Customer>(Customer.class, lazyCust, validatorFn, cmdHandlerFn,
             cache, versionTrackerFn, eventRepository, circuitBreaker);
@@ -98,7 +98,6 @@ public class EntityCommandHandlerVerticleTest {
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
 
-    when(cache.getIfPresent(eq(customerId.getStringValue()))).thenReturn(null);
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(emptyList());
 
     doAnswer(answerVoid((VoidAnswer3<String, Version, Future<SnapshotData>>) (s, version, future) ->
@@ -161,7 +160,6 @@ public class EntityCommandHandlerVerticleTest {
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
     val expectedException = new Throwable("Expected");
 
-    when(cache.getIfPresent(eq(customerId.getStringValue()))).thenReturn(null);
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(emptyList());
 
     doAnswer(answerVoid((VoidAnswer3<String, Version, Future<SnapshotData>>) (s, version, future) ->
@@ -208,7 +206,6 @@ public class EntityCommandHandlerVerticleTest {
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
     val expectedException = new Throwable("Expected");
 
-    when(cache.getIfPresent(eq(customerId.getStringValue()))).thenReturn(null);
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(emptyList());
 
     doAnswer(answerVoid((VoidAnswer3<String, Version, Future<SnapshotData>>) (s, version, future) ->
@@ -265,7 +262,6 @@ public class EntityCommandHandlerVerticleTest {
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
 
-    when(cache.getIfPresent(eq(customerId.getStringValue()))).thenReturn(null);
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(emptyList());
 
     doAnswer(answerVoid((VoidAnswer3<String, Version, Future<SnapshotData>>) (s, version, future) ->
@@ -324,7 +320,6 @@ public class EntityCommandHandlerVerticleTest {
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
 
-    when(cache.getIfPresent(eq(customerId.getStringValue()))).thenReturn(null);
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(emptyList());
 
     doAnswer(answerVoid((VoidAnswer3<String, Version, Future<SnapshotData>>) (s, version, future) ->
@@ -413,7 +408,6 @@ public class EntityCommandHandlerVerticleTest {
     val createCustomerCmd = new UnknownCommand(UUID.randomUUID(), customerId);
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
 
-    when(cache.getIfPresent(eq(customerId.getStringValue()))).thenReturn(null);
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(emptyList());
 
     doAnswer(answerVoid((VoidAnswer3<String, Version, Future<SnapshotData>>) (s, version, future) ->

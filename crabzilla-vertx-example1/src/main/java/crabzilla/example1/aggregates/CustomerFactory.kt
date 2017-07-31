@@ -1,23 +1,23 @@
 package crabzilla.example1.aggregates
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.benmanes.caffeine.cache.Caffeine
 import crabzilla.*
 import crabzilla.example1.services.SampleService
 import crabzilla.vertx.EntityComponentsFactory
-import crabzilla.vertx.commands.execution.EntityUnitOfWorkRepository
-import crabzilla.vertx.util.StringHelper.circuitBreakerId
 import crabzilla.vertx.commands.execution.EntityCommandHandlerVerticle
 import crabzilla.vertx.commands.execution.EntityCommandRestVerticle
+import crabzilla.vertx.commands.execution.EntityUnitOfWorkRepository
+import crabzilla.vertx.util.StringHelper.circuitBreakerId
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.circuitbreaker.CircuitBreakerOptions
 import io.vertx.core.Vertx
 import io.vertx.ext.jdbc.JDBCClient
+import net.jodah.expiringmap.ExpirationPolicy
+import net.jodah.expiringmap.ExpiringMap
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CustomerFactory @Inject
-constructor(private val service: SampleService, private val mapper: ObjectMapper, private val vertx: Vertx, private val jdbcClient: JDBCClient)
+constructor(private val service: SampleService, private val vertx: Vertx, private val jdbcClient: JDBCClient)
   : EntityComponentsFactory<Customer> {
 
   val factory: (Customer) -> StateTracker<Customer> =  { c -> StateTracker(c, stateTransitionFn(), depInjectionFn())}
@@ -52,10 +52,12 @@ constructor(private val service: SampleService, private val mapper: ObjectMapper
 
   override fun cmdHandlerVerticle(): EntityCommandHandlerVerticle<Customer> {
 
-    val cache = Caffeine.newBuilder()
-            .maximumSize(10000)
-            .expireAfterWrite(5, TimeUnit.MINUTES)
-            .build<String, Snapshot<Customer>> { key -> null } // TODO you can plug your snapshot here!
+    val cache : ExpiringMap<String, Snapshot<Customer>> = ExpiringMap.builder()
+            .maxSize(10_000)
+            .expiration(10, TimeUnit.MINUTES)
+            .expirationPolicy(ExpirationPolicy.ACCESSED)
+            .entryLoader<String, Snapshot<Customer>> { key -> null } // TODO how to plug a non blocking loader ?
+            .build()
 
     val circuitBreaker = CircuitBreaker.create(circuitBreakerId(Customer::class.java), vertx,
             CircuitBreakerOptions()

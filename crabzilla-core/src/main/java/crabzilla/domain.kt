@@ -160,4 +160,3 @@ interface EntityFunctionsFactory<E> {
   fun versionTrackerFn(): VersionTrackerFn<E>
 
 }
-

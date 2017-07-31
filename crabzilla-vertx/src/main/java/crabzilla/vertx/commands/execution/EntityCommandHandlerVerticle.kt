@@ -1,6 +1,5 @@
 package crabzilla.vertx.commands.execution
 
-import com.github.benmanes.caffeine.cache.LoadingCache
 import crabzilla.*
 import crabzilla.vertx.SnapshotData
 import crabzilla.vertx.commands.CommandExecution
@@ -11,13 +10,13 @@ import io.vertx.core.AbstractVerticle
 import io.vertx.core.AsyncResult
 import io.vertx.core.Future
 import io.vertx.core.eventbus.Message
-
+import net.jodah.expiringmap.ExpiringMap
 
 class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                                       internal val seedValue: Lazy<E>,
                                       internal val validatorFn: EntityCommandValidatorFn,
                                       internal val cmdHandler: EntityCommandHandlerFn<E>,
-                                      internal val cache: LoadingCache<String, Snapshot<E>>,
+                                      internal val cache: ExpiringMap<String, Snapshot<E>>,
                                       internal val versionTracker: VersionTrackerFn<E>,
                                       internal val eventRepository: EntityUnitOfWorkRepository,
                                       internal val circuitBreaker: CircuitBreaker) : AbstractVerticle() {
@@ -77,9 +76,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       log.debug("cache.get(id)", targetId)
 
-      val snapshotFromCache = cache.getIfPresent(targetId)
-
-      val cachedSnapshot = snapshotFromCache ?: Snapshot(seedValue.value, Version(0))
+      val cachedSnapshot = cache[targetId] ?: Snapshot(seedValue.value, Version(0))
 
       log.debug("id {} cached lastSnapshotData has version {}. Will check if there any version beyond it",
               targetId, cachedSnapshot.version)
@@ -161,11 +158,11 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
           })
 
-          cmdHandlerResult.inCaseOfError( { error ->
+          cmdHandlerResult.inCaseOfError({ error ->
 
             log.error("Command handling error for $command -> $error.message")
 
-            val cmdExecResult = when(error) {
+            val cmdExecResult = when (error) {
 
               is UnknownCommandException -> CommandExecution(commandId = command.commandId,
                       result = RESULT.UNKNOWN_COMMAND,
