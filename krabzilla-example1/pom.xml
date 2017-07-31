@@ -4,17 +4,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>crabzilla</groupId>
-        <artifactId>crabzilla</artifactId>
+        <groupId>krabzilla</groupId>
+        <artifactId>krabzilla</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>crabzilla-example1</artifactId>
+    <artifactId>krabzilla-example1</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>crabzilla-example1-core</module>
-        <module>crabzilla-example1-database</module>
+        <module>krabzilla-example1-core</module>
+        <module>krabzilla-example1-database</module>
     </modules>
 
     <properties>
@@ -26,17 +26,5 @@
 
     <dependencies>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>crabzilla</groupId>
-                <artifactId>crabzilla-dependencies</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>

@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>crabzilla</groupId>
-        <artifactId>crabzilla-example1</artifactId>
+        <groupId>krabzilla</groupId>
+        <artifactId>krabzilla-example1</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>crabzilla-example1-database</artifactId>
+    <artifactId>krabzilla-example1-database</artifactId>
     <packaging>jar</packaging>
 
     <properties>
