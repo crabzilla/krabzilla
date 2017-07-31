@@ -60,7 +60,7 @@ class CustomerCommandHandlerFn (val trackerFactory: (Customer) -> StateTracker<C
           EntityUnitOfWork(command, events, newVersion)
         }
 
-        else -> throw UnknownCommandException("for command $command.javaClass.simpleName")
+        else -> throw UnknownCommandException("for command ${command.javaClass.simpleName}")
 
       }
 
