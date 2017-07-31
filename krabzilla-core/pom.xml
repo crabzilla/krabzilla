@@ -22,7 +22,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
         </dependency>
 
         <!-- to inform Jackson on how to serialize polymorphic objects: Command, Event, EntityId, .. -->
