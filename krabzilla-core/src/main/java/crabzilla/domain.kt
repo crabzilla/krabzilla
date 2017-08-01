@@ -92,7 +92,7 @@ class StateTracker<E>(val originalInstance: E,
 
 }
 
-open class VersionTrackerFn<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
+open class SnapshotUpgraderFn<E> @Inject constructor(val trackerFactory: (E) -> StateTracker<E>) :
         (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
 
   override fun invoke(originalSnapshot: Snapshot<E>, newVersion: Version, newEvents: List<DomainEvent>): Snapshot<E> {
@@ -139,7 +139,7 @@ open interface EntityCommandHandlerFn<in E> : (EntityCommand, Snapshot<E>) -> Co
   fun result(f: () -> EntityUnitOfWork?): CommandHandlerResult {
 
     return try { CommandHandlerResult(successValue=f.invoke()) }
-    catch (e: Throwable) { CommandHandlerResult(error=RuntimeException("from command handler", e)) }
+    catch (e: Throwable) { CommandHandlerResult(error=RuntimeException("from ${this.javaClass.simpleName}", e)) }
 
   }
 
@@ -157,6 +157,6 @@ interface EntityFunctionsFactory<E> {
 
   fun depInjectionFn(): (E) -> E
 
-  fun versionTrackerFn(): VersionTrackerFn<E>
+  fun snapshotUpgrader(): SnapshotUpgraderFn<E>
 
 }

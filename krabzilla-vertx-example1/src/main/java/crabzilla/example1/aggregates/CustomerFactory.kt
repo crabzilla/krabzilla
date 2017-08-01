@@ -38,8 +38,8 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
     return CustomerCommandHandlerFn(factory)
   }
 
-  override fun versionTrackerFn(): VersionTrackerFn<Customer> {
-    return VersionTrackerFn(factory)
+  override fun snapshotUpgrader(): SnapshotUpgraderFn<Customer> {
+    return SnapshotUpgraderFn(factory)
   }
 
   override fun depInjectionFn(): (Customer) -> Customer {
@@ -68,7 +68,7 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
     )
 
     return EntityCommandHandlerVerticle(Customer::class.java, seedValueFn().invoke(),
-            cmdValidatorFn(), cmdHandlerFn(), cache, versionTrackerFn(), uowRepository(), circuitBreaker)
+            cmdValidatorFn(), cmdHandlerFn(), cache, snapshotUpgrader(), uowRepository(), circuitBreaker)
   }
 
   override fun uowRepository(): EntityUnitOfWorkRepository {

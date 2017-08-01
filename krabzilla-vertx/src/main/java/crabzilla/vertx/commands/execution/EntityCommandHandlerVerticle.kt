@@ -17,7 +17,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                                       internal val validatorFn: EntityCommandValidatorFn,
                                       internal val cmdHandler: EntityCommandHandlerFn<E>,
                                       internal val cache: ExpiringMap<String, Snapshot<E>>,
-                                      internal val versionTracker: VersionTrackerFn<E>,
+                                      internal val snapshotUpgrader: SnapshotUpgraderFn<E>,
                                       internal val eventRepository: EntityUnitOfWorkRepository,
                                       internal val circuitBreaker: CircuitBreaker) : AbstractVerticle() {
 
@@ -77,6 +77,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
       log.debug("cache.get(id)", targetId)
 
       val cachedSnapshot = cache[targetId] ?: Snapshot(seedValue.value, Version(0))
+      // TODO look for the current snapshot in a repo when cache does not contain targetId
 
       log.debug("id {} cached lastSnapshotData has version {}. Will check if there any version beyond it",
               targetId, cachedSnapshot.version)
@@ -85,7 +86,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       eventRepository.selectAfterVersion(targetId, cachedSnapshot.version, selectAfterVersionFuture)
 
-      selectAfterVersionFuture.setHandler { snapshotDataAsyncResult ->
+        selectAfterVersionFuture.setHandler { snapshotDataAsyncResult ->
 
         if (snapshotDataAsyncResult.failed()) {
           future1.fail(snapshotDataAsyncResult.cause())
@@ -100,7 +101,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                 nonCached.version)
 
         val resultingSnapshot = if (totalOfNonCachedEvents > 0)
-          versionTracker.invoke(cachedSnapshot, nonCached.version, nonCached.events)
+          snapshotUpgrader.invoke(cachedSnapshot, nonCached.version, nonCached.events)
         else
           cachedSnapshot
 

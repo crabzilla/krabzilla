@@ -21,6 +21,7 @@ import lombok.val;
 import net.jodah.expiringmap.ExpiringMap;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
@@ -29,10 +30,12 @@ import org.mockito.stubbing.VoidAnswer2;
 import org.mockito.stubbing.VoidAnswer3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static crabzilla.vertx.commands.CommandExecution.RESULT;
 import static crabzilla.vertx.util.StringHelper.commandHandlerId;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.mockito.AdditionalAnswers.answerVoid;
@@ -57,7 +60,7 @@ public class EntityCommandHandlerVerticleTest {
   @Mock
   EntityUnitOfWorkRepository eventRepository;
   @Mock
-  VersionTrackerFn<Customer> versionTrackerFn;
+  SnapshotUpgraderFn<Customer> snapshotUpgraderFn;
 
   @Before
   public void setUp(TestContext context) {
@@ -76,7 +79,7 @@ public class EntityCommandHandlerVerticleTest {
     cache = ExpiringMap.create();
 
     val verticle = new EntityCommandHandlerVerticle<Customer>(Customer.class, lazyCust, validatorFn, cmdHandlerFn,
-            cache, versionTrackerFn, eventRepository, circuitBreaker);
+            cache, snapshotUpgraderFn, eventRepository, circuitBreaker);
 
     vertx.deployVerticle(verticle, context.asyncAssertSuccess());
 
@@ -365,38 +368,38 @@ public class EntityCommandHandlerVerticleTest {
 
   }
 
-//  @Test
-//  public void VALIDATION_ERROR_scenario(TestContext tc) {
-//
-//    Async async = tc.async();
-//
-//    val customerId = new CustomerId("customer#1");
-//    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer1");
-//
-//    List<String> errorList = new ArrayList<>();
+  @Test @Ignore // TODO fix cannot mock validation
+  public void VALIDATION_ERROR_scenario(TestContext tc) {
+
+    Async async = tc.async();
+
+    val customerId = new CustomerId("customer#1");
+    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "a bad name");
+
+    List<String> errorList = singletonList("Invalid name: a bad name");
 //    when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(errorList);
-//
-//    val options = new DeliveryOptions().setCodecName("Command");
-//
-//    vertx.eventBus().send(commandHandlerId(Customer.class), createCustomerCmd, options, asyncResult -> {
-//
-//      verify(validatorFn).invoke(eq(createCustomerCmd));
-//
-//      verifyNoMoreInteractions(validatorFn, cmdHandlerFn, eventRepository);
-//
-//      tc.assertTrue(asyncResult.succeeded());
-//
-//      val response = (CommandExecution) asyncResult.result().body();
-//
-//      tc.assertEquals(RESULT.VALIDATION_ERROR, response.getResult());
-//
-//      tc.assertEquals(asList("An error"), response.getConstraints());
-//
-//      async.complete();
-//
-//    });
-//
-//  }
+
+    val options = new DeliveryOptions().setCodecName("Command");
+
+    vertx.eventBus().send(commandHandlerId(Customer.class), createCustomerCmd, options, asyncResult -> {
+
+      verify(validatorFn).invoke(eq(createCustomerCmd));
+
+      verifyNoMoreInteractions(validatorFn, cmdHandlerFn, eventRepository);
+
+      tc.assertTrue(asyncResult.succeeded());
+
+      val response = (CommandExecution) asyncResult.result().body();
+
+      tc.assertEquals(RESULT.VALIDATION_ERROR, response.getResult());
+
+      tc.assertEquals(asList("Invalid name: a bad name"), response.getConstraints());
+
+      async.complete();
+
+    });
+
+  }
 
 
   @Test

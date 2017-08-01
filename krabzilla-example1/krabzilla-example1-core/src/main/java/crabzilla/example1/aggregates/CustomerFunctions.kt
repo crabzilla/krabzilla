@@ -28,7 +28,12 @@ class CustomerStateTransitionFn : StateTransitionFn<Customer> {
 class CustomerCommandValidatorFn : EntityCommandValidatorFn {
 
   override fun invoke(command: EntityCommand): List<String> {
-    return listOf() // TODO implement. Right now all commands are valid
+
+    return when(command) {
+      is CreateCustomerCmd -> if (command.name.equals("a bad name")) listOf("Invalid name: ${command.name}") else listOf()
+      else -> listOf()
+    }
+
   }
 
 }
@@ -38,21 +43,21 @@ class CustomerCommandHandlerFn (val trackerFactory: (Customer) -> StateTracker<C
 
   override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {
 
-    val target = snapshot.instance
+    val customer = snapshot.instance
     val newVersion = snapshot.version.nextVersion()
 
     return result {
 
       when (command) {
 
-        is CreateCustomerCmd -> EntityUnitOfWork(command, target.create(command.targetId, command.name), newVersion)
+        is CreateCustomerCmd -> EntityUnitOfWork(command, customer.create(command.targetId, command.name), newVersion)
 
-        is ActivateCustomerCmd -> EntityUnitOfWork(command, target.activate(command.reason), newVersion)
+        is ActivateCustomerCmd -> EntityUnitOfWork(command, customer.activate(command.reason), newVersion)
 
-        is DeactivateCustomerCmd -> EntityUnitOfWork(command, target.deactivate(command.reason), newVersion)
+        is DeactivateCustomerCmd -> EntityUnitOfWork(command, customer.deactivate(command.reason), newVersion)
 
         is CreateActivateCustomerCmd -> {
-          val tracker = trackerFactory.invoke(target)
+          val tracker = trackerFactory.invoke(customer)
           val events = tracker
                   .applyEvents({ customer -> customer.create(command.targetId, command.name) })
                   .applyEvents({ customer -> customer.activate(command.reason) })
