@@ -1,2 +1,7 @@
 
-READ MODEL to JSON : https://github.com/jOOQ/jOOQ/issues/5372
+READ MODEL
+
+JSON : https://github.com/jOOQ/jOOQ/issues/5372
+PAGINATION: https://blog.jooq.org/2016/08/10/why-most-programmers-get-pagination-wrong/
+
+GITHUB PAGES: http://mgreau.com/posts/2016/03/28/asciidoc-to-gh-pages-with-travis-ci-docker-asciidoctor.html

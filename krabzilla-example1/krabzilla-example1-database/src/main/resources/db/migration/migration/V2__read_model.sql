@@ -8,6 +8,8 @@ CREATE TABLE events_channels (
     )
     ;
 
+// tag::readmodel[]
+
 DROP TABLE if exists customer_summary ;
 
 CREATE TABLE customer_summary (
@@ -16,3 +18,5 @@ CREATE TABLE customer_summary (
     is_active BOOLEAN NOT NULL,
     PRIMARY KEY (id)
     )
+
+// tag::readmodel[]

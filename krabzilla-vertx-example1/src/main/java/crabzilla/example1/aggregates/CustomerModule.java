@@ -18,10 +18,13 @@ public class CustomerModule extends AbstractModule {
     bind(CustomerFactory.class).asEagerSingleton();
 
     // to bind verticles for this aggregate
-    TypeLiteral<EntityCommandRestVerticle<Customer>> restType = new TypeLiteral<EntityCommandRestVerticle<Customer>>() {};
-    TypeLiteral<EntityCommandHandlerVerticle<Customer>> handlerType = new TypeLiteral<EntityCommandHandlerVerticle<Customer>>() {};
+    TypeLiteral<EntityCommandRestVerticle<Customer>> restType =
+            new TypeLiteral<EntityCommandRestVerticle<Customer>>() {};
+    TypeLiteral<EntityCommandHandlerVerticle<Customer>> handlerType =
+            new TypeLiteral<EntityCommandHandlerVerticle<Customer>>() {};
 
-    MapBinder<String, Verticle> mapbinder = MapBinder.newMapBinder(binder(), String.class, Verticle.class);
+    MapBinder<String, Verticle> mapbinder =
+            MapBinder.newMapBinder(binder(), String.class, Verticle.class);
 
     mapbinder.addBinding("customer.rest").to(restType);
     mapbinder.addBinding("customer.handler").to(handlerType);
