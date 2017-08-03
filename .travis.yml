@@ -15,4 +15,4 @@ cache:
 install:
 - mvn clean install -DskipITs=true
 script:
-- mvn clean install site
+# - mvn clean install site
