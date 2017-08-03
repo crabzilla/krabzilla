@@ -13,6 +13,6 @@ cache:
   directories:
   - "$HOME/.m2"
 install:
-- mvn dependency:go-offline
+- mvn clean install -DskipITs=true
 script:
 - mvn clean install site
