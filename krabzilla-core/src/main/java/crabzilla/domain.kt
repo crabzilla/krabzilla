@@ -92,6 +92,45 @@ class StateTracker<E>(val originalInstance: E,
 
 }
 
+// tag::entities_functions[]
+
+open interface EntityCommandHandlerFn<in E> :
+        (EntityCommand, Snapshot<E>) -> CommandHandlerResult {
+  fun result(f: () -> EntityUnitOfWork?): CommandHandlerResult {
+    return try { CommandHandlerResult(successValue=f.invoke()) }
+    catch (e: Throwable) {
+      CommandHandlerResult(error=RuntimeException("from ${this.javaClass.simpleName}", e)) }
+  }
+}
+
+// end::entities_functions[]
+
+// tag::factory[]
+
+interface EntityFunctionsFactory<E> {
+  fun seedValueFn(): () -> Lazy<E>
+  fun stateTransitionFn(): (DomainEvent, E) -> E
+  fun cmdValidatorFn(): (EntityCommand) -> List<String>
+  fun cmdHandlerFn(): EntityCommandHandlerFn<E>
+}
+
+// end::factory[]
+
+open class SnapshotUpgraderFn<E> @Inject
+constructor(val trackerFactory: (E) -> StateTracker<E>) :
+        (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
+  override fun invoke(originalSnapshot: Snapshot<E>,
+                      newVersion: Version,
+                      newEvents: List<DomainEvent>): Snapshot<E> {
+    if (originalSnapshot.version.valueAsLong != newVersion.valueAsLong - 1) {
+      throw RuntimeException(String.format("Cannot upgrade to version %s since my version is %s",
+              newVersion, originalSnapshot.version))
+    }
+    val tracker = trackerFactory.invoke(originalSnapshot.instance)
+    return Snapshot(tracker.applyEvents({ e -> newEvents }).currentState(), newVersion)
+  }
+}
+
 class UnknownCommandException(p0: String?) : RuntimeException(p0)
 
 class ConcurrencyConflictException(p0: String?) : RuntimeException(p0)
@@ -108,44 +147,3 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
     }
   }
 }
-
-// tag::entities_functions[]
-
-open interface EntityCommandHandlerFn<in E> :
-        (EntityCommand, Snapshot<E>) -> CommandHandlerResult {
-  fun result(f: () -> EntityUnitOfWork?): CommandHandlerResult {
-    return try { CommandHandlerResult(successValue=f.invoke()) }
-    catch (e: Throwable) {
-      CommandHandlerResult(error=RuntimeException("from ${this.javaClass.simpleName}", e)) }
-  }
-}
-
-open class SnapshotUpgraderFn<E> @Inject
-  constructor(val trackerFactory: (E) -> StateTracker<E>) :
-        (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
-  override fun invoke(originalSnapshot: Snapshot<E>,
-                      newVersion: Version,
-                      newEvents: List<DomainEvent>): Snapshot<E> {
-    if (originalSnapshot.version.valueAsLong != newVersion.valueAsLong - 1) {
-      throw RuntimeException(String.format("Cannot upgrade to version %s since my version is %s",
-              newVersion, originalSnapshot.version))
-    }
-    val tracker = trackerFactory.invoke(originalSnapshot.instance)
-    return Snapshot(tracker.applyEvents({ e -> newEvents }).currentState(), newVersion)
-  }
-}
-
-// end::entities_functions[]
-
-// tag::factory[]
-
-interface EntityFunctionsFactory<E> {
-  fun seedValueFn(): () -> Lazy<E>
-  fun stateTransitionFn(): (DomainEvent, E) -> E
-  fun cmdValidatorFn(): (EntityCommand) -> List<String>
-  fun cmdHandlerFn(): EntityCommandHandlerFn<E>
-  fun depInjectionFn(): (E) -> E
-  fun snapshotUpgrader(): SnapshotUpgraderFn<E>
-}
-
-// end::factory[]

@@ -4,6 +4,8 @@
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../../main/java]
 
+Status: *WORK IN PROGRESS*
+
 == Introduction
 
 Krabzilla is Crabzilla written in Kotlin. Both projects don't share libraries in order to allows idiomatic code, but
@@ -14,12 +16,12 @@ the intent is both projects will have the same features, just different implemen
 * krabzilla-core
 * krabzilla-vertx
 
-and the typical *examplex* bounded context project will have this structure:
+and the typical *example1* bounded context project will have this structure:
 
- examplex             → Project root
-  └ examplex-core     → Your domain code. Almost zero dependencies.
-  └ examplex-database → Examplex database classes using Flyway and JOOQ
-  └ examplex-service  → Wire and configure your examplex service running on Vert.x
+ example1             → Project root
+  └ example1-core     → Your domain code. Almost zero dependencies.
+  └ example1-database → Example1 database classes using Flyway and JOOQ
+  └ example1-service  → Wire and configure your example1 service running on Vert.x
 
 == The approach
 
@@ -38,23 +40,26 @@ Krabzilla expects you to implement your bounded context by writing these compone
 * fun cmdValidatorFn(): EntityCommand -> List<String>
 * fun cmdHandlerFn(): EntityCommandHandlerFn<E>
 | * fun depInjectionFn(): (E) -> E
-* fun snapshotUpgrader(): SnapshotUpgraderFn<E>
 
 |External System
-|TBD
-|TBD
+|
+|
 
-|Policy
-|TBD
-|TBD
+|Listener
+|
+|
+
+|Process Manager
+|
+|
 
 |Events projection
-|TBD
-|TBD
+|
+|
 
 |===
 
-These functions are more explicit here:
+*EntityCommandHandlerFn* is a function too:
 
 [source,kotlin]
 .domain.kt
@@ -68,8 +73,6 @@ Krabzilla will observe the results from these functions and will persist these r
 * UnitOfWork
 * Reactions
 * Scheduled commands
-
-(WORK IN PROGRESS)
 
 == krabzilla-example1
 
