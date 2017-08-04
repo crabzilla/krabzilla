@@ -111,10 +111,6 @@ class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error
 
 // tag::entities_functions[]
 
-interface StateTransitionFn<E> : (DomainEvent, E) -> E
-
-open interface EntityCommandValidatorFn : (EntityCommand) -> List<String>
-
 open interface EntityCommandHandlerFn<in E> :
         (EntityCommand, Snapshot<E>) -> CommandHandlerResult {
   fun result(f: () -> EntityUnitOfWork?): CommandHandlerResult {
@@ -145,8 +141,8 @@ open class SnapshotUpgraderFn<E> @Inject
 
 interface EntityFunctionsFactory<E> {
   fun seedValueFn(): () -> Lazy<E>
-  fun stateTransitionFn(): StateTransitionFn<E>
-  fun cmdValidatorFn(): EntityCommandValidatorFn
+  fun stateTransitionFn(): (DomainEvent, E) -> E
+  fun cmdValidatorFn(): (EntityCommand) -> List<String>
   fun cmdHandlerFn(): EntityCommandHandlerFn<E>
   fun depInjectionFn(): (E) -> E
   fun snapshotUpgrader(): SnapshotUpgraderFn<E>

@@ -26,11 +26,11 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
     return CustomerSeedValueFn()
   }
 
-  override fun stateTransitionFn(): StateTransitionFn<Customer> {
+  override fun stateTransitionFn(): (DomainEvent, Customer) -> Customer {
     return CustomerStateTransitionFn()
   }
 
-  override fun cmdValidatorFn(): EntityCommandValidatorFn {
+  override fun cmdValidatorFn(): (EntityCommand) -> List<String> {
     return CustomerCommandValidatorFn()
   }
 

@@ -16,7 +16,9 @@ import io.vertx.core.eventbus.ReplyException;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import kotlin.Function;
 import kotlin.Lazy;
+import kotlin.jvm.functions.Function1;
 import lombok.val;
 import net.jodah.expiringmap.ExpiringMap;
 import org.junit.After;
@@ -54,7 +56,7 @@ public class EntityCommandHandlerVerticleTest {
   final Lazy<Customer> lazyCust =  new CustomerSeedValueFn().invoke();
 
   @Mock
-  EntityCommandValidatorFn validatorFn;
+  Function1<EntityCommand, List<String>> validatorFn;
   @Mock
   EntityCommandHandlerFn<Customer> cmdHandlerFn;
   @Mock
@@ -368,7 +370,7 @@ public class EntityCommandHandlerVerticleTest {
 
   }
 
-  @Test @Ignore // TODO fix cannot mock validation
+  @Test
   public void VALIDATION_ERROR_scenario(TestContext tc) {
 
     Async async = tc.async();
@@ -377,7 +379,7 @@ public class EntityCommandHandlerVerticleTest {
     val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "a bad name");
 
     List<String> errorList = singletonList("Invalid name: a bad name");
-//    when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(errorList);
+    when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(errorList);
 
     val options = new DeliveryOptions().setCodecName("Command");
 

@@ -8,7 +8,7 @@ class CustomerSeedValueFn : () -> Lazy<Customer> { // <1>
   }
 }
 
-class CustomerStateTransitionFn : StateTransitionFn<Customer> { // <2>
+class CustomerStateTransitionFn : (DomainEvent, Customer) -> Customer { // <2>
   override fun invoke(event: DomainEvent, customer: Customer): Customer {
     return when(event) {
       is CustomerCreated -> customer.copy(id = event.id, name =  event.name)
@@ -19,7 +19,7 @@ class CustomerStateTransitionFn : StateTransitionFn<Customer> { // <2>
   }
 }
 
-class CustomerCommandValidatorFn : EntityCommandValidatorFn { // <3>
+class CustomerCommandValidatorFn : (EntityCommand) -> List<String> { // <3>
   override fun invoke(command: EntityCommand): List<String> {
     return when(command) {
       is CreateCustomerCmd ->

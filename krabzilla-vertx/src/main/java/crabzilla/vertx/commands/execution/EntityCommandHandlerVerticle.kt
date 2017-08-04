@@ -14,7 +14,7 @@ import net.jodah.expiringmap.ExpiringMap
 
 class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                                       internal val seedValue: Lazy<E>,
-                                      internal val validatorFn: EntityCommandValidatorFn,
+                                      internal val validatorFn: (EntityCommand) -> List<String>,
                                       internal val cmdHandler: EntityCommandHandlerFn<E>,
                                       internal val cache: ExpiringMap<String, Snapshot<E>>,
                                       internal val snapshotUpgrader: SnapshotUpgraderFn<E>,
