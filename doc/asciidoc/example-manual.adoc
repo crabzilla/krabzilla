@@ -12,12 +12,7 @@ was created by rewriting some Java components from Crabzilla in Kotlin.
 
 == The approach
 
-I think the best way to learn about Krabzilla design is to examine this diagram: http://eventstorming.com/[Eventstorming].
-
-[.thumb]
-image::eventstorming-distilled.png[scaledwidth=100%]
-
-based on this, Krabzilla expects you to implement your bounded context by writing these components:
+Krabzilla expects you to implement your bounded context by writing these components:
 
 [cols="1,3a,2a,1", options="header"]
 |===
@@ -29,8 +24,8 @@ based on this, Krabzilla expects you to implement your bounded context by writin
 |Aggregate
 {set:cellbgcolor:yellow}
 |* fun seedValueFn(): () -> Lazy<E>
-* fun stateTransitionFn(): StateTransitionFn<E>
-* fun cmdValidatorFn(): EntityCommandValidatorFn
+* fun stateTransitionFn(): DomainEvent<E> -> E
+* fun cmdValidatorFn(): EntityCommand -> List<String>
 * fun cmdHandlerFn(): EntityCommandHandlerFn<E>
 | * fun depInjectionFn(): (E) -> E
 * fun snapshotUpgrader(): SnapshotUpgraderFn<E>
@@ -63,7 +58,7 @@ These functions are more explicit here:
 include::./krabzilla-core/src/main/java/crabzilla/domain.kt[tags=entities_functions,indent=0]
 ----
 
-Krabzilla will observe the results from these functions and will persiste these results:
+Krabzilla will observe the results from these functions and will persist these results:
 
 * EntityUnitOfWork
 * UnitOfWork
