@@ -19,7 +19,7 @@ and the typical project have this structure:
 examplex
   examplex-core
   examplex-database
-  examplex-vertx
+  examplex-service
 
 == The approach
 
