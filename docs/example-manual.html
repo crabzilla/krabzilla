@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.6.1">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <title>Krabzila Documentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -89,12 +89,13 @@ strong,b{font-weight:bold;line-height:inherit}
 small{font-size:60%;line-height:inherit}
 code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
 ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
-ul,ol{margin-left:1.5em}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
 ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
 ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -130,11 +131,7 @@ strong strong{font-weight:400}
 kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
 .keyseq kbd:first-child{margin-left:0}
 .keyseq kbd:last-child{margin-right:0}
-.menuseq,.menuref{color:#000}
-.menuseq b:not(.caret),.menuref{font-weight:inherit}
-.menuseq{word-spacing:-.02em}
-.menuseq b.caret{font-size:1.25em;line-height:.8}
-.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
 b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
 b.button:before{content:"[";padding:0 3px 0 2px}
 b.button:after{content:"]";padding:0 2px 0 3px}
@@ -201,7 +198,7 @@ table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
 table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
 .admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
 .admonitionblock>table td.icon{text-align:center;width:80px}
-.admonitionblock>table td.icon img{max-width:initial}
+.admonitionblock>table td.icon img{max-width:none}
 .admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
 .admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
 .admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
@@ -257,13 +254,13 @@ table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
 table.tableblock{max-width:100%;border-collapse:separate}
 table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
 table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
-table.grid-all>thead>tr>.tableblock,table.grid-all>tbody>tr>.tableblock{border-width:0 1px 1px 0}
-table.grid-all>tfoot>tr>.tableblock{border-width:1px 1px 0 0}
-table.grid-cols>*>tr>.tableblock{border-width:0 1px 0 0}
-table.grid-rows>thead>tr>.tableblock,table.grid-rows>tbody>tr>.tableblock{border-width:0 0 1px 0}
-table.grid-rows>tfoot>tr>.tableblock{border-width:1px 0 0 0}
-table.grid-all>*>tr>.tableblock:last-child,table.grid-cols>*>tr>.tableblock:last-child{border-right-width:0}
-table.grid-all>tbody>tr:last-child>.tableblock,table.grid-all>thead:last-child>tr>.tableblock,table.grid-rows>tbody>tr:last-child>.tableblock,table.grid-rows>thead:last-child>tr>.tableblock{border-bottom-width:0}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
 table.frame-all{border-width:1px}
 table.frame-sides{border-width:0 1px}
 table.frame-topbot{border-width:1px 0}
@@ -284,12 +281,10 @@ ul li ol{margin-left:1.5em}
 dl dd{margin-left:1.125em}
 dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
 ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
-ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
-ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
-ul.unstyled,ol.unstyled{margin-left:0}
-ul.checklist{margin-left:.625em}
-ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
-ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
 ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
 ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
 ul.inline>li>*{display:block}
@@ -306,8 +301,7 @@ ol.lowergreek{list-style-type:lower-greek}
 td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
 td.hdlist1{font-weight:bold;padding-bottom:1.25em}
 .literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
-.colist>table tr>td:first-of-type{padding:.4em .75em 0 .75em;line-height:1;vertical-align:top}
-.colist>table tr>td:first-of-type img{max-width:initial}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
 .colist>table tr>td:last-of-type{padding:.25em 0}
 .thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
 .imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
@@ -370,7 +364,6 @@ div.unbreakable{page-break-inside:avoid}
 .yellow{color:#bfbf00}
 .yellow-background{background-color:#fafa00}
 span.icon>.fa{cursor:default}
-a span.icon>.fa{cursor:inherit}
 .admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
 .admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
 .admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
@@ -424,17 +417,131 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
 <h1>Krabzila Documentation</h1>
 <div class="details">
-<span id="revnumber">version {project-version}</span>
+<span id="revnumber">version 1.0-SNAPSHOT</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#the-approach">The approach</a></li>
+<li><a href="#krabzilla-example1">krabzilla-example1</a>
+<ul class="sectlevel2">
+<li><a href="#events-and-commands">Events and commands</a></li>
+<li><a href="#functions">Functions</a></li>
+<li><a href="#aggregate">Aggregate</a></li>
+<li><a href="#read-model">Read Model</a></li>
+</ul>
+</li>
+<li><a href="#krabzilla-vertx-example1">krabzilla-vertx-example1</a>
+<ul class="sectlevel2">
+<li><a href="#wiring-the-functions">Wiring the functions</a></li>
+</ul>
+</li>
+<li><a href="#attributes">Attributes</a></li>
+<li><a href="#includes">Includes</a></li>
+</ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_introduction">Introduction</h2>
+<h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Krabzilla aims to help you write your domain model with very little framework overhead and smoothly deploy it on a
@@ -444,18 +551,10 @@ was created by rewriting some Java components from Crabzilla in Kotlin.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_approach">The approach</h2>
+<h2 id="the-approach"><a class="anchor" href="#the-approach"></a>The approach</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>I think the best way to learn about Krabzilla design is to examine this diagram: <a href="http://eventstorming.com/">Eventstorming</a>.</p>
-</div>
-<div class="imageblock thumb">
-<div class="content">
-<img src="images/eventstorming-distilled.png" alt="eventstorming distilled">
-</div>
-</div>
-<div class="paragraph">
-<p>based on this, Krabzilla expects you to implement your bounded context by writing these components:</p>
+<p>Krabzilla expects you to implement your bounded context by writing these components:</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -474,24 +573,24 @@ was created by rewriting some Java components from Crabzilla in Kotlin.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: yellow;"><p class="tableblock">Aggregate</p></td>
-<td class="tableblock halign-left valign-top" style="background-color: yellow;"><div><div class="ulist">
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
 <ul>
 <li>
 <p>fun seedValueFn(): () &#8594; Lazy&lt;E&gt;</p>
 </li>
 <li>
-<p>fun stateTransitionFn(): StateTransitionFn&lt;E&gt;</p>
+<p>fun stateTransitionFn(): DomainEvent&lt;E&gt; &#8594; E</p>
 </li>
 <li>
-<p>fun cmdValidatorFn(): EntityCommandValidatorFn</p>
+<p>fun cmdValidatorFn(): EntityCommand &#8594; List&lt;String&gt;</p>
 </li>
 <li>
 <p>fun cmdHandlerFn(): EntityCommandHandlerFn&lt;E&gt;</p>
 </li>
 </ul>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: yellow;"><div><div class="ulist">
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
 <ul>
 <li>
 <p>fun depInjectionFn(): (E) &#8594; E</p>
@@ -501,37 +600,37 @@ was created by rewriting some Java components from Crabzilla in Kotlin.</p>
 </li>
 </ul>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: yellow;"><p class="tableblock">N</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: pink;"><p class="tableblock">External System</p></td>
-<td class="tableblock halign-left valign-top" style="background-color: pink;"><div><div class="paragraph">
+<td class="tableblock halign-left valign-top"><p class="tableblock">External System</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>TBD</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: pink;"><div><div class="paragraph">
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>TBD</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: pink;"><p class="tableblock">N</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><p class="tableblock">Policy</p></td>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><div><div class="paragraph">
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>TBD</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><div><div class="paragraph">
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>TBD</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><p class="tableblock">N</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><p class="tableblock">Events projection</p></td>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><div><div class="paragraph">
+<td class="tableblock halign-left valign-top"><p class="tableblock">Events projection</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>TBD</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><div><div class="paragraph">
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>TBD</p>
 </div></div></td>
-<td class="tableblock halign-left valign-top" style="background-color: RosyBrown2;"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
 </tbody>
 </table>
@@ -541,16 +640,12 @@ was created by rewriting some Java components from Crabzilla in Kotlin.</p>
 <div class="listingblock">
 <div class="title">domain.kt</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">interface StateTransitionFn&lt;E&gt; : (DomainEvent, E) -&gt; E
-
-open interface EntityCommandValidatorFn : (EntityCommand) -&gt; List&lt;String&gt;
-
-open interface EntityCommandHandlerFn&lt;in E&gt; :
+<pre class="CodeRay highlight"><code data-lang="kotlin">open interface EntityCommandHandlerFn&lt;in E&gt; :
         (EntityCommand, Snapshot&lt;E&gt;) -&gt; CommandHandlerResult {
   fun result(f: () -&gt; EntityUnitOfWork?): CommandHandlerResult {
     return try { CommandHandlerResult(successValue=f.invoke()) }
     catch (e: Throwable) {
-      CommandHandlerResult(error=RuntimeException("from ${this.javaClass.simpleName}", e)) }
+      CommandHandlerResult(error=RuntimeException(&quot;from ${this.javaClass.simpleName}&quot;, e)) }
   }
 }
 
@@ -561,7 +656,7 @@ open class SnapshotUpgraderFn&lt;E&gt; @Inject
                       newVersion: Version,
                       newEvents: List&lt;DomainEvent&gt;): Snapshot&lt;E&gt; {
     if (originalSnapshot.version.valueAsLong != newVersion.valueAsLong - 1) {
-      throw RuntimeException(String.format("Cannot upgrade to version %s since my version is %s",
+      throw RuntimeException(String.format(&quot;Cannot upgrade to version %s since my version is %s&quot;,
               newVersion, originalSnapshot.version))
     }
     val tracker = trackerFactory.invoke(originalSnapshot.instance)
@@ -571,7 +666,7 @@ open class SnapshotUpgraderFn&lt;E&gt; @Inject
 </div>
 </div>
 <div class="paragraph">
-<p>Krabzilla will observe the results from these functions and will persiste these results:</p>
+<p>Krabzilla will observe the results from these functions and will persist these results:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -595,7 +690,7 @@ open class SnapshotUpgraderFn&lt;E&gt; @Inject
 </div>
 </div>
 <div class="sect1">
-<h2 id="_krabzilla_example1">krabzilla-example1</h2>
+<h2 id="krabzilla-example1"><a class="anchor" href="#krabzilla-example1"></a>krabzilla-example1</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This example show how to write a simplistic (and useless) aggregate root: Customer.</p>
@@ -618,18 +713,18 @@ open class SnapshotUpgraderFn&lt;E&gt; @Inject
 </div>
 <div class="imageblock thumb">
 <div class="content">
-<img src="images/example1.png" alt="example1">
+<img src="./images/example1.png" alt="example1">
 </div>
 </div>
 <div class="sect2">
-<h3 id="_events_and_commands">Events and commands</h3>
+<h3 id="events-and-commands"><a class="anchor" href="#events-and-commands"></a>Events and commands</h3>
 <div class="paragraph">
 <p>Let&#8217;s start by examining these events and commands:</p>
 </div>
 <div class="listingblock">
 <div class="title">CustomerData.kt</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.example1.aggregates
+<pre class="CodeRay highlight"><code data-lang="kotlin">package crabzilla.example1.aggregates
 
 import crabzilla.DomainEvent
 import crabzilla.EntityCommand
@@ -637,11 +732,11 @@ import crabzilla.EntityId
 import java.time.Instant
 import java.util.*
 
-<b class="conum">(1)</b>
+<i class="conum" data-value="1"></i><b>(1)</b>
 
 data class CustomerId(override val stringValue: String) : EntityId
 
-<b class="conum">(2)</b>
+<i class="conum" data-value="2"></i><b>(2)</b>
 
 data class CustomerCreated(val id: CustomerId, val name: String) : DomainEvent
 
@@ -649,7 +744,7 @@ data class CustomerActivated(val reason: String, val _when: Instant) : DomainEve
 
 data class CustomerDeactivated(val reason: String, val _when: Instant) : DomainEvent
 
-<b class="conum">(3)</b>
+<i class="conum" data-value="3"></i><b>(3)</b>
 
 data class CreateCustomerCmd(override val commandId: UUID, override val targetId: CustomerId,
                              val name: String) : EntityCommand
@@ -664,45 +759,49 @@ data class CreateActivateCustomerCmd(override val commandId: UUID, override val 
                                      CustomerId, val name: String,
                                      val reason: String) : EntityCommand
 
-<b class="conum">(4)</b>
+<i class="conum" data-value="4"></i><b>(4)</b>
 
 data class UnknownCommand(override val commandId: UUID, override val targetId: CustomerId)
     : EntityCommand</code></pre>
 </div>
 </div>
 <div class="colist arabic">
-<ol>
-<li>
-<p>An identifier type for you aggregate</p>
-</li>
-<li>
-<p>The events</p>
-</li>
-<li>
-<p>The commands</p>
-</li>
-<li>
-<p>Just a command for testing purposes</p>
-</li>
-</ol>
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>An identifier type for you aggregate</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The events</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The commands</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Just a command for testing purposes</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_functions">Functions</h3>
+<h3 id="functions"><a class="anchor" href="#functions"></a>Functions</h3>
 <div class="listingblock">
 <div class="title">CustomerFunctions.kt</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.example1.aggregates
+<pre class="CodeRay highlight"><code data-lang="kotlin">package crabzilla.example1.aggregates
 
 import crabzilla.*
 
-class CustomerSeedValueFn : () -&gt; Lazy&lt;Customer&gt; { <b class="conum">(1)</b>
+class CustomerSeedValueFn : () -&gt; Lazy&lt;Customer&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
   override fun invoke(): Lazy&lt;Customer&gt; {
     return lazyOf(Customer())
   }
 }
 
-class CustomerStateTransitionFn : StateTransitionFn&lt;Customer&gt; { <b class="conum">(2)</b>
+class CustomerStateTransitionFn : (DomainEvent, Customer) -&gt; Customer { <i class="conum" data-value="2"></i><b>(2)</b>
   override fun invoke(event: DomainEvent, customer: Customer): Customer {
     return when(event) {
       is CustomerCreated -&gt; customer.copy(id = event.id, name =  event.name)
@@ -713,18 +812,18 @@ class CustomerStateTransitionFn : StateTransitionFn&lt;Customer&gt; { <b class="
   }
 }
 
-class CustomerCommandValidatorFn : EntityCommandValidatorFn { <b class="conum">(3)</b>
+class CustomerCommandValidatorFn : (EntityCommand) -&gt; List&lt;String&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
   override fun invoke(command: EntityCommand): List&lt;String&gt; {
     return when(command) {
       is CreateCustomerCmd -&gt;
-        if (command.name.equals("a bad name"))
-          listOf("Invalid name: ${command.name}") else listOf()
+        if (command.name.equals(&quot;a bad name&quot;))
+          listOf(&quot;Invalid name: ${command.name}&quot;) else listOf()
       else -&gt; listOf() // all other commands are valid
     }
   }
 }
 
-class CustomerCommandHandlerFn (val trackerFactory: (Customer) -&gt; StateTracker&lt;Customer&gt;) : <b class="conum">(4)</b>
+class CustomerCommandHandlerFn (val trackerFactory: (Customer) -&gt; StateTracker&lt;Customer&gt;) : <i class="conum" data-value="4"></i><b>(4)</b>
         EntityCommandHandlerFn&lt;Customer&gt; {
   override fun invoke(command: EntityCommand, snapshot: Snapshot&lt;Customer&gt;): CommandHandlerResult {
     val customer = snapshot.instance
@@ -745,7 +844,7 @@ class CustomerCommandHandlerFn (val trackerFactory: (Customer) -&gt; StateTracke
                   .collectEvents()
           EntityUnitOfWork(command, events, newVersion)
         }
-        else -&gt; throw UnknownCommandException("for command ${command.javaClass.simpleName}")
+        else -&gt; throw UnknownCommandException(&quot;for command ${command.javaClass.simpleName}&quot;)
       }
     }
   }
@@ -753,31 +852,35 @@ class CustomerCommandHandlerFn (val trackerFactory: (Customer) -&gt; StateTracke
 </div>
 </div>
 <div class="colist arabic">
-<ol>
-<li>
-<p>Function to return an initial "empty" value for your Customer</p>
-</li>
-<li>
-<p>Function to apply state transitions on Customer instances</p>
-</li>
-<li>
-<p>Function to validate Customer commands</p>
-</li>
-<li>
-<p>Function to handle a command</p>
-</li>
-</ol>
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Function to return an initial "empty" value for your Customer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Function to apply state transitions on Customer instances</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Function to validate Customer commands</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Function to handle a command</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>So far you have just plain functions. No side effects.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_aggregate">Aggregate</h3>
+<h3 id="aggregate"><a class="anchor" href="#aggregate"></a>Aggregate</h3>
 <div class="listingblock">
 <div class="title">Customer.kt</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.example1.aggregates
+<pre class="CodeRay highlight"><code data-lang="kotlin">package crabzilla.example1.aggregates
 
 import crabzilla.Aggregate
 import crabzilla.DomainEvent
@@ -790,7 +893,7 @@ data class Customer(override val id: CustomerId? = null,
                     val sampleService: SampleService? = null) : Aggregate {
 
   internal fun create(id: CustomerId, name: String): List&lt;DomainEvent&gt; {
-    require(this.id == null, { "customer already created" })
+    require(this.id == null, { &quot;customer already created&quot; })
     return events(CustomerCreated(id, name))
   }
 
@@ -807,17 +910,17 @@ data class Customer(override val id: CustomerId? = null,
 </div>
 </div>
 <div class="sect2">
-<h3 id="_read_model">Read Model</h3>
+<h3 id="read-model"><a class="anchor" href="#read-model"></a>Read Model</h3>
 <div class="listingblock">
 <div class="title">V2__read_model.sql</div>
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">DROP TABLE if exists customer_summary ;
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">DROP</span> <span class="type">TABLE</span> <span class="keyword">if</span> <span class="keyword">exists</span> customer_summary ;
 
-CREATE TABLE customer_summary (
-    id VARCHAR(36) NOT NULL,
-    name VARCHAR(36) NOT NULL,
-    is_active BOOLEAN NOT NULL,
-    PRIMARY KEY (id)
+<span class="class">CREATE</span> <span class="type">TABLE</span> customer_summary (
+    id <span class="predefined-type">VARCHAR</span>(<span class="integer">36</span>) <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>,
+    name <span class="predefined-type">VARCHAR</span>(<span class="integer">36</span>) <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>,
+    is_active <span class="predefined-type">BOOLEAN</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>,
+    <span class="directive">PRIMARY</span> <span class="type">KEY</span> (id)
     )</code></pre>
 </div>
 </div>
@@ -828,7 +931,7 @@ CREATE TABLE customer_summary (
 </div>
 </div>
 <div class="sect1">
-<h2 id="_krabzilla_vertx_example1">krabzilla-vertx-example1</h2>
+<h2 id="krabzilla-vertx-example1"><a class="anchor" href="#krabzilla-vertx-example1"></a>krabzilla-vertx-example1</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Now your model is validated and tested. You still need to do:</p>
@@ -857,17 +960,17 @@ CREATE TABLE customer_summary (
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_wiring_the_functions">Wiring the functions</h3>
+<h3 id="wiring-the-functions"><a class="anchor" href="#wiring-the-functions"></a>Wiring the functions</h3>
 <div class="paragraph">
 <p>Wiring is very boilerplate so instead of the implementation, let&#8217;s see the interfaces instead:</p>
 </div>
 <div class="listingblock">
 <div class="title">domain.kt</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">interface EntityFunctionsFactory&lt;E&gt; {
+<pre class="CodeRay highlight"><code data-lang="kotlin">interface EntityFunctionsFactory&lt;E&gt; {
   fun seedValueFn(): () -&gt; Lazy&lt;E&gt;
-  fun stateTransitionFn(): StateTransitionFn&lt;E&gt;
-  fun cmdValidatorFn(): EntityCommandValidatorFn
+  fun stateTransitionFn(): (DomainEvent, E) -&gt; E
+  fun cmdValidatorFn(): (EntityCommand) -&gt; List&lt;String&gt;
   fun cmdHandlerFn(): EntityCommandHandlerFn&lt;E&gt;
   fun depInjectionFn(): (E) -&gt; E
   fun snapshotUpgrader(): SnapshotUpgraderFn&lt;E&gt;
@@ -878,14 +981,14 @@ CREATE TABLE customer_summary (
 </div>
 </div>
 <div class="sect1">
-<h2 id="_attributes">Attributes</h2>
+<h2 id="attributes"><a class="anchor" href="#attributes"></a>Attributes</h2>
 <div class="sectionbody">
 <div class="dlist">
 <div class="title">Built-in</div>
 <dl>
 <dt class="hdlist1">asciidoctor-version</dt>
 <dd>
-<p>1.5.6.1</p>
+<p>1.5.5</p>
 </dd>
 <dt class="hdlist1">safe-mode-name</dt>
 <dd>
@@ -901,7 +1004,7 @@ CREATE TABLE customer_summary (
 </dd>
 <dt class="hdlist1">imagesdir</dt>
 <dd>
-<p>images</p>
+<p>./images</p>
 </dd>
 </dl>
 </div>
@@ -910,22 +1013,22 @@ CREATE TABLE customer_summary (
 <dl>
 <dt class="hdlist1">project-version</dt>
 <dd>
-<p>{project-version}</p>
+<p>1.0-SNAPSHOT</p>
 </dd>
 <dt class="hdlist1">sourcedir</dt>
 <dd>
-<p>../../main/java</p>
+<p>/home/rodolfo/Documents/github/krabzilla/src/main/java</p>
 </dd>
 <dt class="hdlist1">endpoint-url</dt>
 <dd>
-<p>{endpoint-url}</p>
+<p><a href="http://example.org" class="bare">http://example.org</a></p>
 </dd>
 </dl>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_includes">Includes</h2>
+<h2 id="includes"><a class="anchor" href="#includes"></a>Includes</h2>
 <div class="sectionbody">
 <div class="exampleblock">
 <div class="title">include::subdir/_b.adoc[]</div>
@@ -939,7 +1042,7 @@ CREATE TABLE customer_summary (
 <table>
 <tr>
 <td class="icon">
-<div class="title">Warning</div>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
 Includes can be tricky!
@@ -952,8 +1055,8 @@ Includes can be tricky!
 </div>
 <div id="footer">
 <div id="footer-text">
-Version {project-version}<br>
-Last updated 2017-08-02 23:05:24 BRT
+Version 1.0-SNAPSHOT<br>
+Last updated 2017-08-04 00:24:18 BRT
 </div>
 </div>
 </body>
