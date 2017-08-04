@@ -1,7 +1,7 @@
 package crabzilla.example1.aggregates
 
 import crabzilla.*
-import crabzilla.example1.services.SampleService
+import crabzilla.example1.services.SampleInternalService
 import crabzilla.vertx.EntityComponentsFactory
 import crabzilla.vertx.commands.execution.EntityCommandHandlerVerticle
 import crabzilla.vertx.commands.execution.EntityCommandRestVerticle
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CustomerFactory @Inject
-constructor(private val service: SampleService, private val vertx: Vertx, private val jdbcClient: JDBCClient)
+constructor(private val internalService: SampleInternalService, private val vertx: Vertx, private val jdbcClient: JDBCClient)
   : EntityComponentsFactory<Customer> {
 
   val factory: (Customer) -> StateTracker<Customer> =  { c -> StateTracker(c, stateTransitionFn(), depInjectionFn())}
@@ -43,7 +43,7 @@ constructor(private val service: SampleService, private val vertx: Vertx, privat
   }
 
   override fun depInjectionFn(): (Customer) -> Customer {
-    return { customer -> customer.copy(sampleService = service) }
+    return { customer -> customer.copy(sampleInternalService = internalService) }
   }
 
   override fun restVerticle(): EntityCommandRestVerticle<Customer> {

@@ -17,8 +17,8 @@ import crabzilla.DomainEvent;
 import crabzilla.EntityId;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.example1.aggregates.CustomerModule;
-import crabzilla.example1.services.SampleService;
-import crabzilla.example1.services.SampleServiceImpl;
+import crabzilla.example1.services.SampleInternalService;
+import crabzilla.example1.services.SampleInternalServiceImpl;
 import crabzilla.vertx.commands.CommandExecution;
 import crabzilla.vertx.events.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
@@ -59,7 +59,7 @@ class Example1Module extends AbstractModule {
     install(new DatabaseModule());
 
     // services
-    bind(SampleService.class).to(SampleServiceImpl.class).asEagerSingleton();
+    bind(SampleInternalService.class).to(SampleInternalServiceImpl.class).asEagerSingleton();
 
     // bounded context
     bind(Example1ComponentsFactory.class).asEagerSingleton();

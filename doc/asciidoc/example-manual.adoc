@@ -25,12 +25,12 @@ and the typical *examplex* bounded context project will have this structure:
 
 Krabzilla expects you to implement your bounded context by writing these components:
 
-[cols="1,5a,4a,1", options="header"]
+[cols="1,5a,4a", options="header"]
 |===
 |Component
 |Core module components
 |Service module components
-|Cardinality
+
 
 |Aggregate
 |* fun seedValueFn(): () -> Lazy<E>
@@ -39,22 +39,18 @@ Krabzilla expects you to implement your bounded context by writing these compone
 * fun cmdHandlerFn(): EntityCommandHandlerFn<E>
 | * fun depInjectionFn(): (E) -> E
 * fun snapshotUpgrader(): SnapshotUpgraderFn<E>
-| N
 
 |External System
 |TBD
 |TBD
-| N
 
 |Policy
 |TBD
 |TBD
-| N
 
 |Events projection
 |TBD
 |TBD
-| 1
 
 |===
 
