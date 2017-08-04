@@ -22,7 +22,6 @@ Krabzilla expects you to implement your bounded context by writing these compone
 |Cardinality
 
 |Aggregate
-{set:cellbgcolor:yellow}
 |* fun seedValueFn(): () -> Lazy<E>
 * fun stateTransitionFn(): DomainEvent<E> -> E
 * fun cmdValidatorFn(): EntityCommand -> List<String>
@@ -32,13 +31,11 @@ Krabzilla expects you to implement your bounded context by writing these compone
 | N
 
 |External System
-{set:cellbgcolor:pink}
 |TBD
 |TBD
 | N
 
 |Policy
-{set:cellbgcolor:RosyBrown2}
 |TBD
 |TBD
 | N
