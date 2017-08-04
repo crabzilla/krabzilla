@@ -11,15 +11,15 @@ the intent is both projects will have the same features, just different implemen
 
 == Modules
 
-krabzilla-core
-krabzilla-vertx
+* krabzilla-core
+* krabzilla-vertx
 
-and the typical project have this structure:
+and the typical *examplex* bounded context project will have this structure:
 
-examplex
-  examplex-core
-  examplex-database
-  examplex-service
+ examplex             → Project root
+  └ examplex-core     → Your domain code. Almost zero dependencies.
+  └ examplex-database → Examplex database classes using Flyway and JOOQ
+  └ examplex-service  → Wire and configure your examplex service running on Vert.x
 
 == The approach
 

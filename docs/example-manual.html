@@ -520,6 +520,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#introduction">Introduction</a></li>
+<li><a href="#modules">Modules</a></li>
 <li><a href="#the-approach">The approach</a></li>
 <li><a href="#krabzilla-example1">krabzilla-example1</a>
 <ul class="sectlevel2">
@@ -544,9 +545,34 @@ table.CodeRay td.code>pre{padding:0}
 <h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Krabzilla aims to help you write your domain model with very little framework overhead and smoothly deploy it on a
-state of art Java 8 reactive applications platform backed by a rock solid relational database of your choice. Krabzilla
-was created by rewriting some Java components from Crabzilla in Kotlin.</p>
+<p>Krabzilla is Crabzilla written in Kotlin. Both projects don&#8217;t share libraries in order to allows idiomatic code, but
+the intent is both projects will have the same features, just different implementations (Java and Kotlin).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="modules"><a class="anchor" href="#modules"></a>Modules</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>krabzilla-core</p>
+</li>
+<li>
+<p>krabzilla-vertx</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>and the typical <strong>examplex</strong> bounded context project will have this structure:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>examplex             → Project root
+ └ examplex-core     → Your domain code. Almost zero dependencies.
+ └ examplex-database → Examplex database classes using Flyway and JOOQ
+ └ examplex-service  → Wire and configure your examplex service running on Vert.x</pre>
+</div>
 </div>
 </div>
 </div>
@@ -558,10 +584,10 @@ was created by rewriting some Java components from Crabzilla in Kotlin.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 42.8571%;">
-<col style="width: 28.5714%;">
-<col style="width: 14.2858%;">
+<col style="width: 9.0909%;">
+<col style="width: 45.4545%;">
+<col style="width: 36.3636%;">
+<col style="width: 9.091%;">
 </colgroup>
 <thead>
 <tr>
@@ -1056,7 +1082,7 @@ Includes can be tricky!
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-08-04 00:24:18 BRT
+Last updated 2017-08-04 01:21:49 BRT
 </div>
 </div>
 </body>
