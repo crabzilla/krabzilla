@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>krabzilla</groupId>
-        <artifactId>krabzilla</artifactId>
+        <artifactId>krabzilla-example1</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -118,20 +118,5 @@
         </plugins>
     </build>
 
-
-    <repositories>
-        <repository>
-            <id>jebrains-all</id>
-            <url>http://repository.jetbrains.com/all</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
 
 </project>
