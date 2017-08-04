@@ -6,15 +6,26 @@ ifndef::sourcedir[:sourcedir: ../../main/java]
 
 == Introduction
 
-Krabzilla aims to help you write your domain model with very little framework overhead and smoothly deploy it on a
-state of art Java 8 reactive applications platform backed by a rock solid relational database of your choice. Krabzilla
-was created by rewriting some Java components from Crabzilla in Kotlin.
+Krabzilla is Crabzilla written in Kotlin. Both projects don't share libraries in order to allows idiomatic code, but
+the intent is both projects will have the same features, just different implementations (Java and Kotlin).
+
+== Modules
+
+krabzilla-core
+krabzilla-vertx
+
+and the typical project have this structure:
+
+examplex
+  examplex-core
+  examplex-database
+  examplex-vertx
 
 == The approach
 
 Krabzilla expects you to implement your bounded context by writing these components:
 
-[cols="2,6a,3a,1", options="header"]
+[cols="1,5a,4a,1", options="header"]
 |===
 |Component
 |Core module components

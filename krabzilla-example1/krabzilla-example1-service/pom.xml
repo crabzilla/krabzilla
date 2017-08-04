@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>krabzilla-vertx-example1</artifactId>
+    <artifactId>krabzilla-example1-service</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

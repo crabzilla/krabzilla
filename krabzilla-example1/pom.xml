@@ -15,7 +15,7 @@
     <modules>
         <module>krabzilla-example1-core</module>
         <module>krabzilla-example1-database</module>
-        <module>krabzilla-example1-vertx</module>
+        <module>krabzilla-example1-service</module>
     </modules>
 
     <properties>
