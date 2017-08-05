@@ -28,8 +28,8 @@ it's simpler and enough for this use case and also very smaller than Caffeine.
 ## Consequences
 
 1) To open an issue to create new SnapshotLoader component.
-2) (Issue 20)[https://github.com/crabzilla/crabzilla/issues/20] can be closed.
-3) (Vert.x Issue 282)[https://github.com/vert-x3/issues/issues/282] can be closed.
+2) [Issue 20](https://github.com/crabzilla/crabzilla/issues/20) can be closed.
+3) [Vert.x Issue 282](https://github.com/vert-x3/issues/issues/282) can be closed.
 
 
 
