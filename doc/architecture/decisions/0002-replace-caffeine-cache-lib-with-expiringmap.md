@@ -22,7 +22,7 @@ The decision is to avoid cache being aware from lazy load from a database, etc. 
 it will just return null. The verticle consuming it will then try to load an Snapshot instance from another Krabzilla
 component. This component can a DAO like EntityUnitOfWorkRepository, so can be executed within the event loop.
 
-Since now the cache responsibility is lower, I selected (ExpiringMap)[https://github.com/jhalterman/expiringmap] since
+Since now the cache responsibility is lower, [ExpiringMap](https://github.com/jhalterman/expiringmap) can be used since
 it's simpler and enough for this use case and also very smaller than Caffeine.
 
 ## Consequences

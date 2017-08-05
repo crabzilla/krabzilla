@@ -6,10 +6,14 @@ ifndef::sourcedir[:sourcedir: ../../main/java]
 
 Status: *WORK IN PROGRESS*
 
+
 == Introduction
 
-Krabzilla is Crabzilla written in Kotlin. Both projects don't share libraries in order to allows idiomatic code, but
-the intent is both projects will have the same features, just different implementations (Java and Kotlin).
+Krabzilla aims to help you to develop your
+* You know what this [EventStorming](http://eventstorming.com/) vocabulary means: DomainEvent, Command, Aggregate, ExternalSystem, Listener and ProcessManager
+*
+
+
 
 == Modules
 
@@ -19,27 +23,29 @@ the intent is both projects will have the same features, just different implemen
 and the typical *example1* bounded context project will have this structure:
 
  example1             → Project root
-  └ example1-core     → Your domain code. Almost zero dependencies.
-  └ example1-database → Example1 database classes using Flyway and JOOQ
-  └ example1-service  → Wire and configure your example1 service running on Vert.x
+  └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
+  └ example1-database → Flyway and JOOQ setups for database with both read and write models.
+  └ example1-service  → The application: wiring, configuration and services implementations.
+
+Load, integration and acceptance tests are against the service module.
 
 == The approach
 
-Krabzilla expects you to implement your bounded context by writing these components:
+Krabzilla expects you to implement your bounded context by writing functions. For:
 
-[cols="1,5a,4a", options="header"]
+[cols="2,5a,3a", options="header"]
 |===
 |Component
-|Core module components
-|Service module components
+|Core module
+|Service module
 
 
 |Aggregate
-|* fun seedValueFn(): () -> Lazy<E>
-* fun stateTransitionFn(): DomainEvent<E> -> E
-* fun cmdValidatorFn(): EntityCommand -> List<String>
-* fun cmdHandlerFn(): EntityCommandHandlerFn<E>
-| * fun depInjectionFn(): (E) -> E
+|* seedValueFn(): () -> Lazy<E>
+* stateTransitionFn(): DomainEvent<E> -> E
+* cmdValidatorFn(): EntityCommand -> List<String>
+* cmdHandlerFn(): EntityCommandHandlerFn<E>
+| * depInjectionFn(): (E) -> E
 
 |External System
 |
@@ -53,7 +59,7 @@ Krabzilla expects you to implement your bounded context by writing these compone
 |
 |
 
-|Events projection
+|Events Projector
 |
 |
 
@@ -61,6 +67,7 @@ Krabzilla expects you to implement your bounded context by writing these compone
 
 *EntityCommandHandlerFn* is a function too:
 
+:source-highlighter: highlightjs
 [source,kotlin]
 .domain.kt
 ----

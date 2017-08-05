@@ -5,11 +5,18 @@ import java.io.Serializable
 import java.util.*
 import javax.inject.Inject
 
-data class Reaction(val event: DomainEvent, val commands: List<Command>)
-
 data class UnitOfWork(val id: UUID = UUID.randomUUID(),
                       val command: Command,
                       val events: List<DomainEvent>) : Serializable
+
+data class Version(val valueAsLong: Long) : Serializable {
+  init {
+    if (valueAsLong < 0) throw IllegalArgumentException("Version must be = zero or positive")
+  }
+  fun nextVersion(): Version {
+    return Version(valueAsLong + 1)
+  }
+}
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 interface EntityId : Serializable {
@@ -18,18 +25,6 @@ interface EntityId : Serializable {
 
 interface EntityCommand : Command {
   val targetId: EntityId
-}
-
-data class Version(val valueAsLong: Long) : Serializable {
-
-  init {
-    if (valueAsLong < 0) throw IllegalArgumentException("Version must be = zero or positive")
-  }
-
-  fun nextVersion(): Version {
-    return Version(valueAsLong + 1)
-  }
-
 }
 
 data class EntityUnitOfWork(val id: UUID,
@@ -45,6 +40,11 @@ data class EntityUnitOfWork(val id: UUID,
   }
 
 }
+
+data class Reaction(val id: UUID = UUID.randomUUID(),
+                    val event: DomainEvent,
+                    val commands: List<Command>)
+
 
 data class Snapshot<out E>(val instance: E, val version: Version) {
 

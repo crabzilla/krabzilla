@@ -29,4 +29,9 @@ interface ExternalSystem {
 
 interface Listener
 
-interface ProcessManager
+interface ProcessManager {
+  val id: EntityId?
+  fun events(vararg event: DomainEvent): List<DomainEvent> {
+    return event.asList()
+  }
+}
