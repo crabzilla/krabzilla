@@ -11,30 +11,25 @@ Accepted
 Initially, the main requirement was: (local) cache must provide an easy way to plug a String -> Snapshot<E> as a lazy
 way to load an entry from a database, service, etc and an efficient TTL policy.
 
-(Caffeine)[https://github.com/ben-manes/caffeine] is perfect for this. The native Vert.x option for a local map is just
+[Caffeine](https://github.com/ben-manes/caffeine) is perfect for this. The native Vert.x option for a local map is just
 a ConcurrentHashMap without any expiring policy. Another option would be to use
-(AsyncMap with Hazelcast)[http://vertx.io/docs/vertx-hazelcast/java/#_using_hazelcast_async_methods] but I noticed I
+[AsyncMap with Hazelcast](http://vertx.io/docs/vertx-hazelcast/java/#_using_hazelcast_async_methods) but I noticed I
 would need to run my unit tests with a clustered Vert.x instance and also to configure TTL in Hazelcast xml.
-
-(Issue 20)[https://github.com/crabzilla/crabzilla/issues/20] was then created since the lazy loading function was
-expected to be blocking.
 
 ## Decision
 
 The decision is to avoid cache being aware from lazy load from a database, etc. When the cache doesn't contain an entry,
 it will just return null. The verticle consuming it will then try to load an Snapshot instance from another Krabzilla
-component. This component can a DAO like EntityUnitOfWorkRepository, so can be executed within the event loop, thus
-closing the (Issue 20)[https://github.com/crabzilla/crabzilla/issues/20]
+component. This component can a DAO like EntityUnitOfWorkRepository, so can be executed within the event loop.
 
 Since now the cache responsibility is lower, I selected (ExpiringMap)[https://github.com/jhalterman/expiringmap] since
 it's simpler and enough for this use case and also very smaller than Caffeine.
 
 ## Consequences
 
-(Issue 20)[https://github.com/crabzilla/crabzilla/issues/20] can be closed. Another consequence is to open an issue
-to create new SnapshotLoader component.
-
-(Vert.x Issue 282)[https://github.com/vert-x3/issues/issues/282] can be closed.
+1) To open an issue to create new SnapshotLoader component.
+2) (Issue 20)[https://github.com/crabzilla/crabzilla/issues/20] can be closed.
+3) (Vert.x Issue 282)[https://github.com/vert-x3/issues/issues/282] can be closed.
 
 
 
