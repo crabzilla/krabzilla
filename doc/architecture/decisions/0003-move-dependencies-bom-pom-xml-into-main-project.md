@@ -17,4 +17,4 @@ The trade off here is to move BOM to the main project in order to build it on Tr
 ## Consequences
 
 A BOM project could be back once it is published to Maven Central. For now, the goal is to build Krabzilla on Travis
-without hacks.
+without much effort.

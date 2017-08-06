@@ -8,7 +8,7 @@ CREATE TABLE events_channels (
     )
     ;
 
-// tag::readmodel[]
+# tag::readmodel[]
 
 DROP TABLE if exists customer_summary ;
 
@@ -19,4 +19,4 @@ CREATE TABLE customer_summary (
     PRIMARY KEY (id)
     )
 
-// tag::readmodel[]
+# tag::readmodel[]

@@ -2,4 +2,4 @@
 
 # krabzilla
 
-[WIP Documentation] (https://crabzilla.github.io/krabzilla/docs/example-manual.html)
+[WIP Documentation](https://crabzilla.github.io/krabzilla/docs/example-manual.html)
