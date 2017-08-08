@@ -6,21 +6,38 @@ ifndef::sourcedir[:sourcedir: ../../main/java]
 
 Status: *WORK IN PROGRESS*
 
+== Goal for version 1.0.0
 
-== Introduction
+To help you write your domain model with very little framework overhead and smoothly deploy it on a state of art Java 8
+reactive applications platform backed by a rock solid relational database of your choice.
 
-Krabzilla aims to help you to develop your
-* You know what this [EventStorming](http://eventstorming.com/) vocabulary means: DomainEvent, Command, Aggregate, ExternalSystem, Listener and ProcessManager
-*
+== Approach
 
+Before even trying to implement your domain model, you need a good foundation. http://eventstorming.com[Eventstorming]
+is a very interesting domain model development approach. Krabzilla is inspired by it. With Krabzilla, you will have to
+develop these components:
 
+*Notice* : I still miss *a lot* of Eventstorming knowledge, all I know is from my own understanding of simply reading
+the in progress book. Be careful :)
+
+== Eventstorming
+
+* DomainEvent
+* Command
+* Aggregate
+* ExternalSystem
+* Listener
+* ProcessManager
 
 == Modules
 
-* krabzilla-core
-* krabzilla-vertx
+Krabzilla has 2 modules:
 
-and the typical *example1* bounded context project will have this structure:
+ krabzilla             → Project root
+  └ krabzilla-core     → The core abstractions: Command, DomainEvent, Aggregate, Snapshot, etc
+  └ krabzilla-vertx    → The application engine: runs your domain model
+
+and your typical *example1* bounded context project will have this structure:
 
  example1             → Project root
   └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
@@ -28,6 +45,11 @@ and the typical *example1* bounded context project will have this structure:
   └ example1-service  → The application: wiring, configuration and services implementations.
 
 Load, integration and acceptance tests are against the service module.
+
+The dependencies between the modules:
+
+[.thumb]
+image::modules.png[scaledwidth=100%]
 
 == The approach
 
