@@ -14,7 +14,7 @@ reactive applications platform backed by a rock solid relational database of you
 == Approach
 
 Before even trying to implement your domain model, you need a good foundation. http://eventstorming.com[Eventstorming]
-is a very interesting domain model development approach. Krabzilla is inspired by it. With Krabzilla, you will have to
+is a very interesting domain model discovering approach. Krabzilla is inspired by it. With Krabzilla, you will have to
 develop these components:
 
 *Notice* : I still miss *a lot* of Eventstorming knowledge, all I know is from my own understanding of simply reading
@@ -41,7 +41,7 @@ and your typical *example1* bounded context project will have this structure:
 
  example1             → Project root
   └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
-  └ example1-database → Flyway database setup with both read and write models. Repositories implementations.
+  └ example1-database → Flyway database setup with both read and write models. Repositories implementation.
   └ example1-service  → The application: wiring, configuration and services implementations.
 
 Load, integration and acceptance tests are against the service module.
