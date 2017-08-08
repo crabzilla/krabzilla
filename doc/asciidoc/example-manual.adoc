@@ -17,8 +17,9 @@ Before even trying to implement your domain model, you need a good foundation. h
 is a very interesting domain model discovering approach. Krabzilla is inspired by it. With Krabzilla, you will have to
 develop these components:
 
-*Notice* : I still miss *a lot* of Eventstorming knowledge, all I know is from my own understanding of simply reading
-the in progress book. Be careful :)
+[.lead]
+*Notice* : I still miss *a lot* of Eventstorming, all I know is from my own understanding by simply reading the in
+progress book. Be careful :)
 
 == Eventstorming
 
@@ -41,7 +42,7 @@ and your typical *example1* bounded context project will have this structure:
 
  example1             → Project root
   └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
-  └ example1-database → Flyway database setup with both read and write models. Repositories implementation.
+  └ example1-database → Flyway db setup with both read and write models. Repositories implementations.
   └ example1-service  → The application: wiring, configuration and services implementations.
 
 Load, integration and acceptance tests are against the service module.
@@ -51,39 +52,18 @@ The dependencies between the modules:
 [.thumb]
 image::modules.png[scaledwidth=100%]
 
-== The approach
+== Aggregate
 
-Krabzilla expects you to implement your bounded context by writing functions. For:
-
-[cols="2,5a,3a", options="header"]
+[cols="2,2", options="header"]
 |===
-|Component
-|Core module
-|Service module
+|Name
+|Type
 
-
-|Aggregate
-|* seedValueFn(): () -> Lazy<E>
-* stateTransitionFn(): DomainEvent<E> -> E
-* cmdValidatorFn(): EntityCommand -> List<String>
-* cmdHandlerFn(): EntityCommandHandlerFn<E>
-| * depInjectionFn(): (E) -> E
-
-|External System
-|
-|
-
-|Listener
-|
-|
-
-|Process Manager
-|
-|
-
-|Events Projector
-|
-|
+|seedValueFn | () -> Lazy<E>
+|stateTransitionFn() | DomainEvent<E> -> E
+|cmdValidatorFn()| EntityCommand -> List<String>
+|cmdHandlerFn()| EntityCommandHandlerFn<E>
+|depInjectionFn()| (E) -> E
 
 |===
 
