@@ -432,12 +432,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#approach">Approach</a></li>
 <li><a href="#eventstorming">Eventstorming</a></li>
 <li><a href="#modules">Modules</a></li>
-<li><a href="#the-approach">The approach</a></li>
+<li><a href="#aggregate">Aggregate</a></li>
 <li><a href="#krabzilla-example1">krabzilla-example1</a>
 <ul class="sectlevel2">
 <li><a href="#events-and-commands">Events and commands</a></li>
 <li><a href="#functions">Functions</a></li>
-<li><a href="#aggregate">Aggregate</a></li>
+<li><a href="#aggregate-2">Aggregate</a></li>
 <li><a href="#read-model">Read Model</a></li>
 </ul>
 </li>
@@ -473,12 +473,12 @@ reactive applications platform backed by a rock solid relational database of you
 <div class="sectionbody">
 <div class="paragraph">
 <p>Before even trying to implement your domain model, you need a good foundation. <a href="http://eventstorming.com">Eventstorming</a>
-is a very interesting domain model development approach. Krabzilla is inspired by it. With Krabzilla, you will have to
+is a very interesting domain model discovering approach. Krabzilla is inspired by it. With Krabzilla, you will have to
 develop these components:</p>
 </div>
-<div class="paragraph">
-<p><strong>Notice</strong> : I still miss <strong>a lot</strong> of Eventstorming knowledge, all I know is from my own understanding of the in progress
-book. Be careful :)</p>
+<div class="paragraph lead">
+<p><strong>Notice</strong> : I still miss <strong>a lot</strong> of Eventstorming, all I know is from my own understanding by simply reading the in
+progress book. Be careful :)</p>
 </div>
 </div>
 </div>
@@ -529,7 +529,7 @@ book. Be careful :)</p>
 <div class="content">
 <pre>example1             → Project root
  └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
- └ example1-database → Flyway and JOOQ setups for database with both read and write models.
+ └ example1-database → Flyway db w/ both read and write models. Repositories implementations.
  └ example1-service  → The application: wiring, configuration and services implementations.</pre>
 </div>
 </div>
@@ -547,70 +547,39 @@ book. Be careful :)</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="the-approach"><a class="anchor" href="#the-approach"></a>The approach</h2>
+<h2 id="aggregate"><a class="anchor" href="#aggregate"></a>Aggregate</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Krabzilla expects you to implement your bounded context by writing functions. For:</p>
-</div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
-<col style="width: 20%;">
 <col style="width: 50%;">
-<col style="width: 30%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Component</th>
-<th class="tableblock halign-left valign-top">Core module</th>
-<th class="tableblock halign-left valign-top">Service module</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate</p></td>
-<td class="tableblock halign-left valign-top"><div><div class="ulist">
-<ul>
-<li>
-<p>seedValueFn(): () &#8594; Lazy&lt;E&gt;</p>
-</li>
-<li>
-<p>stateTransitionFn(): DomainEvent&lt;E&gt; &#8594; E</p>
-</li>
-<li>
-<p>cmdValidatorFn(): EntityCommand &#8594; List&lt;String&gt;</p>
-</li>
-<li>
-<p>cmdHandlerFn(): EntityCommandHandlerFn&lt;E&gt;</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div><div class="ulist">
-<ul>
-<li>
-<p>depInjectionFn(): (E) &#8594; E</p>
-</li>
-</ul>
-</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">seedValueFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">() &#8594; Lazy&lt;E&gt;</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">External System</p></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stateTransitionFn()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DomainEvent&lt;E&gt; &#8594; E</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Listener</p></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmdValidatorFn()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EntityCommand &#8594; List&lt;String&gt;</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Process Manager</p></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmdHandlerFn()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EntityCommandHandlerFn&lt;E&gt;</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Events Projector</p></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
-<td class="tableblock halign-left valign-top"><div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">depInjectionFn()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(E) &#8594; E</p></td>
 </tr>
 </tbody>
 </table>
@@ -838,7 +807,7 @@ class CustomerCommandHandlerFn (val trackerFactory: (Customer) -&gt; StateTracke
 </div>
 </div>
 <div class="sect2">
-<h3 id="aggregate"><a class="anchor" href="#aggregate"></a>Aggregate</h3>
+<h3 id="aggregate-2"><a class="anchor" href="#aggregate-2"></a>Aggregate</h3>
 <div class="listingblock">
 <div class="title">Customer.kt</div>
 <div class="content">
@@ -1016,7 +985,7 @@ Includes can be tricky!
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-08-07 22:26:22 BRT
+Last updated 2017-08-07 23:21:40 BRT
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
