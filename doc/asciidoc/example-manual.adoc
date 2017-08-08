@@ -41,7 +41,7 @@ and your typical *example1* bounded context project will have this structure:
 
  example1             → Project root
   └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
-  └ example1-database → Flyway and JOOQ setups for database with both read and write models.
+  └ example1-database → Flyway database setup with both read and write models. Repositories implementations.
   └ example1-service  → The application: wiring, configuration and services implementations.
 
 Load, integration and acceptance tests are against the service module.
