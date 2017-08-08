@@ -5,7 +5,7 @@ import crabzilla.vertx.events.projection.EventProjector;
 import crabzilla.vertx.events.projection.ProjectionData;
 import crabzilla.vertx.events.projection.ProjectionRepository;
 import io.vertx.ext.jdbc.JDBCClient;
-import org.jooq.Configuration;
+import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.function.BiFunction;
 
 class Example1ComponentsFactory implements BoundedContextComponentsFactory {
 
-  private final Configuration jooq;
+  private final Jdbi jooq;
   private final JDBCClient jdbcClient;
 
   @Inject
-  public Example1ComponentsFactory(Configuration jooq, JDBCClient jdbcClient) {
+  public Example1ComponentsFactory(Jdbi jooq, JDBCClient jdbcClient) {
     this.jooq = jooq;
     this.jdbcClient = jdbcClient;
   }

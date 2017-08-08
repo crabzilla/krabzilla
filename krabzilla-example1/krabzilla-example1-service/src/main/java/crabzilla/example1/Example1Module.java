@@ -26,14 +26,8 @@ import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
 import io.vertx.ext.jdbc.JDBCClient;
-import org.jooq.Configuration;
-import org.jooq.ConnectionProvider;
-import org.jooq.SQLDialect;
-import org.jooq.TransactionProvider;
-import org.jooq.conf.Settings;
-import org.jooq.impl.DataSourceConnectionProvider;
-import org.jooq.impl.DefaultConfiguration;
-import org.jooq.impl.DefaultTransactionProvider;
+import lombok.val;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.Properties;
 
@@ -97,6 +91,18 @@ class Example1Module extends AbstractModule {
 
   @Provides
   @Singleton
+  Jdbi jdbi(HikariDataSource ds) {
+    val jdbi = Jdbi.create(ds);
+    jdbi.installPlugins();
+
+//    jdbi.installPlugin(new SqlObjectPlugin());
+//    jdbi.installPlugin(new KotlinPlugin());
+//    jdbi.installPlugin(new KotlinSqlObjectPlugin());
+    return jdbi;
+  }
+
+  @Provides
+  @Singleton
   JDBCClient jdbcClient(Vertx vertx, HikariDataSource dataSource) {
     return JDBCClient.create(vertx, dataSource);
   }
@@ -113,22 +119,6 @@ class Example1Module extends AbstractModule {
                     .setResetTimeout(10000) // time spent in open state before attempting to re-try
     );
 
-  }
-
-  @Provides
-  @Singleton
-  Configuration cfg(HikariDataSource ds) {
-    DefaultConfiguration cfg = new DefaultConfiguration();
-//    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-//    cfg.set(() -> new QuerySniper(executor, dbQueryTimeoutMs));
-    cfg.set(ds);
-    cfg.set(SQLDialect.MYSQL);
-    Settings settings = new Settings();
-    cfg.setSettings(settings);
-    ConnectionProvider cp = new DataSourceConnectionProvider(ds);
-    TransactionProvider tp = new DefaultTransactionProvider(cp);
-    cfg.setTransactionProvider(tp);
-    return cfg;
   }
 
 //  Not being used yet. This can improve a lot serialization speed (it's binary). But so far it was not necessary.

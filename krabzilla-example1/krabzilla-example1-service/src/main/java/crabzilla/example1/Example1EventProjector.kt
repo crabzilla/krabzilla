@@ -7,13 +7,10 @@ import crabzilla.example1.aggregates.CustomerCreated
 import crabzilla.example1.aggregates.CustomerDeactivated
 import crabzilla.vertx.events.projection.EventProjector
 import crabzilla.vertx.events.projection.ProjectionData
-import example1.datamodel.Tables.CUSTOMER_SUMMARY
-import example1.datamodel.tables.records.CustomerSummaryRecord
-import org.jooq.Configuration
-import org.jooq.impl.DSL
+import example1.readmodel.CustomerSummaryDao
+import org.jdbi.v3.core.Jdbi
 
-
-class Example1EventProjector(override val eventsChannelId: String, val jooqCfg: Configuration) : EventProjector {
+class Example1EventProjector(override val eventsChannelId: String, val jdbi: Jdbi) : EventProjector {
 
   val log = io.vertx.core.logging.LoggerFactory.getLogger(Example1EventProjector::class.java)
 
@@ -21,43 +18,31 @@ class Example1EventProjector(override val eventsChannelId: String, val jooqCfg: 
     get() = TODO("not implemented")
 
   override fun handle(uowList: List<ProjectionData>) {
-
-    log.info("writing {} units for eventsChannelId {}", uowList.size, eventsChannelId)
-
-    DSL.using(jooqCfg)
-       .transaction { ctx ->
-         uowList.flatMap { pd -> pd.events.map { e -> Pair(pd.targetId, e) } }
-                .forEach { pair -> handle(ctx, pair.first, pair.second) }
-       }
-
-    log.info("wrote {} units for eventsChannelId {}", uowList.size, eventsChannelId)
+    log.info("writing ${uowList.size} units for eventsChannelId ${eventsChannelId}")
+    val handle = jdbi.open()
+    val dao = handle.attach<CustomerSummaryDao>(CustomerSummaryDao::class.java)
+    try {
+      uowList.flatMap { pd -> pd.events.map { e -> Pair(pd.targetId, e) } }
+              .forEach { pair -> _handle(dao, pair.first, pair.second) }
+      handle.commit()
+    } catch (e: Exception) {
+      log.error("exception: ", e)
+      handle.rollback()
+    } finally {
+      //h.close()
+    }
+    log.info("wrote ${uowList.size} units for eventsChannelId ${eventsChannelId}")
   }
 
-
-  internal fun handle(ctx: Configuration, id: String, event: DomainEvent) {
-
+  internal fun _handle(dao: CustomerSummaryDao, id: String, event: DomainEvent) {
     log.info("event {} from channel {}", event, eventsChannelId)
-
-    when(event) {
-      is CustomerCreated -> {
-        DSL.using(ctx).insertInto<CustomerSummaryRecord>(CUSTOMER_SUMMARY)
-                .values(id, event.name, false).execute()
-      }
-      is CustomerActivated -> {
-        DSL.using(ctx).update<CustomerSummaryRecord>(CUSTOMER_SUMMARY)
-                .set(CUSTOMER_SUMMARY.IS_ACTIVE, true)
-                .where(CUSTOMER_SUMMARY.ID.eq(id)).execute()
-      }
-      is CustomerDeactivated -> {
-        DSL.using(ctx).update<CustomerSummaryRecord>(CUSTOMER_SUMMARY)
-                .set(CUSTOMER_SUMMARY.IS_ACTIVE, false)
-                .where(CUSTOMER_SUMMARY.ID.eq(id)).execute()
-      }
+    when (event) {
+      is CustomerCreated -> dao.insert(CustomerSummary(id, event.name, false))
+      is CustomerActivated -> dao.updateStatus(id, true)
+      is CustomerDeactivated -> dao.updateStatus(id, false)
       else -> log.warn("{} does not have any event projection handler", event)
     }
-
     // TODO update uow_last_seq for this event channel
-
   }
 
 }

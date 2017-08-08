@@ -8,11 +8,10 @@ import crabzilla.example1.aggregates.CustomerCreated;
 import crabzilla.example1.aggregates.CustomerId;
 import crabzilla.vertx.events.projection.EventProjector;
 import crabzilla.vertx.events.projection.ProjectionData;
-import example1.datamodel.tables.pojos.CustomerSummary;
+import example1.readmodel.CustomerSummaryDao;
 import io.vertx.core.Vertx;
 import lombok.val;
-import org.jooq.Configuration;
-import org.jooq.impl.DSL;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.util.UUID;
 
-import static example1.datamodel.tables.CustomerSummary.CUSTOMER_SUMMARY;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +30,7 @@ public class Example1EventProjectorIt {
   @Inject
   ObjectMapper mapper;
   @Inject
-  Configuration jooq;
+  Jdbi jdbi;
   @Inject
   EventProjector eventProjector;
 
@@ -40,8 +38,12 @@ public class Example1EventProjectorIt {
   public void setup() {
 
     Guice.createInjector(new Example1Module(Vertx.vertx())).injectMembers(this);
-    DSL.using(jooq).transaction(ctx -> DSL.using(ctx).execute("DELETE FROM units_of_work"));
-    DSL.using(jooq).transaction(ctx -> DSL.using(ctx).execute("DELETE FROM customer_summary"));
+
+    val h = jdbi.open();
+    h.createScript("DELETE FROM units_of_work").execute();
+    h.createScript("DELETE FROM customer_summary").execute();
+    h.commit();
+
   }
 
 
@@ -55,11 +57,11 @@ public class Example1EventProjectorIt {
 
     eventProjector.handle(singletonList(projectionData));
 
-    val fromDb = DSL.using(jooq)
-            .selectFrom(CUSTOMER_SUMMARY)
-            .where(CUSTOMER_SUMMARY.ID.eq(id.getStringValue()))
-            .fetchOneInto(example1.datamodel.tables.pojos.CustomerSummary.class);
-
+    val h = jdbi.open();
+    val dao = h.attach(CustomerSummaryDao.class);
+    val fromDb = dao.getAll().get(0);
+    h.commit();
+//    System.out.printf("from  db: " + fromDb);
     assertThat(fromDb).isEqualToComparingFieldByField(new CustomerSummary(id.getStringValue(), event1.getName(), true));
 
   }

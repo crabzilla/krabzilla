@@ -22,13 +22,10 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.Handle;
-import org.skife.jdbi.v2.TransactionStatus;
-import org.skife.jdbi.v2.VoidTransactionCallback;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -47,7 +44,7 @@ public class EntityUnitOfWorkRepositoryIT {
 
   static Vertx vertx;
   static JDBCClient jdbcClient;
-  static DBI dbi;
+  static Jdbi dbi;
   static ObjectMapper mapper;
 
   EntityUnitOfWorkRepository repo;
@@ -84,15 +81,11 @@ public class EntityUnitOfWorkRepositoryIT {
 
     jdbcClient = JDBCClient.create(vertx, datasource);
 
-    dbi = new DBI(datasource);
+    dbi = Jdbi.create(datasource);
 
-    dbi.inTransaction(new VoidTransactionCallback() {
-      @Override
-      protected void execute(Handle handle, TransactionStatus transactionStatus) throws Exception {
-        handle.execute("delete from units_of_work");
-        log.info("db is clean");
-      }
-    });
+    val h = dbi.open();
+    h.createScript("delete from units_of_work").execute();
+    h.commit();
 
   }
 

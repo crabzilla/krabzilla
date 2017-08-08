@@ -66,7 +66,7 @@ public class EntityCommandRestVerticle<E> extends AbstractVerticle {
             val result = (CommandExecution) response.result().body();
             if (CommandExecution.RESULT.SUCCESS.equals(result.getResult())) {
               val headers = new CaseInsensitiveHeaders().add("uowSequence", result.getUowSequence().toString());
-              val optionsUow = new DeliveryOptions().setCodecName("UnitOfWork").setHeaders(headers);
+              val optionsUow = new DeliveryOptions().setCodecName("EntityUnitOfWork").setHeaders(headers);
               vertx.<String>eventBus().publish(eventsHandlerId("example1"), result.getUnitOfWork(), optionsUow);
               httpResp.end(response.result().body().toString());
             } else {

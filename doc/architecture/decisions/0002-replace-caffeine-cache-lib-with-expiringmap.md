@@ -12,7 +12,7 @@ Initially, the main requirement was: (local) cache must provide an easy way to p
 way to load an entry from a database, service, etc and an efficient TTL policy.
 
 [Caffeine](https://github.com/ben-manes/caffeine) is perfect for this. The native Vert.x option for a local map is just
-a ConcurrentHashMap without any expiring policy. Another option would be to use
+a ConcurrentMap without any expiring policy or enforced size limit. Another option would be to use
 [AsyncMap with Hazelcast](http://vertx.io/docs/vertx-hazelcast/java/#_using_hazelcast_async_methods) but I noticed I
 would need to run my unit tests with a clustered Vert.x instance and also to configure TTL in Hazelcast xml.
 

@@ -146,8 +146,7 @@
 
         <dependency>
             <groupId>org.jdbi</groupId>
-            <artifactId>jdbi</artifactId>
-            <version>2.78</version>
+            <artifactId>jdbi3</artifactId>
             <scope>test</scope>
         </dependency>
 
