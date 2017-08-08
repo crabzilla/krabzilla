@@ -14,7 +14,7 @@ the example1-core module should depend on example1-database module. And this mod
 ## Decision
 
 [Jdbi3](https://github.com/jdbi/jdbi) allow to express read models as plain Kotlin data classes. The resulting handle
-method in [Example1EventProjector](krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1EventProjector.kt)
+method in [Example1EventProjector](../../krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1EventProjector.kt)
 become a bit ugly but it can be improved in the future.
 
 ## Consequences
