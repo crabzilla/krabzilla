@@ -24,11 +24,9 @@ import static crabzilla.vertx.util.StringHelper.*;
 @Slf4j
 public class EntityCommandRestVerticle<E> extends AbstractVerticle {
 
-  final Vertx vertx;
   final Class<E> aggregateRootClass;
 
-  public EntityCommandRestVerticle(Vertx vertx, @NonNull Class<E> aggregateRootClass) {
-    this.vertx = vertx;
+  public EntityCommandRestVerticle(@NonNull Class<E> aggregateRootClass) {
     this.aggregateRootClass = aggregateRootClass;
   }
 

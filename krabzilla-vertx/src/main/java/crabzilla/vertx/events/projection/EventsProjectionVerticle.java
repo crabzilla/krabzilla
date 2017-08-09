@@ -17,15 +17,12 @@ import static java.util.Collections.singletonList;
 @Slf4j
 public class EventsProjectionVerticle extends AbstractVerticle {
 
-  final Vertx vertx;
   final EventProjector eventProjector;
   final CircuitBreaker circuitBreaker;
 
   @Inject
-  public EventsProjectionVerticle(@NonNull Vertx vertx,
-                                  @NonNull EventProjector eventProjector,
+  public EventsProjectionVerticle(@NonNull EventProjector eventProjector,
                                   @NonNull @Named("events-projection") CircuitBreaker circuitBreaker) {
-    this.vertx = vertx;
     this.eventProjector = eventProjector;
     this.circuitBreaker = circuitBreaker;
   }

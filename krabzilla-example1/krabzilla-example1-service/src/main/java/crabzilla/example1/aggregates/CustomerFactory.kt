@@ -47,7 +47,7 @@ constructor(private val internalService: SampleInternalService, private val vert
   }
 
   override fun restVerticle(): EntityCommandRestVerticle<Customer> {
-    return EntityCommandRestVerticle(vertx, Customer::class.java)
+    return EntityCommandRestVerticle(Customer::class.java)
   }
 
   override fun cmdHandlerVerticle(): EntityCommandHandlerVerticle<Customer> {

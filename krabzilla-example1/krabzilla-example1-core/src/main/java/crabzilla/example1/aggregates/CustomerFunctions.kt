@@ -33,8 +33,10 @@ class CustomerCommandValidatorFn : (EntityCommand) -> List<String> { // <3>
 class CustomerCommandHandlerFn (val trackerFactory: (Customer) -> StateTracker<Customer>) : // <4>
         EntityCommandHandlerFn<Customer> {
   override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {
+
     val customer = snapshot.instance
     val newVersion = snapshot.version.nextVersion()
+
     return result {
       when (command) {
         is CreateCustomerCmd ->
