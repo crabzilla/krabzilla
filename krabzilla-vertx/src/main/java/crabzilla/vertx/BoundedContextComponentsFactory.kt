@@ -6,7 +6,7 @@ import java.util.function.BiFunction
 
 interface BoundedContextComponentsFactory {
 
-  fun eventsProjector(): EventProjector
+  fun eventsProjector(): EventProjector<Any>
 
   fun projectionRepository(): BiFunction<Long, Int, List<ProjectionData>>
 

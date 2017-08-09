@@ -4,6 +4,7 @@ import crabzilla.vertx.BoundedContextComponentsFactory;
 import crabzilla.vertx.events.projection.EventProjector;
 import crabzilla.vertx.events.projection.ProjectionData;
 import crabzilla.vertx.events.projection.ProjectionRepository;
+import example1.readmodel.CustomerSummaryDao;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.jdbi.v3.core.Jdbi;
 
@@ -13,18 +14,18 @@ import java.util.function.BiFunction;
 
 class Example1ComponentsFactory implements BoundedContextComponentsFactory {
 
-  private final Jdbi jooq;
+  private final Jdbi jdbi;
   private final JDBCClient jdbcClient;
 
   @Inject
   public Example1ComponentsFactory(Jdbi jooq, JDBCClient jdbcClient) {
-    this.jooq = jooq;
+    this.jdbi = jooq;
     this.jdbcClient = jdbcClient;
   }
 
   @Override
   public EventProjector eventsProjector() {
-    return new Example1EventProjector("example1", jooq) ;
+    return new Example1EventProjector("example1", CustomerSummaryDao.class, jdbi) ;
   }
 
   @Override

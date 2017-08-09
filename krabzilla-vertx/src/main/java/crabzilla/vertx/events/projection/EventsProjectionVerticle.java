@@ -2,7 +2,10 @@ package crabzilla.vertx.events.projection;
 
 import crabzilla.EntityUnitOfWork;
 import io.vertx.circuitbreaker.CircuitBreaker;
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
