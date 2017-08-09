@@ -39,7 +39,7 @@ public class EntityUnitOfWorkRepository {
 
   private final TypeReference<List<DomainEvent>> eventsListTpe =  new TypeReference<List<DomainEvent>>() {};
 
-  public EntityUnitOfWorkRepository(@NonNull Class<? extends Aggregate> aggregateRootName, @NonNull JDBCClient client) {
+  public EntityUnitOfWorkRepository(@NonNull Class<?> aggregateRootName, @NonNull JDBCClient client) {
     this.aggregateRootName = aggregateRootName.getSimpleName();
     this.client = client;
   }

@@ -123,7 +123,7 @@ constructor(val trackerFactory: (E) -> StateTracker<E>) :
                       newVersion: Version,
                       newEvents: List<DomainEvent>): Snapshot<E> {
     if (originalSnapshot.version.valueAsLong != newVersion.valueAsLong - 1) {
-      throw RuntimeException(String.format("Cannot upgrade to version %s since my version is %s",
+      throw RuntimeException(String.format("Cannot upgrade to version %s since current version is %s",
               newVersion, originalSnapshot.version))
     }
     val tracker = trackerFactory.invoke(originalSnapshot.instance)
