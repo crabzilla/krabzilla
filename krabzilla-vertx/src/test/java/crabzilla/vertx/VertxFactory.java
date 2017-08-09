@@ -5,7 +5,7 @@ import crabzilla.Command;
 import crabzilla.DomainEvent;
 import crabzilla.EntityId;
 import crabzilla.EntityUnitOfWork;
-import crabzilla.vertx.commands.CommandExecution;
+import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -21,8 +21,8 @@ public class VertxFactory {
     mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
     mapper.findAndRegisterModules();
 
-    vertx.eventBus().registerDefaultCodec(CommandExecution.class,
-            new JacksonGenericCodec<>(mapper, CommandExecution.class));
+    vertx.eventBus().registerDefaultCodec(EntityCommandExecution.class,
+            new JacksonGenericCodec<>(mapper, EntityCommandExecution.class));
 
     vertx.eventBus().registerDefaultCodec(EntityId.class,
             new JacksonGenericCodec<>(mapper, EntityId.class));

@@ -4,7 +4,7 @@ import crabzilla.DomainEvent
 import crabzilla.EntityCommand
 import crabzilla.EntityCommandHandlerFn
 import crabzilla.example1.services.SampleInternalService
-import crabzilla.vertx.EntityComponentsFactory
+import crabzilla.vertx.entity.EntityComponentsFactory
 import io.vertx.core.Vertx
 import io.vertx.ext.jdbc.JDBCClient
 import javax.inject.Inject

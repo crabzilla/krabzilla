@@ -1,4 +1,4 @@
-package crabzilla.vertx.commands.scheduling;
+package crabzilla.vertx;
 
 // what: sagas monitoring events may emit/schedule new commands to itself/other aggregate roots
 // how: events implementing CommandSchedulingEvent. This class will retrieve these scheduled commands

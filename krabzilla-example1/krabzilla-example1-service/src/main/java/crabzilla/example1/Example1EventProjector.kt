@@ -5,7 +5,7 @@ import crabzilla.DomainEvent
 import crabzilla.example1.aggregates.CustomerActivated
 import crabzilla.example1.aggregates.CustomerCreated
 import crabzilla.example1.aggregates.CustomerDeactivated
-import crabzilla.vertx.events.projection.EventProjector
+import crabzilla.vertx.entity.projection.EventProjector
 import example1.readmodel.CustomerSummaryDao
 import org.jdbi.v3.core.Jdbi
 

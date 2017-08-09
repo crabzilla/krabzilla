@@ -29,16 +29,6 @@
             <artifactId>krabzilla-vertx</artifactId>
         </dependency>
 
-        <!-- guice -->
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-multibindings</artifactId>
-        </dependency>
-
         <!-- log -->
 
         <dependency>

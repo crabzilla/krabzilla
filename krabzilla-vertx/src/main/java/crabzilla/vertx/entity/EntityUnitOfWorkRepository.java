@@ -1,9 +1,8 @@
-package crabzilla.vertx.commands.execution;
+package crabzilla.vertx.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import crabzilla.*;
-import crabzilla.vertx.SnapshotData;
 import io.vertx.core.Future;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;

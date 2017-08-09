@@ -1,4 +1,4 @@
-package crabzilla.vertx.events.projection
+package crabzilla.vertx.entity.projection
 
 import crabzilla.DomainEvent
 import java.io.Serializable

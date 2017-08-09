@@ -5,8 +5,8 @@ import crabzilla.example1.aggregates.ActivateCustomerCmd;
 import crabzilla.example1.aggregates.CreateCustomerCmd;
 import crabzilla.example1.aggregates.Customer;
 import crabzilla.example1.aggregates.CustomerId;
-import crabzilla.vertx.commands.CommandExecution;
-import crabzilla.vertx.events.projection.EventsProjectionVerticle;
+import crabzilla.vertx.entity.EntityCommandExecution;
+import crabzilla.vertx.entity.EventsProjectionVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
@@ -82,7 +82,7 @@ public class Example1Launcher {
     val options = new DeliveryOptions().setCodecName("Command");
 
     // create customer command
-    vertx.eventBus().<CommandExecution>send(commandHandlerId(Customer.class), createCustomerCmd, options, asyncResult -> {
+    vertx.eventBus().<EntityCommandExecution>send(commandHandlerId(Customer.class), createCustomerCmd, options, asyncResult -> {
 
       log.info("Successful create customer test? {}", asyncResult.succeeded());
 
@@ -93,7 +93,7 @@ public class Example1Launcher {
         val activateCustomerCmd = new ActivateCustomerCmd(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
 
         // activate customer command
-        vertx.eventBus().<CommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {
+        vertx.eventBus().<EntityCommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {
 
           log.info("Successful activate customer test? {}", asyncResult2.succeeded());
 

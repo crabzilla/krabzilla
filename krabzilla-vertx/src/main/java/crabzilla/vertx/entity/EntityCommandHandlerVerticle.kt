@@ -1,9 +1,7 @@
-package crabzilla.vertx.commands.execution
+package crabzilla.vertx.entity
 
 import crabzilla.*
-import crabzilla.vertx.SnapshotData
-import crabzilla.vertx.commands.CommandExecution
-import crabzilla.vertx.commands.CommandExecution.RESULT
+import crabzilla.vertx.entity.EntityCommandExecution.RESULT
 import crabzilla.vertx.util.StringHelper.commandHandlerId
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.core.AbstractVerticle
@@ -34,7 +32,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       if (command == null) {
 
-        val cmdExecResult = CommandExecution(commandId = command, result = RESULT.VALIDATION_ERROR,
+        val cmdExecResult = EntityCommandExecution(commandId = command, result = RESULT.VALIDATION_ERROR,
                 constraints = listOf("Command cannot be null. Check if JSON payload is valid."))
         msg.reply(cmdExecResult)
         return@handler
@@ -46,7 +44,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       if (!constraints.isEmpty()) {
 
-        val result = CommandExecution(commandId = command.commandId, result = RESULT.VALIDATION_ERROR,
+        val result = EntityCommandExecution(commandId = command.commandId, result = RESULT.VALIDATION_ERROR,
                 constraints = constraints)
         msg.reply(result)
         return@handler
@@ -55,12 +53,12 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
       circuitBreaker.fallback { throwable ->
 
         log.error("Fallback for command " + command.commandId, throwable)
-        val cmdExecResult = CommandExecution(commandId = command.commandId, result = RESULT.FALLBACK)
+        val cmdExecResult = EntityCommandExecution(commandId = command.commandId, result = RESULT.FALLBACK)
         msg.reply(cmdExecResult)
 
       }
 
-              .execute<CommandExecution>(cmdHandler(command))
+              .execute<EntityCommandExecution>(cmdHandler(command))
 
               .setHandler(resultHandler(msg))
 
@@ -68,7 +66,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
   }
 
-  internal fun cmdHandler(command: EntityCommand): (Future<CommandExecution>) -> Unit {
+  internal fun cmdHandler(command: EntityCommand): (Future<EntityCommandExecution>) -> Unit {
 
     return { future1 ->
 
@@ -111,7 +109,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
         // cmd handler _may_ be blocking. Otherwise, aggregate root would need to use reactive API to call
         // external services
-        vertx.executeBlocking<CommandExecution>({ future2 ->
+        vertx.executeBlocking<EntityCommandExecution>({ future2 ->
 
           val cmdHandlerResult = cmdHandler.invoke(command, resultingSnapshot)
 
@@ -134,7 +132,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                 when (error) {
 
                   is ConcurrencyConflictException -> {
-                    val cmdExecResult = CommandExecution(commandId = command.commandId, result = RESULT.CONCURRENCY_ERROR,
+                    val cmdExecResult = EntityCommandExecution(commandId = command.commandId, result = RESULT.CONCURRENCY_ERROR,
                             constraints = listOf("" + error.message))
                     future2.complete(cmdExecResult)
                   }
@@ -149,7 +147,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
               }
 
-              val cmdExecResult = CommandExecution(commandId = command.commandId, result = RESULT.SUCCESS,
+              val cmdExecResult = EntityCommandExecution(commandId = command.commandId, result = RESULT.SUCCESS,
                       unitOfWork = uow, uowSequence = appendAsyncResult.result())
 
               future2.complete(cmdExecResult)
@@ -165,11 +163,11 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
             val cmdExecResult = when (error) {
 
-              is UnknownCommandException -> CommandExecution(commandId = command.commandId,
+              is UnknownCommandException -> EntityCommandExecution(commandId = command.commandId,
                       result = RESULT.UNKNOWN_COMMAND,
                       constraints = listOf("" + error.message))
 
-              else -> CommandExecution(commandId = command.commandId, result = RESULT.HANDLING_ERROR,
+              else -> EntityCommandExecution(commandId = command.commandId, result = RESULT.HANDLING_ERROR,
                       constraints = listOf("" + error.message))
 
             }
@@ -196,9 +194,9 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
   }
 
-  internal fun resultHandler(msg: Message<EntityCommand>): (AsyncResult<CommandExecution>) -> Unit {
+  internal fun resultHandler(msg: Message<EntityCommand>): (AsyncResult<EntityCommandExecution>) -> Unit {
 
-    return { resultHandler: AsyncResult<CommandExecution> ->
+    return { resultHandler: AsyncResult<EntityCommandExecution> ->
 
       if (resultHandler.succeeded()) {
 

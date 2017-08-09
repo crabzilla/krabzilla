@@ -19,8 +19,8 @@ import crabzilla.EntityUnitOfWork;
 import crabzilla.example1.aggregates.CustomerModule;
 import crabzilla.example1.services.SampleInternalService;
 import crabzilla.example1.services.SampleInternalServiceImpl;
-import crabzilla.vertx.commands.CommandExecution;
-import crabzilla.vertx.events.projection.EventProjector;
+import crabzilla.vertx.entity.EntityCommandExecution;
+import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
@@ -135,8 +135,8 @@ class Example1Module extends AbstractModule {
             .registerModule(new JavaTimeModule())
             .registerModule(new KotlinModule());
 
-    vertx.eventBus().registerDefaultCodec(CommandExecution.class,
-            new JacksonGenericCodec<>(mapper, CommandExecution.class));
+    vertx.eventBus().registerDefaultCodec(EntityCommandExecution.class,
+            new JacksonGenericCodec<>(mapper, EntityCommandExecution.class));
 
     vertx.eventBus().registerDefaultCodec(EntityId.class,
             new JacksonGenericCodec<>(mapper, EntityId.class));

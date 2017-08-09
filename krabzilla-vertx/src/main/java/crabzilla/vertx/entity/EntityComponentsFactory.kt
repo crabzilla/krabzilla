@@ -1,12 +1,9 @@
-package crabzilla.vertx
+package crabzilla.vertx.entity
 
 import crabzilla.EntityFunctionsFactory
 import crabzilla.Snapshot
 import crabzilla.SnapshotUpgraderFn
 import crabzilla.StateTracker
-import crabzilla.vertx.commands.execution.EntityCommandHandlerVerticle
-import crabzilla.vertx.commands.execution.EntityCommandRestVerticle
-import crabzilla.vertx.commands.execution.EntityUnitOfWorkRepository
 import crabzilla.vertx.util.StringHelper
 import io.vertx.circuitbreaker.CircuitBreaker
 import io.vertx.circuitbreaker.CircuitBreakerOptions

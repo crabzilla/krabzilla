@@ -1,7 +1,6 @@
-package crabzilla.vertx.commands.execution;
+package crabzilla.vertx.entity;
 
 import crabzilla.Command;
-import crabzilla.vertx.commands.CommandExecution;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -57,11 +56,11 @@ public class EntityCommandRestVerticle<E> extends AbstractVerticle {
         val command = Json.decodeValue(new String(buff.getBytes()), Command.class);
         val httpResp = routingContext.request().response();
         val options = new DeliveryOptions().setCodecName("Command");
-        vertx.<CommandExecution>eventBus().send(commandHandlerId(aggregateRootClass), command, options, response -> {
+        vertx.<EntityCommandExecution>eventBus().send(commandHandlerId(aggregateRootClass), command, options, response -> {
           if (response.succeeded()) {
             log.info("success commands handler: {}", response);
-            val result = (CommandExecution) response.result().body();
-            if (CommandExecution.RESULT.SUCCESS.equals(result.getResult())) {
+            val result = (EntityCommandExecution) response.result().body();
+            if (EntityCommandExecution.RESULT.SUCCESS.equals(result.getResult())) {
               val headers = new CaseInsensitiveHeaders().add("uowSequence", result.getUowSequence().toString());
               val optionsUow = new DeliveryOptions().setCodecName("EntityUnitOfWork").setHeaders(headers);
               vertx.<String>eventBus().publish(eventsHandlerId("example1"), result.getUnitOfWork(), optionsUow);

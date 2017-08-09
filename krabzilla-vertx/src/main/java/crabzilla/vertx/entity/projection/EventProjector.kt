@@ -1,4 +1,4 @@
-package crabzilla.vertx.events.projection
+package crabzilla.vertx.entity.projection
 
 import crabzilla.DomainEvent
 import io.vertx.core.logging.Logger
@@ -31,6 +31,7 @@ abstract class EventProjector<D>(val eventsChannelId: String,
     } catch (e: Exception) {
 
       log.error("exception: ", e)
+
       handle.rollback()
 
     } finally {
@@ -41,10 +42,6 @@ abstract class EventProjector<D>(val eventsChannelId: String,
 
     // TODO update uow_last_seq for this event channel
     log.info("wrote ${uowList.size} units for eventsChannelId $eventsChannelId")
-  }
-
-  fun lastUowSeq(): Long {
-    return 0 // TODO fix this
   }
 
   abstract fun write(dao: D, targetId: String, event: DomainEvent)

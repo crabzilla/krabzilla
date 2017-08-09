@@ -1,4 +1,4 @@
-package crabzilla.vertx.events.projection;
+package crabzilla.vertx.entity.projection;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import crabzilla.DomainEvent;

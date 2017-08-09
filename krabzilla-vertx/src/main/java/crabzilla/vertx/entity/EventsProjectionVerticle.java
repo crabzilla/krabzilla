@@ -1,6 +1,8 @@
-package crabzilla.vertx.events.projection;
+package crabzilla.vertx.entity;
 
 import crabzilla.EntityUnitOfWork;
+import crabzilla.vertx.entity.projection.EventProjector;
+import crabzilla.vertx.entity.projection.ProjectionData;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
@@ -40,30 +42,26 @@ public class EventsProjectionVerticle extends AbstractVerticle {
 
   Handler<Message<EntityUnitOfWork>> msgHandler() {
 
-    return (Message<EntityUnitOfWork> msg) -> {
+    return (Message<EntityUnitOfWork> msg) -> vertx.executeBlocking((Future<String> future) -> {
 
-      vertx.executeBlocking((Future<String> future) -> {
+      log.info("Received ProjectionData msg {} ", msg);
 
-        log.info("Received ProjectionData msg {} ", msg);
+      val uow = msg.body();
+      val uowSequence = new Long(msg.headers().get("uowSequence"));
+      val projectionData =
+              new ProjectionData(uow.getId(), uowSequence,
+                      uow.targetId().getStringValue(), uow.getEvents());
 
-        val uow = msg.body();
-        val uowSequence = new Long(msg.headers().get("uowSequence"));
-        val projectionData =
-                new ProjectionData(uow.getId(), uowSequence,
-                        uow.targetId().getStringValue(), uow.getEvents());
+      circuitBreaker.fallback(throwable -> {
+        log.warn("Fallback for uowHandler ");
+        return "fallback";
+      })
 
-        circuitBreaker.fallback(throwable -> {
-          log.warn("Fallback for uowHandler ");
-          return "fallback";
-        })
+      .execute(uowHandler(projectionData))
 
-        .execute(uowHandler(projectionData))
+      .setHandler(resultHandler(msg));
 
-        .setHandler(resultHandler(msg));
-
-      }, resultHandler(msg));
-
-    };
+    }, resultHandler(msg));
 
   }
 

@@ -1,9 +1,9 @@
 package crabzilla.example1;
 
 import crabzilla.vertx.BoundedContextComponentsFactory;
-import crabzilla.vertx.events.projection.EventProjector;
-import crabzilla.vertx.events.projection.ProjectionData;
-import crabzilla.vertx.events.projection.ProjectionRepository;
+import crabzilla.vertx.entity.projection.EventProjector;
+import crabzilla.vertx.entity.projection.ProjectionData;
+import crabzilla.vertx.entity.projection.ProjectionRepository;
 import example1.readmodel.CustomerSummaryDao;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.jdbi.v3.core.Jdbi;

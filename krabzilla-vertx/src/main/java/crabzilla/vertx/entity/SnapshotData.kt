@@ -1,4 +1,4 @@
-package crabzilla.vertx
+package crabzilla.vertx.entity
 
 import crabzilla.DomainEvent
 import crabzilla.Version

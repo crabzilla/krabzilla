@@ -1,7 +1,7 @@
 package crabzilla.vertx
 
-import crabzilla.vertx.events.projection.EventProjector
-import crabzilla.vertx.events.projection.ProjectionData
+import crabzilla.vertx.entity.projection.EventProjector
+import crabzilla.vertx.entity.projection.ProjectionData
 import java.util.function.BiFunction
 
 interface BoundedContextComponentsFactory {
