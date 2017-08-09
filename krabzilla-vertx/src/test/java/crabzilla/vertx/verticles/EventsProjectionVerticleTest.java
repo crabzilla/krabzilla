@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import java.util.UUID;
@@ -103,12 +104,14 @@ public class EventsProjectionVerticleTest {
 
       val custSummary = new CustomerSummary(customerId.getStringValue(), name, false);
 
-      verify(jdbi).open();
-      verify(handle).attach(any());
+      InOrder inOrder = inOrder(jdbi, handle, dao);
 
-      verify(dao).insert(eq(custSummary));
+      inOrder.verify(jdbi).open();
+      inOrder.verify(handle).attach(any());
+      inOrder.verify(dao).insert(eq(custSummary));
+      inOrder.verify(handle).commit();
 
-      verifyNoMoreInteractions(dao);
+      verifyNoMoreInteractions(dao, jdbi, handle);
 
       tc.assertTrue(asyncResult.succeeded());
 
