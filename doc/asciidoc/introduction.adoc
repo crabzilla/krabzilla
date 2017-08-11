@@ -1,0 +1,63 @@
+= Krabzila Documentation
+:source-highlighter: highlightjs
+:highlightjsdir: highlight
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../../main/java]
+
+
+Status: *WORK IN PROGRESS*
+
+== Goal for version 1.0.0
+
+To help you write your domain model with very little framework overhead and smoothly deploy it on a state of art Java 8
+reactive applications platform backed by a rock solid relational database of your choice.
+
+== Approach
+
+The approach is to use functions everywhere within your domain implementation. For each top level domain model
+(Aggregate, ProcessManager/Saga, etc), you need to implement a set of functions. For example, for an Aggregate,
+you will implement:
+
+[source,kotlin]
+.domain.kt
+----
+include::./krabzilla-core/src/main/java/crabzilla/domain.kt[tags=factory,indent=0]
+----
+
+[.lead]
+*Notice* : By "top level domain model" I mean Aggregate, ExternalSystem, Listener and ProcessManager/Saga. These
+are inspired by http://eventstorming.com/[Eventstorming]
+
+== Modules
+
+Krabzilla has 2 modules:
+
+ krabzilla             → Project root
+  └ krabzilla-core     → The core abstractions: Command, DomainEvent, Aggregate, Snapshot, etc
+  └ krabzilla-vertx    → The application engine: runs your domain model
+
+and your typical *example1* bounded context project will have this structure:
+
+ example1             → Project root
+  └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
+  └ example1-database → Flyway db w/ both read and write models. Repositories implementations.
+  └ example1-service  → The application: wiring, configuration and services implementations.
+
+Load, integration and acceptance tests are against the service module.
+
+The dependencies between the modules:
+
+[.thumb]
+image::modules.png[scaledwidth=100%]
+
+== Side Effects persistence
+
+Krabzilla will observe the results from these functions and will persist these results:
+
+* EntityUnitOfWork
+* UnitOfWork
+* Reactions
+* Scheduled commands
+
