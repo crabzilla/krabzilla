@@ -16,9 +16,7 @@ import crabzilla.Command;
 import crabzilla.DomainEvent;
 import crabzilla.EntityId;
 import crabzilla.EntityUnitOfWork;
-import crabzilla.example1.aggregates.CustomerModule;
-import crabzilla.example1.services.SampleInternalService;
-import crabzilla.example1.services.SampleInternalServiceImpl;
+import crabzilla.example1.customer.CustomerModule;
 import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
@@ -112,16 +110,16 @@ class Example1Module extends AbstractModule {
   @Named("events-projection")
   CircuitBreaker circuitBreakerEvents() {
     return CircuitBreaker.create("events-projection-circuit-breaker", vertx,
-            new CircuitBreakerOptions()
-                    .setMaxFailures(5) // number SUCCESS failure before opening the circuit
-                    .setTimeout(2000) // consider a failure if the operation does not succeed in time
-                    .setFallbackOnFailure(true) // do we call the fallback on failure
-                    .setResetTimeout(10000) // time spent in open state before attempting to re-try
+      new CircuitBreakerOptions()
+              .setMaxFailures(5) // number SUCCESS failure before opening the circuit
+              .setTimeout(2000) // consider a failure if the operation does not succeed in time
+              .setFallbackOnFailure(true) // do we call the fallback on failure
+              .setResetTimeout(10000) // time spent in open state before attempting to re-try
     );
-
   }
 
-//  Not being used yet. This can improve a lot serialization speed (it's binary). But so far it was not necessary.
+//  Not being used yet. This can improve a lot serialization speed (it's binary).
+//  But so far it was not necessary.
 //  @Provides
 //  @Singleton
 //  FSTConfiguration conf() {

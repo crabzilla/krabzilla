@@ -1,6 +1,6 @@
 package crabzilla;
 
-import crabzilla.example1.aggregates.*;
+import crabzilla.example1.customer.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,8 +13,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("A StateTransitionsTracker")
-public class StateTransitionsTrackerTest {
+@DisplayName("A StateTracker")
+public class StateTrackerTest {
 
   final Customer customer = new CustomerSeedValueFn().invoke().getValue();
 

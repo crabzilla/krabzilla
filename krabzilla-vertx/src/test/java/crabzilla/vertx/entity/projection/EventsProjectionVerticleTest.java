@@ -3,11 +3,10 @@ package crabzilla.vertx.entity.projection;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
 import crabzilla.example1.CustomerSummary;
-import crabzilla.example1.aggregates.CreateCustomerCmd;
-import crabzilla.example1.aggregates.CustomerCreated;
-import crabzilla.example1.aggregates.CustomerId;
+import crabzilla.example1.customer.CreateCustomer;
+import crabzilla.example1.customer.CustomerCreated;
+import crabzilla.example1.customer.CustomerId;
 import crabzilla.vertx.VertxFactory;
-import crabzilla.vertx.entity.EventsProjectionVerticle;
 import example1.readmodel.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
@@ -84,7 +83,7 @@ public class EventsProjectionVerticleTest {
     val name = "customer";
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, name);
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, name);
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), name);
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
     val uowSequence = 1L;

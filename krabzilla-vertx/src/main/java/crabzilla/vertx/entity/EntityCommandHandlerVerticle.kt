@@ -8,18 +8,19 @@ import io.vertx.core.AbstractVerticle
 import io.vertx.core.AsyncResult
 import io.vertx.core.Future
 import io.vertx.core.eventbus.Message
+import mu.KotlinLogging
 import net.jodah.expiringmap.ExpiringMap
 
 class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                                       internal val seedValue: Lazy<E>,
                                       internal val validatorFn: (EntityCommand) -> List<String>,
-                                      internal val cmdHandler: EntityCommandHandlerFn<E>,
+                                      internal val cmdHandlerFn: (EntityCommand, Snapshot<E>) -> CommandHandlerResult,
                                       internal val cache: ExpiringMap<String, Snapshot<E>>,
-                                      internal val snapshotUpgrader: SnapshotUpgraderFn<E>,
+                                      internal val snapshotPromoterFn: SnapshotPromoterFn<E>,
                                       internal val eventRepository: EntityUnitOfWorkRepository,
                                       internal val circuitBreaker: CircuitBreaker) : AbstractVerticle() {
 
-  val log = io.vertx.core.logging.LoggerFactory.getLogger(EntityCommandHandlerVerticle::class.java)
+  private val log = KotlinLogging.logger {}
 
   @Throws(Exception::class)
   override fun start() {
@@ -52,7 +53,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       circuitBreaker.fallback { throwable ->
 
-        log.error("Fallback for command " + command.commandId, throwable)
+        log.error("Fallback for command $command.commandId", throwable)
         val cmdExecResult = EntityCommandExecution(commandId = command.commandId, result = RESULT.FALLBACK)
         msg.reply(cmdExecResult)
 
@@ -72,13 +73,13 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
       val targetId = command.targetId.stringValue
 
-      log.debug("cache.get(id)", targetId)
+      log.info("cache.get($targetId)")
 
       val cachedSnapshot = cache[targetId] ?: Snapshot(seedValue.value, Version(0))
       // TODO look for the current snapshot in a repo when cache does not contain targetId
 
-      log.debug("id {} cached lastSnapshotData has version {}. Will check if there any version beyond it",
-              targetId, cachedSnapshot.version)
+      log.info("id $targetId cached lastSnapshotData has version ${cachedSnapshot.version} " +
+              "Will check if there any version beyond it")
 
       val selectAfterVersionFuture = Future.future<SnapshotData>()
 
@@ -95,15 +96,15 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
         val totalOfNonCachedEvents = nonCached.events.size
 
-        log.debug("id {} found {} pending events. Last version is now {}", targetId, totalOfNonCachedEvents,
-                nonCached.version)
-
         val resultingSnapshot = if (totalOfNonCachedEvents > 0)
-          snapshotUpgrader.invoke(cachedSnapshot, nonCached.version, nonCached.events)
+          snapshotPromoterFn.invoke(cachedSnapshot, nonCached.version, nonCached.events)
         else
           cachedSnapshot
 
-        if (totalOfNonCachedEvents > 0) {
+          log.info("id $targetId found $totalOfNonCachedEvents pending events. " +
+                  "Last version is now ${resultingSnapshot.version}")
+
+          if (totalOfNonCachedEvents > 0) {
           cache.put(targetId, resultingSnapshot)
         }
 
@@ -111,7 +112,7 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
         // external services
         vertx.executeBlocking<EntityCommandExecution>({ future2 ->
 
-          val cmdHandlerResult = cmdHandler.invoke(command, resultingSnapshot)
+          val cmdHandlerResult = cmdHandlerFn.invoke(command, resultingSnapshot)
 
           cmdHandlerResult.inCaseOfSuccess({ uow ->
 
@@ -132,7 +133,8 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
                 when (error) {
 
                   is ConcurrencyConflictException -> {
-                    val cmdExecResult = EntityCommandExecution(commandId = command.commandId, result = RESULT.CONCURRENCY_ERROR,
+                    val cmdExecResult = EntityCommandExecution(commandId = command.commandId,
+                            result = RESULT.CONCURRENCY_ERROR,
                             constraints = listOf("" + error.message))
                     future2.complete(cmdExecResult)
                   }
@@ -147,8 +149,13 @@ class EntityCommandHandlerVerticle<E>(internal val aggregateRootClass: Class<E>,
 
               }
 
-              val cmdExecResult = EntityCommandExecution(commandId = command.commandId, result = RESULT.SUCCESS,
+              val cmdExecResult = EntityCommandExecution(commandId = command.commandId,
+                      result = RESULT.SUCCESS,
                       unitOfWork = uow, uowSequence = appendAsyncResult.result())
+
+              val finalSnapshot = snapshotPromoterFn.invoke(resultingSnapshot, uow.version, uow.events)
+
+              cache.put(targetId, finalSnapshot)
 
               future2.complete(cmdExecResult)
 

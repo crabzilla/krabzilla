@@ -1,7 +1,7 @@
 package crabzilla.vertx.entity.projection
 
 import crabzilla.DomainEvent
-import io.vertx.core.logging.Logger
+import mu.KLogger
 import org.jdbi.v3.core.Jdbi
 
 
@@ -9,7 +9,7 @@ abstract class EventProjector<D>(val eventsChannelId: String,
                                  val daoClazz: Class<D>,
                                  val jdbi: Jdbi) {
 
-  abstract val log: Logger
+  abstract val log: KLogger
 
   fun handle(uowList: List<ProjectionData>) {
 

@@ -10,10 +10,10 @@ import crabzilla.Command;
 import crabzilla.DomainEvent;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
-import crabzilla.example1.aggregates.CreateCustomerCmd;
-import crabzilla.example1.aggregates.CustomerActivated;
-import crabzilla.example1.aggregates.CustomerCreated;
-import crabzilla.example1.aggregates.CustomerId;
+import crabzilla.example1.customer.CreateCustomer;
+import crabzilla.example1.customer.CustomerActivated;
+import crabzilla.example1.customer.CustomerCreated;
+import crabzilla.example1.customer.CustomerId;
 import io.vertx.core.json.Json;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ public class JacksonJsonTest {
   public void one_event() throws Exception {
 
     val id = new CustomerId(UUID.randomUUID().toString());
-    val command = new CreateCustomerCmd(UUID.randomUUID(), id, "customer1");
+    val command = new CreateCustomer(UUID.randomUUID(), id, "customer1");
     val event = new CustomerCreated(id, command.getName());
     val uow1 = new EntityUnitOfWork(command, Collections.singletonList(event), new Version(1));
 
@@ -65,7 +65,7 @@ public class JacksonJsonTest {
   public void more_events() throws Exception {
 
     val id = new CustomerId("customer#1");
-    val command = new CreateCustomerCmd(UUID.randomUUID(), id, "customer1");
+    val command = new CreateCustomer(UUID.randomUUID(), id, "customer1");
     val event1 = new CustomerCreated(id, command.getName());
     val event2 = new CustomerActivated("a rgood reason", Instant.now());
 
@@ -85,7 +85,7 @@ public class JacksonJsonTest {
   public void listOfEvents() throws Exception {
 
     CustomerId id = new CustomerId("customer#1");
-    CreateCustomerCmd command = new CreateCustomerCmd(UUID.randomUUID(), id, "customer1");
+    CreateCustomer command = new CreateCustomer(UUID.randomUUID(), id, "customer1");
     CustomerCreated event1 = new CustomerCreated(id, command.getName());
     CustomerActivated event2 = new CustomerActivated("a rgood reason", Instant.now());
 

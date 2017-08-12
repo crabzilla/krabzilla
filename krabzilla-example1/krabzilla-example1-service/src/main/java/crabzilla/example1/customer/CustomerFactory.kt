@@ -1,16 +1,17 @@
-package crabzilla.example1.aggregates
+package crabzilla.example1.customer
 
+import crabzilla.CommandHandlerResult
 import crabzilla.DomainEvent
 import crabzilla.EntityCommand
-import crabzilla.EntityCommandHandlerFn
-import crabzilla.example1.services.SampleInternalService
+import crabzilla.Snapshot
+import crabzilla.example1.SampleInternalService
 import crabzilla.vertx.entity.EntityComponentsFactory
 import io.vertx.core.Vertx
 import io.vertx.ext.jdbc.JDBCClient
 import javax.inject.Inject
 
-class CustomerFactory @Inject
-constructor(private val internalService: SampleInternalService, private val vertx: Vertx, private val jdbcClient: JDBCClient)
+class CustomerFactory @Inject constructor(private val internalService: SampleInternalService,
+            private val vertx: Vertx, private val jdbcClient: JDBCClient)
   : EntityComponentsFactory<Customer> {
 
   override fun clazz(): Class<Customer> {
@@ -29,7 +30,7 @@ constructor(private val internalService: SampleInternalService, private val vert
     return CustomerCommandValidatorFn()
   }
 
-  override fun cmdHandlerFn(): EntityCommandHandlerFn<Customer> {
+  override fun cmdHandlerFn(): (EntityCommand, Snapshot<Customer>) -> CommandHandlerResult {
     return CustomerCommandHandlerFn(trackerFactory())
   }
 

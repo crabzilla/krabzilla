@@ -1,12 +1,12 @@
 package crabzilla.example1;
 
 import com.google.inject.Guice;
-import crabzilla.example1.aggregates.ActivateCustomerCmd;
-import crabzilla.example1.aggregates.CreateCustomerCmd;
-import crabzilla.example1.aggregates.Customer;
-import crabzilla.example1.aggregates.CustomerId;
+import crabzilla.example1.customer.ActivateCustomer;
+import crabzilla.example1.customer.CreateCustomer;
+import crabzilla.example1.customer.Customer;
+import crabzilla.example1.customer.CustomerId;
 import crabzilla.vertx.entity.EntityCommandExecution;
-import crabzilla.vertx.entity.EventsProjectionVerticle;
+import crabzilla.vertx.entity.projection.EventsProjectionVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
@@ -59,10 +59,10 @@ public class Example1Launcher {
         Guice.createInjector(new Example1Module(vertx)).injectMembers(launcher);
 
         for (Map.Entry<String,Verticle> v: launcher.aggregateRootVerticles.entrySet()) {
-          vertx.deployVerticle(v.getValue(), event -> log.info("Deployed {} ? {}", v.getKey(), event.succeeded()));
+          vertx.deployVerticle(v.getValue(), event -> log.debug("Deployed {} ? {}", v.getKey(), event.succeeded()));
         }
 
-        vertx.deployVerticle(launcher.projectionVerticle, event -> log.info("Deployed ? {}", event.succeeded()));
+        vertx.deployVerticle(launcher.projectionVerticle, event -> log.debug("Deployed ? {}", event.succeeded()));
 
         // a test
         launcher.justForTest();
@@ -76,10 +76,10 @@ public class Example1Launcher {
 
   private void justForTest() {
 
-    val customerId = new CustomerId(UUID.randomUUID().toString());
-//    val customerId = new CustomerId("customer123");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "a good customer");
-    val options = new DeliveryOptions().setCodecName("Command");
+  val customerId = new CustomerId(UUID.randomUUID().toString());
+  // val customerId = new CustomerId("customer-000");
+  val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "a good customer");
+  val options = new DeliveryOptions().setCodecName("Command");
 
     // create customer command
     vertx.eventBus().<EntityCommandExecution>send(commandHandlerId(Customer.class), createCustomerCmd, options, asyncResult -> {
@@ -90,7 +90,9 @@ public class Example1Launcher {
 
         log.info("Result: {}", asyncResult.result().body());
 
-        val activateCustomerCmd = new ActivateCustomerCmd(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
+        val activateCustomerCmd = new ActivateCustomer(UUID.randomUUID(), createCustomerCmd.getTargetId(), "because I want it");
+
+        log.info("-----> Will send : {}", activateCustomerCmd);
 
         // activate customer command
         vertx.eventBus().<EntityCommandExecution>send(commandHandlerId(Customer.class), activateCustomerCmd, options, asyncResult2 -> {

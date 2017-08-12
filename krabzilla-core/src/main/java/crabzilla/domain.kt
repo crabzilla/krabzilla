@@ -92,33 +92,25 @@ class StateTracker<E>(val originalInstance: E,
 
 }
 
-// tag::entities_functions[]
-
-open interface EntityCommandHandlerFn<in E> :
-        (EntityCommand, Snapshot<E>) -> CommandHandlerResult {
-  fun result(f: () -> EntityUnitOfWork?): CommandHandlerResult {
-    return try { CommandHandlerResult(successValue=f.invoke()) }
-    catch (e: Throwable) {
-      CommandHandlerResult(error=RuntimeException("from ${this.javaClass.simpleName}", e)) }
-  }
-}
-
-// end::entities_functions[]
 
 // tag::factory[]
 
 interface EntityFunctionsFactory<E> {
+
   fun seedValueFn(): () -> Lazy<E>
+
   fun stateTransitionFn(): (DomainEvent, E) -> E
+
   fun cmdValidatorFn(): (EntityCommand) -> List<String>
-  fun cmdHandlerFn(): EntityCommandHandlerFn<E>
+
+  fun cmdHandlerFn(): (EntityCommand, Snapshot<E>) -> CommandHandlerResult
+
 }
 
 // end::factory[]
 
-open class SnapshotUpgraderFn<E> @Inject
-constructor(val trackerFactory: (E) -> StateTracker<E>) :
-        (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
+open class SnapshotPromoterFn<E> @Inject
+constructor(val trackerFactory: (E) -> StateTracker<E>) : (Snapshot<E>, Version, List<DomainEvent>) -> Snapshot<E> {
   override fun invoke(originalSnapshot: Snapshot<E>,
                       newVersion: Version,
                       newEvents: List<DomainEvent>): Snapshot<E> {
@@ -136,14 +128,29 @@ class UnknownCommandException(p0: String?) : RuntimeException(p0)
 class ConcurrencyConflictException(p0: String?) : RuntimeException(p0)
 
 class CommandHandlerResult(val successValue: EntityUnitOfWork? = null, val error: RuntimeException? = null) {
+
   fun inCaseOfSuccess(uowFn: (EntityUnitOfWork?) -> Unit) {
     if (successValue != null) {
       uowFn.invoke(successValue)
     }
   }
+
   fun inCaseOfError(uowFn: (RuntimeException) -> Unit) {
     if (error != null) {
       uowFn.invoke(error)
     }
   }
+}
+
+// helpers functions
+
+fun resultOf(f: () -> EntityUnitOfWork?): CommandHandlerResult {
+  return try {
+    CommandHandlerResult(successValue=f.invoke()) }
+  catch (e: Throwable) {
+    CommandHandlerResult(error=RuntimeException(e)) }
+}
+
+fun uowOf(command: EntityCommand, events: List<DomainEvent>, version: Version): EntityUnitOfWork {
+  return EntityUnitOfWork(command, events, version)
 }

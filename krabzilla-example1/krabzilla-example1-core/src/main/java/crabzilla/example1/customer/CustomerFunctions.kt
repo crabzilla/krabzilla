@@ -1,4 +1,4 @@
-package crabzilla.example1.aggregates
+package crabzilla.example1.customer
 
 import crabzilla.*
 
@@ -22,7 +22,7 @@ class CustomerStateTransitionFn : (DomainEvent, Customer) -> Customer { // <2>
 class CustomerCommandValidatorFn : (EntityCommand) -> List<String> { // <3>
   override fun invoke(command: EntityCommand): List<String> {
     return when(command) {
-      is CreateCustomerCmd ->
+      is CreateCustomer ->
         if (command.name.equals("a bad name"))
           listOf("Invalid name: ${command.name}") else listOf()
       else -> listOf() // all other commands are valid
@@ -31,29 +31,27 @@ class CustomerCommandValidatorFn : (EntityCommand) -> List<String> { // <3>
 }
 
 class CustomerCommandHandlerFn (val trackerFactory: (Customer) -> StateTracker<Customer>) : // <4>
-        EntityCommandHandlerFn<Customer> {
-  override fun invoke(command: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {
+        (EntityCommand, Snapshot<Customer>) -> CommandHandlerResult {
+
+  override fun invoke(cmd: EntityCommand, snapshot: Snapshot<Customer>): CommandHandlerResult {
 
     val customer = snapshot.instance
     val newVersion = snapshot.version.nextVersion()
 
-    return result {
-      when (command) {
-        is CreateCustomerCmd ->
-          EntityUnitOfWork(command, customer.create(command.targetId, command.name), newVersion)
-        is ActivateCustomerCmd ->
-          EntityUnitOfWork(command, customer.activate(command.reason), newVersion)
-        is DeactivateCustomerCmd ->
-          EntityUnitOfWork(command, customer.deactivate(command.reason), newVersion)
-        is CreateActivateCustomerCmd -> {
+    return resultOf {
+      when (cmd) {
+        is CreateCustomer -> uowOf(cmd, customer.create(cmd.targetId, cmd.name), newVersion)
+        is ActivateCustomer -> uowOf(cmd, customer.activate(cmd.reason), newVersion)
+        is DeactivateCustomer -> uowOf(cmd, customer.deactivate(cmd.reason), newVersion)
+        is CreateActivateCustomer -> {
           val tracker = trackerFactory.invoke(customer)
           val events = tracker
-                  .applyEvents({ customer -> customer.create(command.targetId, command.name) })
-                  .applyEvents({ customer -> customer.activate(command.reason) })
+                  .applyEvents({ c -> c.create(cmd.targetId, cmd.name) })
+                  .applyEvents({ c -> c.activate(cmd.reason) })
                   .collectEvents()
-          EntityUnitOfWork(command, events, newVersion)
+          uowOf(cmd, events, newVersion)
         }
-        else -> throw UnknownCommandException("for command ${command.javaClass.simpleName}")
+        else -> throw UnknownCommandException("for command ${cmd.javaClass.simpleName}")
       }
     }
   }

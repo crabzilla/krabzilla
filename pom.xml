@@ -185,6 +185,11 @@
                 <artifactId>slf4j-simple</artifactId>
                 <version>${sl4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.microutils</groupId>
+                <artifactId>kotlin-logging</artifactId>
+                <version>1.4.6</version>
+            </dependency>
 
             <!-- json -->
             <dependency>

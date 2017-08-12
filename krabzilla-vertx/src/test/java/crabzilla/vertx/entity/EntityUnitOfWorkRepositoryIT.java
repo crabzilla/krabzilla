@@ -10,7 +10,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import crabzilla.ConcurrencyConflictException;
 import crabzilla.EntityUnitOfWork;
 import crabzilla.Version;
-import crabzilla.example1.aggregates.*;
+import crabzilla.example1.customer.*;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -48,11 +48,11 @@ public class EntityUnitOfWorkRepositoryIT {
   EntityUnitOfWorkRepository repo;
 
   final CustomerId customerId = new CustomerId("customer#1");
-  final CreateCustomerCmd createCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
+  final CreateCustomer createCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer");
   final CustomerCreated created = new CustomerCreated(createCmd.getTargetId(), "customer");
   final EntityUnitOfWork expectedUow1 = new EntityUnitOfWork(createCmd, singletonList(created), new Version(1));
 
-  final ActivateCustomerCmd activateCmd = new ActivateCustomerCmd(UUID.randomUUID(), customerId, "I want it");
+  final ActivateCustomer activateCmd = new ActivateCustomer(UUID.randomUUID(), customerId, "I want it");
   final CustomerActivated activated = new CustomerActivated(createCmd.getTargetId().getStringValue(), Instant.now());
   final EntityUnitOfWork expectedUow2 = new EntityUnitOfWork(activateCmd, singletonList(activated), new Version(2));
 
@@ -124,6 +124,7 @@ public class EntityUnitOfWorkRepositoryIT {
       repo.get(expectedUow1.getId(), uowFuture);
 
       uowFuture.setHandler(uowAsyncResult -> {
+
         if (uowAsyncResult.failed()) {
           fail("error repo.get", uowAsyncResult.cause());
           return;
@@ -143,6 +144,7 @@ public class EntityUnitOfWorkRepositoryIT {
         repo.selectAfterVersion(expectedUow1.targetId().getStringValue(), new Version(0), snapshotDataFuture);
 
         snapshotDataFuture.setHandler(snapshotDataAsyncResult -> {
+
           if (snapshotDataAsyncResult.failed()) {
             fail("error repo.selectAfterVersion", snapshotDataAsyncResult.cause());
             return;
@@ -170,6 +172,7 @@ public class EntityUnitOfWorkRepositoryIT {
     repo.append(expectedUow2, appendFuture);
 
     appendFuture.setHandler(appendAsyncResult -> {
+
       if (appendAsyncResult.failed()) {
         fail("error repo.append", appendAsyncResult.cause());
         return;
@@ -184,6 +187,7 @@ public class EntityUnitOfWorkRepositoryIT {
       repo.get(expectedUow2.getId(), uowFuture);
 
       uowFuture.setHandler(uowAsyncResult -> {
+
         if (uowAsyncResult.failed()) {
           fail("error repo.get", uowAsyncResult.cause());
           return;
@@ -204,6 +208,7 @@ public class EntityUnitOfWorkRepositoryIT {
         repo.selectAfterVersion(expectedUow2.targetId().getStringValue(), new Version(1), snapshotDataFuture);
 
         snapshotDataFuture.setHandler(snapshotDataAsyncResult -> {
+
           if (snapshotDataAsyncResult.failed()) {
             fail("error repo.selectAfterVersion", snapshotDataAsyncResult.cause());
             return;

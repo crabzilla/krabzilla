@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
-@Slf4j
+@Slf4j @Deprecated
 public class ProjectionRepository implements BiFunction<Long, Integer, List<ProjectionData>> {
 
   private final JDBCClient client;

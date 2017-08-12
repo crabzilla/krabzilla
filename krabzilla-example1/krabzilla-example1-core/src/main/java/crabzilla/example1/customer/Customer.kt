@@ -1,8 +1,8 @@
-package crabzilla.example1.aggregates
+package crabzilla.example1.customer
 
 import crabzilla.Aggregate
 import crabzilla.DomainEvent
-import crabzilla.example1.services.SampleInternalService
+import crabzilla.example1.SampleInternalService
 
 data class Customer(override val id: CustomerId? = null,
                     val name: String? = null,

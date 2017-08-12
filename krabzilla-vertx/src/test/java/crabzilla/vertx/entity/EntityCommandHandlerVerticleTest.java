@@ -1,11 +1,12 @@
 package crabzilla.vertx.entity;
 
 import crabzilla.*;
-import crabzilla.example1.aggregates.*;
+import crabzilla.example1.customer.*;
 import crabzilla.vertx.VertxFactory;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Future;
+import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.ReplyException;
@@ -14,6 +15,7 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import kotlin.Lazy;
 import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 import lombok.val;
 import net.jodah.expiringmap.ExpiringMap;
 import org.junit.After;
@@ -52,11 +54,11 @@ public class EntityCommandHandlerVerticleTest {
   @Mock
   Function1<EntityCommand, List<String>> validatorFn;
   @Mock
-  EntityCommandHandlerFn<Customer> cmdHandlerFn;
+  Function2<? super EntityCommand, ? super Snapshot<? extends Customer>, CommandHandlerResult> cmdHandlerFn;
   @Mock
   EntityUnitOfWorkRepository eventRepository;
   @Mock
-  SnapshotUpgraderFn<Customer> snapshotUpgraderFn;
+  SnapshotPromoterFn<Customer> snapshotPromoterFn;
 
   @Before
   public void setUp(TestContext context) {
@@ -74,8 +76,8 @@ public class EntityCommandHandlerVerticleTest {
 
     cache = ExpiringMap.create();
 
-    val verticle = new EntityCommandHandlerVerticle<Customer>(Customer.class, lazyCust, validatorFn, cmdHandlerFn,
-            cache, snapshotUpgraderFn, eventRepository, circuitBreaker);
+    Verticle verticle = new EntityCommandHandlerVerticle<Customer>(Customer.class, lazyCust, validatorFn, cmdHandlerFn,
+            cache, snapshotPromoterFn, eventRepository, circuitBreaker);
 
     vertx.deployVerticle(verticle, context.asyncAssertSuccess());
 
@@ -92,7 +94,7 @@ public class EntityCommandHandlerVerticleTest {
     Async async = tc.async();
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer");
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
@@ -155,7 +157,7 @@ public class EntityCommandHandlerVerticleTest {
     Async async = tc.async();
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer");
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
     val expectedException = new Throwable("Expected");
 
@@ -199,7 +201,7 @@ public class EntityCommandHandlerVerticleTest {
     Async async = tc.async();
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer");
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
@@ -256,7 +258,7 @@ public class EntityCommandHandlerVerticleTest {
     Async async = tc.async();
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer");
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
@@ -314,7 +316,7 @@ public class EntityCommandHandlerVerticleTest {
     Async async = tc.async();
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "customer");
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer");
     val initialSnapshot = new Snapshot<Customer>(lazyCust.getValue(), new Version(0));
     val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer");
     val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
@@ -370,7 +372,7 @@ public class EntityCommandHandlerVerticleTest {
     Async async = tc.async();
 
     val customerId = new CustomerId("customer#1");
-    val createCustomerCmd = new CreateCustomerCmd(UUID.randomUUID(), customerId, "a bad name");
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "a bad name");
 
     List<String> errorList = singletonList("Invalid name: a bad name");
     when(validatorFn.invoke(eq(createCustomerCmd))).thenReturn(errorList);

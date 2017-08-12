@@ -122,6 +122,7 @@ public class EntityUnitOfWorkRepository {
       queryStreamWithParams(sqlConn, SELECT_AFTER_VERSION, params, streamFuture);
 
       streamFuture.setHandler(ar -> {
+
         if (ar.failed()) {
           selectAfterVersionFuture.fail(ar.cause());
           return;

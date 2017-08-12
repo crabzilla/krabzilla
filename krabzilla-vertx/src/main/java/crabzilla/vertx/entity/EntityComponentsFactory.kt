@@ -2,7 +2,7 @@ package crabzilla.vertx.entity
 
 import crabzilla.EntityFunctionsFactory
 import crabzilla.Snapshot
-import crabzilla.SnapshotUpgraderFn
+import crabzilla.SnapshotPromoterFn
 import crabzilla.StateTracker
 import crabzilla.vertx.util.StringHelper
 import io.vertx.circuitbreaker.CircuitBreaker
@@ -27,8 +27,8 @@ interface EntityComponentsFactory<E> : EntityFunctionsFactory<E> {
   
   fun trackerFactory() : (E) -> StateTracker<E> =  { e -> StateTracker(e, stateTransitionFn(), depInjectionFn()) }
 
-  fun snapshotUpgrader(): SnapshotUpgraderFn<E> {
-    return SnapshotUpgraderFn(trackerFactory())
+  fun snapshotPromoterFn(): SnapshotPromoterFn<E> {
+    return SnapshotPromoterFn(trackerFactory())
   }
 
   fun restVerticle(): EntityCommandRestVerticle<E> {
@@ -44,15 +44,15 @@ interface EntityComponentsFactory<E> : EntityFunctionsFactory<E> {
             .build()
 
     val circuitBreaker = CircuitBreaker.create(StringHelper.circuitBreakerId(clazz()), vertx(),
-            CircuitBreakerOptions()
-                    .setMaxFailures(5) // number SUCCESS failure before opening the circuit
-                    .setTimeout(2000) // consider a failure if the operation does not succeed in time
-                    .setFallbackOnFailure(true) // do we call the fallback on failure
-                    .setResetTimeout(10000) // time spent in open state before attempting to re-try
+          CircuitBreakerOptions()
+            .setMaxFailures(5) // number SUCCESS failure before opening the circuit
+            .setTimeout(2000) // consider a failure if the operation does not succeed in time
+            .setFallbackOnFailure(true) // do we call the fallback on failure
+            .setResetTimeout(10000) // time spent in open state before attempting to re-try
     )
 
-    return EntityCommandHandlerVerticle(clazz(), seedValueFn().invoke(),
-            cmdValidatorFn(), cmdHandlerFn(), cache, snapshotUpgrader(), uowRepository(), circuitBreaker)
+    return EntityCommandHandlerVerticle(clazz(), seedValueFn().invoke(), cmdValidatorFn(),
+            cmdHandlerFn(), cache, snapshotPromoterFn(), uowRepository(), circuitBreaker)
   }
 
   fun uowRepository(): EntityUnitOfWorkRepository {

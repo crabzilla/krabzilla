@@ -2,21 +2,25 @@ package crabzilla.example1
 
 
 import crabzilla.DomainEvent
-import crabzilla.example1.aggregates.CustomerActivated
-import crabzilla.example1.aggregates.CustomerCreated
-import crabzilla.example1.aggregates.CustomerDeactivated
+import crabzilla.example1.customer.CustomerActivated
+import crabzilla.example1.customer.CustomerCreated
+import crabzilla.example1.customer.CustomerDeactivated
 import crabzilla.vertx.entity.projection.EventProjector
 import example1.readmodel.CustomerSummaryDao
+import mu.KotlinLogging
 import org.jdbi.v3.core.Jdbi
 
-class Example1EventProjector(eventsChannelId: String, daoClazz: Class<CustomerSummaryDao>, jdbi: Jdbi)
+class Example1EventProjector(eventsChannelId: String,
+                             daoClazz: Class<CustomerSummaryDao>, jdbi: Jdbi)
 
   : EventProjector<CustomerSummaryDao>(eventsChannelId, daoClazz, jdbi) {
 
-  override val log = io.vertx.core.logging.LoggerFactory.getLogger(Example1EventProjector::class.java)
+  override val log = KotlinLogging.logger {}
 
   override fun write(dao: CustomerSummaryDao, targetId: String, event: DomainEvent) {
+
     log.info("event {} from channel {}", event, eventsChannelId)
+
     when (event) {
       is CustomerCreated -> dao.insert(CustomerSummary(targetId, event.name, false))
       is CustomerActivated -> dao.updateStatus(targetId, true)
@@ -24,5 +28,4 @@ class Example1EventProjector(eventsChannelId: String, daoClazz: Class<CustomerSu
       else -> log.warn("{} does not have any event projection handler", event)
     }
   }
-
 }
