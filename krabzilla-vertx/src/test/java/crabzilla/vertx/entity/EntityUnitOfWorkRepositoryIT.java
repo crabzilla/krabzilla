@@ -71,7 +71,7 @@ public class EntityUnitOfWorkRepositoryIT {
     config.setDriverClassName("com.mysql.cj.jdbc.Driver");
     config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/example1db?serverTimezone=UTC&useSSL=false");
     config.setUsername("root");
-    config.setPassword("my-secret-pwd");
+    //config.setPassword("my-secret-pwd");
     config.setAutoCommit(false);
     config.setTransactionIsolation("TRANSACTION_SERIALIZABLE");
 
