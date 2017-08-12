@@ -13,10 +13,9 @@ cache:
   directories:
   - "$HOME/.m2"
 install:
-- mvn clean install -DskipITs=true
+  - mvn clean install -DskipITs=true
 
-# script: "mvn cobertura:cobertura"
+script: "mvn cobertura:cobertura"
 
 after_success:
-  #- bash <(curl -s https://codecov.io/bash)
-  - bash <(curl -s https://codecov.io/bash) -t a3273b79-8da4-4e53-b781-9a867841f45c
+  - bash <(curl -s https://codecov.io/bash)
