@@ -33,7 +33,7 @@ public class EventsProjectionVerticle extends AbstractVerticle {
   @Override
   public void start() throws Exception {
 
-    vertx.eventBus().consumer(eventsHandlerId("example1"), msgHandler());
+    vertx.eventBus().consumer(eventsHandlerId("crabzilla/example1"), msgHandler());
 
   }
 

@@ -7,7 +7,7 @@ import crabzilla.example1.customer.CreateCustomer;
 import crabzilla.example1.customer.CustomerCreated;
 import crabzilla.example1.customer.CustomerId;
 import crabzilla.vertx.VertxFactory;
-import example1.CustomerSummaryDao;
+import crabzilla.example1.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
@@ -62,7 +62,7 @@ public class EventsProjectionVerticleTest {
                     .setResetTimeout(10000) // time spent in open state before attempting to re-try
     );
 
-    eventProjector = new EventsProjector4Test("example1", CustomerSummaryDao.class, jdbi);
+    eventProjector = new EventsProjector4Test("crabzilla/example1", CustomerSummaryDao.class, jdbi);
 
     val verticle = new EventsProjectionVerticle(eventProjector, circuitBreaker);
 
@@ -97,7 +97,7 @@ public class EventsProjectionVerticleTest {
     when(jdbi.open()).thenReturn(handle);
     when(handle.attach(any())).thenReturn(dao);
 
-    vertx.eventBus().send(eventsHandlerId("example1"), expectedUow, options, asyncResult -> {
+    vertx.eventBus().send(eventsHandlerId("crabzilla/example1"), expectedUow, options, asyncResult -> {
 
       val custSummary = new CustomerSummary(customerId.getStringValue(), name, false);
 

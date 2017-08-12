@@ -1,6 +1,6 @@
 package crabzilla.vertx.entity;
 
-import crabzilla.Command;
+import crabzilla.EntityCommand;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -34,7 +34,8 @@ public class EntityCommandRestVerticle<E> extends AbstractVerticle {
 
     val server = vertx.createHttpServer();
 
-    server.requestHandler(router::accept).listen(8080);
+    server.requestHandler(router::accept).listen(config().getInteger("http.port", 8080));
+
   }
 
   Handler<RoutingContext> contextHandler() {
@@ -43,22 +44,31 @@ public class EntityCommandRestVerticle<E> extends AbstractVerticle {
 
       routingContext.request().bodyHandler(buff -> {
 
-        val command = Json.decodeValue(new String(buff.getBytes()), Command.class);
+        val command = Json.decodeValue(new String(buff.getBytes()), EntityCommand.class);
         val httpResp = routingContext.request().response();
-        val options = new DeliveryOptions().setCodecName("Command");
+        val options = new DeliveryOptions().setCodecName("EntityCommand");
 
         vertx.<EntityCommandExecution>eventBus().send(commandHandlerId(aggregateRootClass), command, options, response -> {
 
           if (response.succeeded()) {
+
             log.info("success commands handler: {}", response);
             val result = (EntityCommandExecution) response.result().body();
-            val headers = new CaseInsensitiveHeaders().add("uowSequence", result.getUowSequence().toString());
+            val resultAsJson = Json.encodePrettily(result);
+            // log.info("result = {}", resultAsJson);
+            val headers = new CaseInsensitiveHeaders().add("uowSequence", result.getUowSequence()+"");
             val optionsUow = new DeliveryOptions().setCodecName("EntityUnitOfWork").setHeaders(headers);
-            vertx.<String>eventBus().publish(eventsHandlerId("example1"), result.getUnitOfWork(), optionsUow);
-            httpResp.end(response.result().body().toString());
+            vertx.<String>eventBus().publish(eventsHandlerId("crabzilla/example1"), result.getUnitOfWork(), optionsUow);
+            httpResp.headers().add("content-type", "application/json");
+            httpResp.headers().add("content-length", Integer.toString(resultAsJson.length()));
+            httpResp.setStatusCode(201);
+            httpResp.end(resultAsJson);
 
           } else {
-            httpResp.setStatusCode(500).end(response.cause().getMessage());
+
+            response.cause().printStackTrace();
+            httpResp.setStatusCode(500);
+            httpResp.end(response.cause().getMessage());
           }
         });
 

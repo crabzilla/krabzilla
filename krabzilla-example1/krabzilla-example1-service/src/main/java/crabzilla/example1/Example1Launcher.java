@@ -50,9 +50,6 @@ public class Example1Launcher {
 
         vertx = res.result();
 
-        EventBus eventBus = vertx.eventBus();
-        log.info("We now have a clustered event bus: " + eventBus);
-
         setProperty (LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName ());
         LoggerFactory.getLogger (LoggerFactory.class); // Required for Logback to work in Vertx
 
@@ -65,7 +62,7 @@ public class Example1Launcher {
         vertx.deployVerticle(launcher.projectionVerticle, event -> log.debug("Deployed ? {}", event.succeeded()));
 
         // a test
-        launcher.justForTest();
+       // launcher.justForTest();
 
       } else {
         log.error("Failed: ", res.cause());

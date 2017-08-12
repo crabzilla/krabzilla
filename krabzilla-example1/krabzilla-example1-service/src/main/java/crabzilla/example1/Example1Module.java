@@ -12,15 +12,11 @@ import com.google.inject.name.Names;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariDataSource;
-import crabzilla.Command;
-import crabzilla.DomainEvent;
-import crabzilla.EntityId;
-import crabzilla.EntityUnitOfWork;
+import crabzilla.*;
 import crabzilla.example1.customer.CustomerModule;
 import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
-import example1.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
@@ -85,7 +81,7 @@ class Example1Module extends AbstractModule {
   @Provides
   @Singleton
   public EventProjector eventsProjector(Jdbi jdbi) {
-    return new Example1EventProjector("example1", CustomerSummaryDao.class, jdbi) ;
+    return new Example1EventProjector("crabzilla/example1", CustomerSummaryDao.class, jdbi) ;
   }
 
   @Provides
@@ -139,7 +135,7 @@ class Example1Module extends AbstractModule {
             new JacksonGenericCodec<>(mapper, EntityId.class));
 
     vertx.eventBus().registerDefaultCodec(Command.class,
-            new JacksonGenericCodec<>(mapper, Command.class));
+            new JacksonGenericCodec<>(mapper, EntityCommand.class));
 
     vertx.eventBus().registerDefaultCodec(DomainEvent.class,
             new JacksonGenericCodec<>(mapper, DomainEvent.class));

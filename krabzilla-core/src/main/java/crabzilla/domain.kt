@@ -18,7 +18,7 @@ data class Version(val valueAsLong: Long) : Serializable {
   }
 }
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 interface EntityId : Serializable {
   val stringValue: String
 }
