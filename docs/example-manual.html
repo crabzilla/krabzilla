@@ -449,6 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#3-2-1-eventprojectors">3.2.1 EventProjectors</a></li>
 <li><a href="#3-2-2-example1module">3.2.2 Example1Module</a></li>
+<li><a href="#3-2-3-example1acceptanceit">3.2.3 Example1AcceptanceIt</a></li>
 </ul>
 </li>
 </ul>
@@ -912,155 +913,51 @@ class Example1EventProjector(eventsChannelId: String,
 </div>
 <div class="sect3">
 <h4 id="3-2-2-example1module"><a class="anchor" href="#3-2-2-example1module"></a>3.2.2 Example1Module</h4>
+<div class="paragraph">
+<p><a href="https://github.com/crabzilla/krabzilla/blob/master/krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1Module.java">Example1Module</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="3-2-3-example1acceptanceit"><a class="anchor" href="#3-2-3-example1acceptanceit"></a>3.2.3 Example1AcceptanceIt</h4>
+<div class="paragraph">
+<p>Now finally you will see this test passing:</p>
+</div>
 <div class="listingblock">
-<div class="title">Example1Module</div>
+<div class="title">Example1AcceptanceIt.java</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package crabzilla.example1;
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">  @Test
+  public void create_customer(TestContext context) {
 
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import com.google.inject.name.Names;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.zaxxer.hikari.HikariDataSource;
-import crabzilla.*;
-import crabzilla.example1.customer.CustomerModule;
-import crabzilla.vertx.entity.EntityCommandExecution;
-import crabzilla.vertx.entity.projection.EventProjector;
-import crabzilla.vertx.util.codecs.JacksonGenericCodec;
-import io.vertx.circuitbreaker.CircuitBreaker;
-import io.vertx.circuitbreaker.CircuitBreakerOptions;
-import io.vertx.core.Vertx;
-import io.vertx.ext.jdbc.JDBCClient;
-import lombok.val;
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.kotlin.KotlinPlugin;
-import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin;
+    // This test is asynchronous, so get an async handler to inform the test when we are done.
+    final Async async = context.async();
 
-import java.util.Properties;
+    val customerId = new CustomerId(UUID.randomUUID().toString());
+    val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "customer-test");
+    val expectedEvent = new CustomerCreated(createCustomerCmd.getTargetId(), "customer-test");
+    val expectedUow = new EntityUnitOfWork(createCustomerCmd, singletonList(expectedEvent), new Version(1));
 
-import static io.vertx.core.json.Json.mapper;
+    val json = Json.encodePrettily(createCustomerCmd);
 
-class Example1Module extends AbstractModule {
-
-  final Vertx vertx;
-
-  Example1Module(Vertx vertx) {
-    this.vertx = vertx;
-  }
-
-  @Override
-  protected void configure() {
-
-    configureVertx();
-
-    // aggregates
-    install(new CustomerModule());
-
-    // database
-    install(new DatabaseModule());
-
-    // services
-    bind(SampleInternalService.class).to(SampleInternalServiceImpl.class).asEagerSingleton();
-
-    // exposes properties to guice
-    setCfgProps();
+    vertx.createHttpClient().put(port, "localhost", "/" + entityId(Customer.class) + "/commands")
+      .putHeader("content-type", "application/json")
+      .putHeader("content-length", Integer.toString(json.length()))
+      .handler(response -&gt; {
+        context.assertEquals(response.statusCode(), 201);
+        context.assertTrue(response.headers().get("content-type").contains("application/json"));
+        response.bodyHandler(body -&gt; {
+          val cmdExec = Json.decodeValue(body.toString(), EntityCommandExecution.class);
+          context.assertEquals(cmdExec.getUnitOfWork().targetId(), expectedUow.targetId());
+          context.assertEquals(cmdExec.getUnitOfWork().getCommand(), expectedUow.getCommand());
+          context.assertEquals(cmdExec.getUnitOfWork().getEvents(), expectedUow.getEvents());
+          context.assertEquals(cmdExec.getUnitOfWork().getVersion(), expectedUow.getVersion());
+          async.complete();
+        });
+      })
+      .write(json)
+      .end();
 
   }
 
-  private void setCfgProps() {
-
-    final Config config = ConfigFactory.load();
-    final Properties props = new Properties();
-
-    config.entrySet().forEach(e -&gt; {
-      final String key = e.getKey().replace("example1.", "");
-      final String value = e.getValue().render().replace("\"", "");
-      props.put(key, value);
-    });
-
-    Names.bindProperties(binder(), props);
-  }
-
-  @Provides
-  @Singleton
-  Vertx vertx() {
-    return vertx;
-  }
-
-  @Provides
-  @Singleton
-  public EventProjector eventsProjector(Jdbi jdbi) {
-    return new Example1EventProjector("crabzilla/example1", CustomerSummaryDao.class, jdbi) ;
-  }
-
-  @Provides
-  @Singleton
-  Jdbi jdbi(HikariDataSource ds) {
-    val jdbi = Jdbi.create(ds);
-    jdbi.installPlugin(new SqlObjectPlugin());
-    jdbi.installPlugin(new KotlinPlugin());
-    jdbi.installPlugin(new KotlinSqlObjectPlugin());
-    return jdbi;
-  }
-
-  @Provides
-  @Singleton
-  JDBCClient jdbcClient(Vertx vertx, HikariDataSource dataSource) {
-    return JDBCClient.create(vertx, dataSource);
-  }
-
-  @Provides
-  @Singleton
-  @Named("events-projection")
-  CircuitBreaker circuitBreakerEvents() {
-    return CircuitBreaker.create("events-projection-circuit-breaker", vertx,
-      new CircuitBreakerOptions()
-              .setMaxFailures(5) // number SUCCESS failure before opening the circuit
-              .setTimeout(2000) // consider a failure if the operation does not succeed in time
-              .setFallbackOnFailure(true) // do we call the fallback on failure
-              .setResetTimeout(10000) // time spent in open state before attempting to re-try
-    );
-  }
-
-//  Not being used yet. This can improve a lot serialization speed (it's binary).
-//  But so far it was not necessary.
-//  @Provides
-//  @Singleton
-//  FSTConfiguration conf() {
-//    return FSTConfiguration.createDefaultConfiguration();
-//  }
-
-  void configureVertx() {
-
-    mapper.registerModule(new ParameterNamesModule())
-            .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule())
-            .registerModule(new KotlinModule());
-
-    vertx.eventBus().registerDefaultCodec(EntityCommandExecution.class,
-            new JacksonGenericCodec&lt;&gt;(mapper, EntityCommandExecution.class));
-
-    vertx.eventBus().registerDefaultCodec(EntityId.class,
-            new JacksonGenericCodec&lt;&gt;(mapper, EntityId.class));
-
-    vertx.eventBus().registerDefaultCodec(Command.class,
-            new JacksonGenericCodec&lt;&gt;(mapper, EntityCommand.class));
-
-    vertx.eventBus().registerDefaultCodec(DomainEvent.class,
-            new JacksonGenericCodec&lt;&gt;(mapper, DomainEvent.class));
-
-    vertx.eventBus().registerDefaultCodec(EntityUnitOfWork.class,
-            new JacksonGenericCodec&lt;&gt;(mapper, EntityUnitOfWork.class));
-
-  }
 
 }</code></pre>
 </div>
@@ -1097,7 +994,7 @@ class Example1Module extends AbstractModule {
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-08-11 22:35:44 BRT
+Last updated 2017-08-12 01:31:20 BRT
 </div>
 </div>
 <link rel="stylesheet" href="highlight/styles/rainbow.min.css">

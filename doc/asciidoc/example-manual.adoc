@@ -120,10 +120,16 @@ include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla
 
 ==== 3.2.2 Example1Module
 
+https://github.com/crabzilla/krabzilla/blob/master/krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1Module.java[Example1Module]
+
+==== 3.2.3 Example1AcceptanceIt
+
+Now finally you will see this test passing:
+
 [source,java]
-.Example1Module
+.Example1AcceptanceIt.java
 ----
-include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1Module.java[ ]
+include::./krabzilla-example1/krabzilla-example1-service/src/test/java/crabzilla/example1/Example1AcceptanceIt.java[tags=create_customer_test]
 ----
 
 == Conclusion

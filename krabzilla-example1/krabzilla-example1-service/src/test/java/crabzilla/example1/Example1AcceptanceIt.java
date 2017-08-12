@@ -95,6 +95,8 @@ public class Example1AcceptanceIt {
     vertx.close(context.asyncAssertSuccess());
   }
 
+  // tag::create_customer_test[]
+
   @Test
   public void create_customer(TestContext context) {
 
@@ -109,23 +111,25 @@ public class Example1AcceptanceIt {
     val json = Json.encodePrettily(createCustomerCmd);
 
     vertx.createHttpClient().put(port, "localhost", "/" + entityId(Customer.class) + "/commands")
-            .putHeader("content-type", "application/json")
-            .putHeader("content-length", Integer.toString(json.length()))
-            .handler(response -> {
-              context.assertEquals(response.statusCode(), 201);
-              context.assertTrue(response.headers().get("content-type").contains("application/json"));
-              response.bodyHandler(body -> {
-                final EntityCommandExecution whisky = Json.decodeValue(body.toString(), EntityCommandExecution.class);
-                context.assertEquals(whisky.getUnitOfWork().targetId(), expectedUow.targetId());
-                context.assertEquals(whisky.getUnitOfWork().getCommand(), expectedUow.getCommand());
-                context.assertEquals(whisky.getUnitOfWork().getEvents(), expectedUow.getEvents());
-                context.assertEquals(whisky.getUnitOfWork().getVersion(), expectedUow.getVersion());
-                async.complete();
-              });
-            })
-            .write(json)
-            .end();
+      .putHeader("content-type", "application/json")
+      .putHeader("content-length", Integer.toString(json.length()))
+      .handler(response -> {
+        context.assertEquals(response.statusCode(), 201);
+        context.assertTrue(response.headers().get("content-type").contains("application/json"));
+        response.bodyHandler(body -> {
+          val cmdExec = Json.decodeValue(body.toString(), EntityCommandExecution.class);
+          context.assertEquals(cmdExec.getUnitOfWork().targetId(), expectedUow.targetId());
+          context.assertEquals(cmdExec.getUnitOfWork().getCommand(), expectedUow.getCommand());
+          context.assertEquals(cmdExec.getUnitOfWork().getEvents(), expectedUow.getEvents());
+          context.assertEquals(cmdExec.getUnitOfWork().getVersion(), expectedUow.getVersion());
+          async.complete();
+        });
+      })
+      .write(json)
+      .end();
 
   }
+
+  // tag::create_customer_test[]
 
 }
