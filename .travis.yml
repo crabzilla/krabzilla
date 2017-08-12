@@ -17,6 +17,9 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose start
+  - cd crabzilla-example1/crabzilla-example1-database
+  - mvn compile flyway:migrate
+  - cd ../..
 
 cache:
   directories:
