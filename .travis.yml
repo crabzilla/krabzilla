@@ -23,7 +23,8 @@ cache:
   - "$HOME/.m2"
 
 install:
-  - cd crabzilla-example1/crabzilla-example1-database
+  - ls -la .
+  - cd krabzilla-example1/krabzilla-example1-database
   - mvn compile flyway:migrate
   - cd ../..
   - mvn clean install -P all-tests
