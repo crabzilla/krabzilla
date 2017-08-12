@@ -20,12 +20,16 @@ import crabzilla.example1.customer.CustomerModule;
 import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
+import example1.readmodel.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
 import io.vertx.ext.jdbc.JDBCClient;
 import lombok.val;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.kotlin.KotlinPlugin;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin;
 
 import java.util.Properties;
 
@@ -52,9 +56,6 @@ class Example1Module extends AbstractModule {
 
     // services
     bind(SampleInternalService.class).to(SampleInternalServiceImpl.class).asEagerSingleton();
-
-    // bounded context
-    bind(Example1ComponentsFactory.class).asEagerSingleton();
 
     // exposes properties to guice
     setCfgProps();
@@ -83,19 +84,17 @@ class Example1Module extends AbstractModule {
 
   @Provides
   @Singleton
-  EventProjector eventsProjector(Example1ComponentsFactory f) {
-    return f.eventsProjector() ;
+  public EventProjector eventsProjector(Jdbi jdbi) {
+    return new Example1EventProjector("example1", CustomerSummaryDao.class, jdbi) ;
   }
 
   @Provides
   @Singleton
   Jdbi jdbi(HikariDataSource ds) {
     val jdbi = Jdbi.create(ds);
-    jdbi.installPlugins();
-
-//    jdbi.installPlugin(new SqlObjectPlugin());
-//    jdbi.installPlugin(new KotlinPlugin());
-//    jdbi.installPlugin(new KotlinSqlObjectPlugin());
+    jdbi.installPlugin(new SqlObjectPlugin());
+    jdbi.installPlugin(new KotlinPlugin());
+    jdbi.installPlugin(new KotlinSqlObjectPlugin());
     return jdbi;
   }
 
