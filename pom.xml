@@ -541,6 +541,11 @@
                         <format>xml</format>
                     </formats>
                     <check />
+                    <instrumentation>
+                        <excludes>
+                            <exclude>com/crabzilla/vertx/util/*.class</exclude>
+                        </excludes>
+                    </instrumentation>
                 </configuration>
             </plugin>
 
