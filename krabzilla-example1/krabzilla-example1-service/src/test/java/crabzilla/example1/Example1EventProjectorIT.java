@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("An Example1EventProjector")
-public class Example1EventProjectorIt {
+public class Example1EventProjectorIT {
 
   @Inject
   ObjectMapper mapper;

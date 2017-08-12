@@ -39,7 +39,7 @@ import static java.util.Collections.singletonList;
 
 @RunWith(VertxUnitRunner.class)
 @Slf4j
-public class Example1AcceptanceIt {
+public class Example1AcceptanceIT {
 
   private Vertx vertx;
   private Integer port = 8080;
