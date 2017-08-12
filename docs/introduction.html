@@ -450,6 +450,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>To help you write your domain model with very little framework overhead and smoothly deploy it on a state of art Java 8
 reactive applications platform backed by a rock solid relational database of your choice.</p>
 </div>
+<div class="paragraph">
+<p>So far Krabzilla has only an Aggregate example. Inspired by <a href="http://eventstorming.com/">Eventstorming</a>, the goal is to
+also develop examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -457,9 +461,10 @@ reactive applications platform backed by a rock solid relational database of you
 <div class="sectionbody">
 <div class="paragraph">
 <p>The approach is to use functions everywhere within your domain implementation. For example, for an Aggregate,
-we will need to implement this set of functions:</p>
+you will need to implement this set of functions:</p>
 </div>
 <div class="listingblock">
+<div class="title">domain.kt</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">interface EntityFunctionsFactory&lt;E&gt; {
 
@@ -473,10 +478,6 @@ we will need to implement this set of functions:</p>
 
 }</code></pre>
 </div>
-</div>
-<div class="paragraph lead">
-<p>So far Krabzilla has only an Aggregate example. Inspired by <a href="http://eventstorming.com/">Eventstorming</a>, the goal is to
-add examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.</p>
 </div>
 </div>
 </div>
@@ -545,10 +546,10 @@ add examples and implementations for an ExternalSystem, a Listener and a Process
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-08-11 21:33:53 BRT
+Last updated 2017-08-11 22:35:44 BRT
 </div>
 </div>
-<link rel="stylesheet" href="highlight/styles/github.min.css">
+<link rel="stylesheet" href="highlight/styles/rainbow.min.css">
 <script src="highlight/highlight.min.js"></script>
 <script>hljs.initHighlighting()</script>
 </body>
