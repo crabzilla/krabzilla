@@ -62,7 +62,7 @@ public class Example1Launcher {
         vertx.deployVerticle(launcher.projectionVerticle, event -> log.debug("Deployed ? {}", event.succeeded()));
 
         // a test
-       // launcher.justForTest();
+        launcher.justForTest();
 
       } else {
         log.error("Failed: ", res.cause());
@@ -76,7 +76,7 @@ public class Example1Launcher {
   val customerId = new CustomerId(UUID.randomUUID().toString());
   // val customerId = new CustomerId("customer-000");
   val createCustomerCmd = new CreateCustomer(UUID.randomUUID(), customerId, "a good customer");
-  val options = new DeliveryOptions().setCodecName("Command");
+  val options = new DeliveryOptions().setCodecName("EntityCommand");
 
     // create customer command
     vertx.eventBus().<EntityCommandExecution>send(commandHandlerId(Customer.class), createCustomerCmd, options, asyncResult -> {
