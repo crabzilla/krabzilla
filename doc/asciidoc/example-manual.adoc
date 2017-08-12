@@ -10,7 +10,7 @@ ifndef::sourcedir[:sourcedir: ../../main/java]
 
 Status: *WORK IN PROGRESS*
 
-== 1.0 krabzilla-example1
+== 1.0 krabzilla-example1-core
 
 This example show how to write an aggregate: Customer.
 
@@ -73,13 +73,23 @@ include::./krabzilla-example1/krabzilla-example1-database/src/main/resources/db/
 include::./krabzilla-example1/krabzilla-example1-core/src/main/java/crabzilla/example1/readmodel.kt[ ]
 ----
 
-== 2.0 krabzilla-example1-service
+== 2.0 krabzilla-example1-database
 
-=== 2.1.0 For each aggregate
+Here we will implement our DAOs. For this example:
 
-Now our Customer aggregate is hopefully validated and tested. In order to deploy it, we still need to provide :
+[source,kotlin]
+.CustomerSummaryDao.kt
+----
+include::./krabzilla-example1/krabzilla-example1-database/src/main/java/crabzilla/example1/CustomerSummaryDao.kt[ ]
+----
 
-==== 2.1.1 CustomerFactory
+== 3.0 krabzilla-example1-service
+
+=== 3.1.0 For each aggregate
+
+In order to deploy it, we still need to provide :
+
+==== 3.1.1 CustomerFactory
 
 [source,kotlin]
 .CustomerFactory
@@ -87,7 +97,7 @@ Now our Customer aggregate is hopefully validated and tested. In order to deploy
 include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/customer/CustomerFactory.kt[ ]
 ----
 
-==== 2.1.2 CustomerModule
+==== 3.1.2 CustomerModule
 
 [source,java]
 .CustomerModule
@@ -95,9 +105,9 @@ include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla
 include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/customer/CustomerModule.java[ ]
 ----
 
-=== 2.2.0 For the Example1
+=== 3.2.0 For the Example1
 
-==== 2.2.1 EventProjectors
+==== 3.2.1 EventProjectors
 
 This example has so far just one events projector:
 
@@ -107,7 +117,7 @@ This example has so far just one events projector:
 include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1EventProjector.kt[ ]
 ----
 
-==== 2.2.2 Example1Module
+==== 3.2.2 Example1Module
 
 [source,java]
 .Example1Module
@@ -115,7 +125,7 @@ include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla
 include::./krabzilla-example1/krabzilla-example1-service/src/main/java/crabzilla/example1/Example1Module.java[ ]
 ----
 
-== 3.0 Running it
+== Conclusion
 
 After this, we will be able to run it. We will have these features:
 

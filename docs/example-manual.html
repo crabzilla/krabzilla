@@ -428,7 +428,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#1-0-krabzilla-example1">1.0 krabzilla-example1</a>
+<li><a href="#1-0-krabzilla-example1-core">1.0 krabzilla-example1-core</a>
 <ul class="sectlevel2">
 <li><a href="#1-1-events-and-commands">1.1 Events and commands</a></li>
 <li><a href="#1-2-functions">1.2 Functions</a></li>
@@ -436,23 +436,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#1-4-read-model">1.4 Read Model</a></li>
 </ul>
 </li>
-<li><a href="#2-0-krabzilla-example1-service">2.0 krabzilla-example1-service</a>
+<li><a href="#2-0-krabzilla-example1-database">2.0 krabzilla-example1-database</a></li>
+<li><a href="#3-0-krabzilla-example1-service">3.0 krabzilla-example1-service</a>
 <ul class="sectlevel2">
-<li><a href="#2-1-0-for-each-aggregate">2.1.0 For each aggregate</a>
+<li><a href="#3-1-0-for-each-aggregate">3.1.0 For each aggregate</a>
 <ul class="sectlevel3">
-<li><a href="#2-1-1-customerfactory">2.1.1 CustomerFactory</a></li>
-<li><a href="#2-1-2-customermodule">2.1.2 CustomerModule</a></li>
+<li><a href="#3-1-1-customerfactory">3.1.1 CustomerFactory</a></li>
+<li><a href="#3-1-2-customermodule">3.1.2 CustomerModule</a></li>
 </ul>
 </li>
-<li><a href="#2-2-0-for-the-example1">2.2.0 For the Example1</a>
+<li><a href="#3-2-0-for-the-example1">3.2.0 For the Example1</a>
 <ul class="sectlevel3">
-<li><a href="#2-2-1-eventprojectors">2.2.1 EventProjectors</a></li>
-<li><a href="#2-2-2-example1module">2.2.2 Example1Module</a></li>
+<li><a href="#3-2-1-eventprojectors">3.2.1 EventProjectors</a></li>
+<li><a href="#3-2-2-example1module">3.2.2 Example1Module</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#3-0-running-it">3.0 Running it</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
 </ul>
 </div>
 </div>
@@ -465,7 +466,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="1-0-krabzilla-example1"><a class="anchor" href="#1-0-krabzilla-example1"></a>1.0 krabzilla-example1</h2>
+<h2 id="1-0-krabzilla-example1-core"><a class="anchor" href="#1-0-krabzilla-example1-core"></a>1.0 krabzilla-example1-core</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This example show how to write an aggregate: Customer.</p>
@@ -717,15 +718,29 @@ interface CustomerRepository {
 </div>
 </div>
 <div class="sect1">
-<h2 id="2-0-krabzilla-example1-service"><a class="anchor" href="#2-0-krabzilla-example1-service"></a>2.0 krabzilla-example1-service</h2>
+<h2 id="2-0-krabzilla-example1-database"><a class="anchor" href="#2-0-krabzilla-example1-database"></a>2.0 krabzilla-example1-database</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here we will implement our DAOs. For this example:</p>
+</div>
+<div class="listingblock">
+<div class="title">CustomerSummaryDao.kt</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in example-manual.adoc - include::./krabzilla-example1/krabzilla-example1-database/src/main/java/crabzilla/example1/CustomerSummaryDao.kt[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="3-0-krabzilla-example1-service"><a class="anchor" href="#3-0-krabzilla-example1-service"></a>3.0 krabzilla-example1-service</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="2-1-0-for-each-aggregate"><a class="anchor" href="#2-1-0-for-each-aggregate"></a>2.1.0 For each aggregate</h3>
+<h3 id="3-1-0-for-each-aggregate"><a class="anchor" href="#3-1-0-for-each-aggregate"></a>3.1.0 For each aggregate</h3>
 <div class="paragraph">
-<p>Now our Customer aggregate is hopefully validated and tested. In order to deploy it, we still need to provide :</p>
+<p>In order to deploy it, we still need to provide :</p>
 </div>
 <div class="sect3">
-<h4 id="2-1-1-customerfactory"><a class="anchor" href="#2-1-1-customerfactory"></a>2.1.1 CustomerFactory</h4>
+<h4 id="3-1-1-customerfactory"><a class="anchor" href="#3-1-1-customerfactory"></a>3.1.1 CustomerFactory</h4>
 <div class="listingblock">
 <div class="title">CustomerFactory</div>
 <div class="content">
@@ -782,7 +797,7 @@ class CustomerFactory @Inject constructor(private val internalService: SampleInt
 </div>
 </div>
 <div class="sect3">
-<h4 id="2-1-2-customermodule"><a class="anchor" href="#2-1-2-customermodule"></a>2.1.2 CustomerModule</h4>
+<h4 id="3-1-2-customermodule"><a class="anchor" href="#3-1-2-customermodule"></a>3.1.2 CustomerModule</h4>
 <div class="listingblock">
 <div class="title">CustomerModule</div>
 <div class="content">
@@ -837,9 +852,9 @@ public class CustomerModule extends AbstractModule {
 </div>
 </div>
 <div class="sect2">
-<h3 id="2-2-0-for-the-example1"><a class="anchor" href="#2-2-0-for-the-example1"></a>2.2.0 For the Example1</h3>
+<h3 id="3-2-0-for-the-example1"><a class="anchor" href="#3-2-0-for-the-example1"></a>3.2.0 For the Example1</h3>
 <div class="sect3">
-<h4 id="2-2-1-eventprojectors"><a class="anchor" href="#2-2-1-eventprojectors"></a>2.2.1 EventProjectors</h4>
+<h4 id="3-2-1-eventprojectors"><a class="anchor" href="#3-2-1-eventprojectors"></a>3.2.1 EventProjectors</h4>
 <div class="paragraph">
 <p>This example has so far just one events projector:</p>
 </div>
@@ -854,7 +869,7 @@ import crabzilla.example1.customer.CustomerActivated
 import crabzilla.example1.customer.CustomerCreated
 import crabzilla.example1.customer.CustomerDeactivated
 import crabzilla.vertx.entity.projection.EventProjector
-import example1.readmodel.CustomerSummaryDao
+import example1.CustomerSummaryDao
 import mu.KotlinLogging
 import org.jdbi.v3.core.Jdbi
 
@@ -881,7 +896,7 @@ class Example1EventProjector(eventsChannelId: String,
 </div>
 </div>
 <div class="sect3">
-<h4 id="2-2-2-example1module"><a class="anchor" href="#2-2-2-example1module"></a>2.2.2 Example1Module</h4>
+<h4 id="3-2-2-example1module"><a class="anchor" href="#3-2-2-example1module"></a>3.2.2 Example1Module</h4>
 <div class="listingblock">
 <div class="title">Example1Module</div>
 <div class="content">
@@ -907,12 +922,16 @@ import crabzilla.example1.customer.CustomerModule;
 import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
+import example1.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
 import io.vertx.ext.jdbc.JDBCClient;
 import lombok.val;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.kotlin.KotlinPlugin;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin;
 
 import java.util.Properties;
 
@@ -939,9 +958,6 @@ class Example1Module extends AbstractModule {
 
     // services
     bind(SampleInternalService.class).to(SampleInternalServiceImpl.class).asEagerSingleton();
-
-    // bounded context
-    bind(Example1ComponentsFactory.class).asEagerSingleton();
 
     // exposes properties to guice
     setCfgProps();
@@ -970,19 +986,17 @@ class Example1Module extends AbstractModule {
 
   @Provides
   @Singleton
-  EventProjector eventsProjector(Example1ComponentsFactory f) {
-    return f.eventsProjector() ;
+  public EventProjector eventsProjector(Jdbi jdbi) {
+    return new Example1EventProjector("example1", CustomerSummaryDao.class, jdbi) ;
   }
 
   @Provides
   @Singleton
   Jdbi jdbi(HikariDataSource ds) {
     val jdbi = Jdbi.create(ds);
-    jdbi.installPlugins();
-
-//    jdbi.installPlugin(new SqlObjectPlugin());
-//    jdbi.installPlugin(new KotlinPlugin());
-//    jdbi.installPlugin(new KotlinSqlObjectPlugin());
+    jdbi.installPlugin(new SqlObjectPlugin());
+    jdbi.installPlugin(new KotlinPlugin());
+    jdbi.installPlugin(new KotlinSqlObjectPlugin());
     return jdbi;
   }
 
@@ -1045,7 +1059,7 @@ class Example1Module extends AbstractModule {
 </div>
 </div>
 <div class="sect1">
-<h2 id="3-0-running-it"><a class="anchor" href="#3-0-running-it"></a>3.0 Running it</h2>
+<h2 id="conclusion"><a class="anchor" href="#conclusion"></a>Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>After this, we will be able to run it. We will have these features:</p>
@@ -1072,7 +1086,7 @@ class Example1Module extends AbstractModule {
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-08-11 20:52:03 BRT
+Last updated 2017-08-11 21:25:39 BRT
 </div>
 </div>
 <link rel="stylesheet" href="highlight/styles/github.min.css">

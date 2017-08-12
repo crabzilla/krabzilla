@@ -6,7 +6,7 @@ import crabzilla.example1.customer.CustomerActivated
 import crabzilla.example1.customer.CustomerCreated
 import crabzilla.example1.customer.CustomerDeactivated
 import crabzilla.vertx.entity.projection.EventProjector
-import example1.readmodel.CustomerSummaryDao
+import example1.CustomerSummaryDao
 import mu.KotlinLogging
 import org.jdbi.v3.core.Jdbi
 

@@ -20,7 +20,7 @@ import crabzilla.example1.customer.CustomerModule;
 import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
-import example1.readmodel.CustomerSummaryDao;
+import example1.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;

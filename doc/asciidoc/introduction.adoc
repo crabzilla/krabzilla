@@ -16,9 +16,8 @@ reactive applications platform backed by a rock solid relational database of you
 
 == Approach
 
-The approach is to use functions everywhere within your domain implementation. For each top level domain model
-(Aggregate, ProcessManager/Saga, etc), you need to implement a set of functions. For example, for an Aggregate,
-you will implement:
+The approach is to use functions everywhere within your domain implementation. For example, for an Aggregate,
+we will need to implement this set of functions:
 
 [source,kotlin]
 .domain.kt
@@ -27,8 +26,8 @@ include::./krabzilla-core/src/main/java/crabzilla/domain.kt[tags=factory,indent=
 ----
 
 [.lead]
-*Notice* : By "top level domain model" I mean Aggregate, ExternalSystem, Listener and ProcessManager/Saga. These
-are inspired by http://eventstorming.com/[Eventstorming]
+So far Krabzilla has only an Aggregate example. Inspired by http://eventstorming.com/[Eventstorming], the goal is to
+add examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.
 
 == Modules
 

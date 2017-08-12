@@ -8,7 +8,7 @@ import crabzilla.example1.customer.CustomerCreated;
 import crabzilla.example1.customer.CustomerId;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.entity.projection.ProjectionData;
-import example1.readmodel.CustomerSummaryDao;
+import example1.CustomerSummaryDao;
 import io.vertx.core.Vertx;
 import lombok.val;
 import org.jdbi.v3.core.Jdbi;

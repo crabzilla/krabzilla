@@ -7,7 +7,7 @@ import crabzilla.example1.customer.CreateCustomer;
 import crabzilla.example1.customer.CustomerCreated;
 import crabzilla.example1.customer.CustomerId;
 import crabzilla.vertx.VertxFactory;
-import example1.readmodel.CustomerSummaryDao;
+import example1.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;

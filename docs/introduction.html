@@ -456,12 +456,10 @@ reactive applications platform backed by a rock solid relational database of you
 <h2 id="approach"><a class="anchor" href="#approach"></a>Approach</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The approach is to use functions everywhere within your domain implementation. For each top level domain model
-(Aggregate, ProcessManager/Saga, etc), you need to implement a set of functions. For example, for an Aggregate,
-you will implement:</p>
+<p>The approach is to use functions everywhere within your domain implementation. For example, for an Aggregate,
+we will need to implement this set of functions:</p>
 </div>
 <div class="listingblock">
-<div class="title">domain.kt</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">interface EntityFunctionsFactory&lt;E&gt; {
 
@@ -477,8 +475,8 @@ you will implement:</p>
 </div>
 </div>
 <div class="paragraph lead">
-<p><strong>Notice</strong> : By "top level domain model" I mean Aggregate, ExternalSystem, Listener and ProcessManager/Saga. These
-are inspired by <a href="http://eventstorming.com/">Eventstorming</a></p>
+<p>So far Krabzilla has only an Aggregate example. Inspired by <a href="http://eventstorming.com/">Eventstorming</a>, the goal is to
+add examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.</p>
 </div>
 </div>
 </div>
@@ -547,7 +545,7 @@ are inspired by <a href="http://eventstorming.com/">Eventstorming</a></p>
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-08-11 18:52:11 BRT
+Last updated 2017-08-11 21:33:53 BRT
 </div>
 </div>
 <link rel="stylesheet" href="highlight/styles/github.min.css">

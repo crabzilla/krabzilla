@@ -5,7 +5,7 @@ import crabzilla.example1.CustomerSummary
 import crabzilla.example1.customer.CustomerActivated
 import crabzilla.example1.customer.CustomerCreated
 import crabzilla.example1.customer.CustomerDeactivated
-import example1.readmodel.CustomerSummaryDao
+import example1.CustomerSummaryDao
 import mu.KotlinLogging
 import org.jdbi.v3.core.Jdbi
 

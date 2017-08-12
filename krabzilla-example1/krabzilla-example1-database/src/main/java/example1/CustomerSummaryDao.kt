@@ -1,4 +1,4 @@
-package example1.readmodel
+package example1
 
 import crabzilla.example1.CustomerSummary
 import org.jdbi.v3.sqlobject.statement.SqlQuery
