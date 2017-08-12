@@ -1,6 +1,7 @@
 = Krabzila Documentation
 :source-highlighter: highlightjs
 :highlightjsdir: highlight
+:highlightjs-theme: rainbow
 :revnumber: {project-version}
 :example-caption!:
 ifndef::imagesdir[:imagesdir: images]
@@ -14,20 +15,19 @@ Status: *WORK IN PROGRESS*
 To help you write your domain model with very little framework overhead and smoothly deploy it on a state of art Java 8
 reactive applications platform backed by a rock solid relational database of your choice.
 
+So far Krabzilla has only an Aggregate example. Inspired by http://eventstorming.com/[Eventstorming], the goal is to
+also develop examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.
+
 == Approach
 
 The approach is to use functions everywhere within your domain implementation. For example, for an Aggregate,
-we will need to implement this set of functions:
+you will need to implement this set of functions:
 
 [source,kotlin]
 .domain.kt
 ----
 include::./krabzilla-core/src/main/java/crabzilla/domain.kt[tags=factory,indent=0]
 ----
-
-[.lead]
-So far Krabzilla has only an Aggregate example. Inspired by http://eventstorming.com/[Eventstorming], the goal is to
-add examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.
 
 == Modules
 

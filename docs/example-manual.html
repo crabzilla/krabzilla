@@ -656,11 +656,11 @@ class CustomerCommandHandlerFn (val trackerFactory: (Customer) -&gt; StateTracke
 <div class="listingblock">
 <div class="title">Customer.kt</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.example1.customer
+<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.crabzilla.example1.customer
 
 import crabzilla.Aggregate
 import crabzilla.DomainEvent
-import crabzilla.example1.SampleInternalService
+import crabzilla.crabzilla.example1.SampleInternalService
 
 data class Customer(override val id: CustomerId? = null,
                     val name: String? = null,
@@ -744,13 +744,13 @@ interface CustomerRepository {
 <div class="listingblock">
 <div class="title">CustomerFactory</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.example1.customer
+<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package crabzilla.crabzilla.example1.customer
 
 import crabzilla.CommandHandlerResult
 import crabzilla.DomainEvent
 import crabzilla.EntityCommand
 import crabzilla.Snapshot
-import crabzilla.example1.SampleInternalService
+import crabzilla.crabzilla.example1.SampleInternalService
 import crabzilla.vertx.entity.EntityComponentsFactory
 import io.vertx.core.Vertx
 import io.vertx.ext.jdbc.JDBCClient
@@ -801,7 +801,7 @@ class CustomerFactory @Inject constructor(private val internalService: SampleInt
 <div class="listingblock">
 <div class="title">CustomerModule</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package crabzilla.example1.customer;
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package crabzilla.crabzilla.example1.customer;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -865,11 +865,11 @@ public class CustomerModule extends AbstractModule {
 
 
 import crabzilla.DomainEvent
-import crabzilla.example1.customer.CustomerActivated
-import crabzilla.example1.customer.CustomerCreated
-import crabzilla.example1.customer.CustomerDeactivated
+import crabzilla.crabzilla.example1.customer.CustomerActivated
+import crabzilla.crabzilla.example1.customer.CustomerCreated
+import crabzilla.crabzilla.example1.customer.CustomerDeactivated
 import crabzilla.vertx.entity.projection.EventProjector
-import example1.CustomerSummaryDao
+import crabzilla.example1.CustomerSummaryDao
 import mu.KotlinLogging
 import org.jdbi.v3.core.Jdbi
 
@@ -918,11 +918,11 @@ import crabzilla.Command;
 import crabzilla.DomainEvent;
 import crabzilla.EntityId;
 import crabzilla.EntityUnitOfWork;
-import crabzilla.example1.customer.CustomerModule;
+import crabzilla.crabzilla.example1.customer.CustomerModule;
 import crabzilla.vertx.entity.EntityCommandExecution;
 import crabzilla.vertx.entity.projection.EventProjector;
 import crabzilla.vertx.util.codecs.JacksonGenericCodec;
-import example1.CustomerSummaryDao;
+import crabzilla.example1.CustomerSummaryDao;
 import io.vertx.circuitbreaker.CircuitBreaker;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.Vertx;
@@ -970,7 +970,7 @@ class Example1Module extends AbstractModule {
     final Properties props = new Properties();
 
     config.entrySet().forEach(e -&gt; {
-      final String key = e.getKey().replace("example1.", "");
+      final String key = e.getKey().replace("crabzilla.example1.", "");
       final String value = e.getValue().render().replace("\"", "");
       props.put(key, value);
     });

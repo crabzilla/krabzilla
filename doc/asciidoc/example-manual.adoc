@@ -2,6 +2,7 @@
 :sourcedir: src/main/java
 :source-highlighter: highlightjs
 :highlightjsdir: highlight
+:highlightjs-theme: rainbow
 :revnumber: {project-version}
 :example-caption!:
 ifndef::imagesdir[:imagesdir: images]
