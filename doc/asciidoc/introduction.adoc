@@ -15,6 +15,8 @@ Status: *WORK IN PROGRESS*
 To help you write your domain model with very little framework overhead and smoothly deploy it on a state of art Java 8
 reactive applications platform backed by a rock solid relational database of your choice.
 
+== Status
+
 So far Krabzilla has only an Aggregate example. Inspired by http://eventstorming.com/[Eventstorming], the goal is to
 also develop examples and implementations for an ExternalSystem, a Listener and a ProcessManager / Saga.
 
@@ -41,7 +43,7 @@ and your typical *example1* bounded context project will have this structure:
 
  example1             → Project root
   └ example1-core     → Your domain code. Services as interfaces. Almost zero dependencies.
-  └ example1-database → Flyway db w/ both read and write models. Repositories implementations.
+  └ example1-database → Flyway db setup w/ both read and write models. DAOs implementations.
   └ example1-service  → The application: wiring, configuration and services implementations.
 
 Load, integration and acceptance tests are against the service module.
