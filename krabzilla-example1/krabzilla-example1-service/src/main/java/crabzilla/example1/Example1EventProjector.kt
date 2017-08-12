@@ -9,10 +9,9 @@ import crabzilla.vertx.entity.projection.EventProjector
 import mu.KotlinLogging
 import org.jdbi.v3.core.Jdbi
 
-class Example1EventProjector(eventsChannelId: String,
-                             daoClazz: Class<CustomerSummaryDao>, jdbi: Jdbi)
+class Example1EventProjector(channelId: String, daoClazz: Class<CustomerSummaryDao>, jdbi: Jdbi)
 
-  : EventProjector<CustomerSummaryDao>(eventsChannelId, daoClazz, jdbi) {
+  : EventProjector<CustomerSummaryDao>(channelId, daoClazz, jdbi) {
 
   override val log = KotlinLogging.logger {}
 
