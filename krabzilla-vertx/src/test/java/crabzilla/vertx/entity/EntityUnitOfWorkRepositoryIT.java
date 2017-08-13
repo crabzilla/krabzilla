@@ -70,7 +70,7 @@ public class EntityUnitOfWorkRepositoryIT {
     HikariConfig config = new HikariConfig();
     config.setDriverClassName("com.mysql.cj.jdbc.Driver");
     config.setJdbcUrl("jdbc:mysql://localhost:3306/example1?serverTimezone=UTC&useSSL=false");
-    config.setUsername("mr_krabs");
+    config.setUsername("root");
     config.setPassword("my-secret-pwd");
     config.setAutoCommit(false);
     config.setTransactionIsolation("TRANSACTION_SERIALIZABLE");
