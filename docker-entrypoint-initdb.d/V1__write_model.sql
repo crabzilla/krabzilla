@@ -1,3 +1,4 @@
+use example1
 
 DROP TABLE if exists units_of_work ;
 
