@@ -14,24 +14,14 @@ interface Command : Serializable {
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 interface DomainEvent : Serializable
 
-interface Aggregate : Serializable {
+interface Aggregate {
   val id: EntityId?
-  fun events(vararg event: DomainEvent): List<DomainEvent> {
-    return event.asList()
-  }
-}
-
-interface ExternalSystem {
-  fun events(vararg event: DomainEvent): List<DomainEvent> {
-    return event.asList()
-  }
 }
 
 interface Listener
 
 interface ProcessManager {
   val id: EntityId?
-  fun events(vararg event: DomainEvent): List<DomainEvent> {
-    return event.asList()
-  }
 }
+
+interface ExternalSystem

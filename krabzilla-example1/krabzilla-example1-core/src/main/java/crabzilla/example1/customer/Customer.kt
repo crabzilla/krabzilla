@@ -2,6 +2,7 @@ package crabzilla.example1.customer
 
 import crabzilla.Aggregate
 import crabzilla.DomainEvent
+import crabzilla.eventsOf
 import crabzilla.example1.SampleInternalService
 
 data class Customer(override val id: CustomerId? = null,
@@ -12,15 +13,15 @@ data class Customer(override val id: CustomerId? = null,
 
   internal fun create(id: CustomerId, name: String): List<DomainEvent> {
     require(this.id == null, { "customer already created" })
-    return events(CustomerCreated(id, name))
+    return eventsOf(CustomerCreated(id, name))
   }
 
   internal fun activate(reason: String): List<DomainEvent> {
-    return events(CustomerActivated(reason, sampleInternalService!!.now()))
+    return eventsOf(CustomerActivated(reason, sampleInternalService!!.now()))
   }
 
   internal fun deactivate(reason: String): List<DomainEvent> {
-    return events(CustomerDeactivated(reason, sampleInternalService!!.now()))
+    return eventsOf(CustomerDeactivated(reason, sampleInternalService!!.now()))
   }
 
 }

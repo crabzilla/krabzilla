@@ -154,3 +154,7 @@ fun resultOf(f: () -> EntityUnitOfWork?): CommandHandlerResult {
 fun uowOf(command: EntityCommand, events: List<DomainEvent>, version: Version): EntityUnitOfWork {
   return EntityUnitOfWork(command, events, version)
 }
+
+fun eventsOf(vararg event: DomainEvent): List<DomainEvent> {
+  return event.asList()
+}
