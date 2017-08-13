@@ -8,7 +8,8 @@ services:
                - 3306:3306
         environment:
 #            MYSQL_ROOT_PASSWORD: my-secret-pwd
+            MYSQL_DATABASE: example1db
             MYSQL_RANDOM_ROOT_PASSWORD:  "yes"
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-            MYSQL_DATABASE: example1db  
+
 
