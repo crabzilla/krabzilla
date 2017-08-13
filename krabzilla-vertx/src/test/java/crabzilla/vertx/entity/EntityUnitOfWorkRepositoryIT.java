@@ -69,9 +69,9 @@ public class EntityUnitOfWorkRepositoryIT {
 
     HikariConfig config = new HikariConfig();
     config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-    config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/example1db?serverTimezone=UTC&useSSL=false");
-    config.setUsername("root");
-    //config.setPassword("my-secret-pwd");
+    config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/example1?serverTimezone=UTC&useSSL=false");
+    config.setUsername("mr_krabs");
+    config.setPassword("my-secret-pwd");
     config.setAutoCommit(false);
     config.setTransactionIsolation("TRANSACTION_SERIALIZABLE");
 

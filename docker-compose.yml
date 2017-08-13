@@ -7,9 +7,11 @@ services:
         ports:
                - 3306:3306
         environment:
-#            MYSQL_ROOT_PASSWORD: my-secret-pwd
-            MYSQL_DATABASE: example1db
-            MYSQL_RANDOM_ROOT_PASSWORD:  "yes"
-            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_DATABASE: example1
+            MYSQL_ROOT_PASSWORD: my-secret-pwd
+            MYSQL_USER: mr_krabs
+            MYSQL_PASSWORD: my-secret-pwd
+        volumes:
+            - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
 

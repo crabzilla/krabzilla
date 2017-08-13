@@ -22,14 +22,14 @@ class DatabaseModule extends PrivateModule {
   public HikariConfig config(@Named("database.driver") String dbDriver,
                              @Named("database.url") String dbUrl,
                              @Named("database.user") String dbUser,
-//                             @Named("database.password") String dbPwd,
+                             @Named("database.password") String dbPwd,
                              @Named("database.pool.max.size") Integer databaseMaxSize) {
 
     HikariConfig config = new HikariConfig();
     config.setDriverClassName(dbDriver);
     config.setJdbcUrl(dbUrl);
     config.setUsername(dbUser);
-//    config.setPassword(dbPwd);
+    config.setPassword(dbPwd);
     config.setConnectionTimeout(5000);
     config.setMaximumPoolSize(databaseMaxSize);
     config.addDataSourceProperty("cachePrepStmts", "true");
