@@ -25,7 +25,7 @@ cache:
 
 install:
   - mvn clean install -DskipTests
-  - cd krabzilla-example1/krabzilla-example1-database
+  - cd ./krabzilla-example1/krabzilla-example1-database
   - mvn compile flyway:migrate
   - cd ../..
   - mvn clean verify -P all-tests
